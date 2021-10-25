@@ -18,6 +18,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nowfloats.packrat.R
 import com.nowfloats.packrat.adapter.ImageAdapter
+import com.nowfloats.packrat.camera.CameraActivity
 import com.nowfloats.packrat.clickInterface.ClickListener
 import com.nowfloats.packrat.repository.MyRepository
 import com.nowfloats.packrat.room.EntityClass
@@ -182,11 +183,12 @@ class MainActivity : AppCompatActivity(), ClickListener {
     }
 
     private fun dispatchTakePictureIntent() {
-        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        /*val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         try {
             startActivityForResult(takePictureIntent, CAMERA_REQESUT_CODE)
         } catch (e: ActivityNotFoundException) {
             // display error state to the user
-        }
+        }*/
+        startActivity(Intent(this, CameraActivity::class.java))
     }
 }
