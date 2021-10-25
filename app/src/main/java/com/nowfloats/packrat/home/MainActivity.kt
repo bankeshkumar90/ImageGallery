@@ -1,11 +1,10 @@
 package com.nowfloats.packrat.home
 
 import android.Manifest
-import android.content.ActivityNotFoundException
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -20,6 +19,7 @@ import com.nowfloats.packrat.R
 import com.nowfloats.packrat.adapter.ImageAdapter
 import com.nowfloats.packrat.camera.CameraActivity
 import com.nowfloats.packrat.clickInterface.ClickListener
+import com.nowfloats.packrat.dialog.BottomViewDialog
 import com.nowfloats.packrat.repository.MyRepository
 import com.nowfloats.packrat.room.EntityClass
 import com.nowfloats.packrat.viewModel.MyViewModel
@@ -36,6 +36,7 @@ class MainActivity : AppCompatActivity(), ClickListener {
     private var imageList = emptyList<EntityClass>()
     private lateinit var imageAdapter: ImageAdapter
     private val CAMERA_REQESUT_CODE = 1
+    private lateinit var bottomViewDialog: BottomViewDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,7 +93,6 @@ class MainActivity : AppCompatActivity(), ClickListener {
 
     }
 
-    
 
     /*
          below function checks the required permissions and asks the same
@@ -151,6 +151,7 @@ class MainActivity : AppCompatActivity(), ClickListener {
             ).show()
         }
     }
+
     /*
        below function is called everytime any view is clicked in the recyclerview
    */
@@ -171,7 +172,7 @@ class MainActivity : AppCompatActivity(), ClickListener {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-         return when(item.itemId){
+        return when (item.itemId) {
             R.id.status -> {
                 true
             }
@@ -182,6 +183,7 @@ class MainActivity : AppCompatActivity(), ClickListener {
         }
     }
 
+    @SuppressLint("WrongConstant")
     private fun dispatchTakePictureIntent() {
         /*val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         try {
@@ -189,6 +191,12 @@ class MainActivity : AppCompatActivity(), ClickListener {
         } catch (e: ActivityNotFoundException) {
             // display error state to the user
         }*/
-        startActivity(Intent(this, CameraActivity::class.java))
+        /*BottomViewDialog().apply {
+            show(supportFragmentManager, BottomViewDialog.TAG)
+        }*/
+        bottomViewDialog = BottomViewDialog()
+        bottomViewDialog.setStyle( 0, R.style.BottomSheetDialog)
+        bottomViewDialog.show(supportFragmentManager, BottomViewDialog.TAG)
+
     }
 }
