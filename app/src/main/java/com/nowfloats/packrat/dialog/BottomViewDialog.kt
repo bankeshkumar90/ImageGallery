@@ -33,12 +33,10 @@ class BottomViewDialog : BottomSheetDialogFragment() {
         add_camera.setOnClickListener {
             //handle click event
             startActivity(Intent(context, CameraActivity::class.java))
-            Toast.makeText(context, "First Button Clicked", Toast.LENGTH_SHORT).show()
         }
         add_gallery.setOnClickListener {
             //handle click event
             startActivity(Intent(context, GalleryActivity::class.java))
-            Toast.makeText(context, "Second Button Clicked", Toast.LENGTH_SHORT).show()
         }
     }
 

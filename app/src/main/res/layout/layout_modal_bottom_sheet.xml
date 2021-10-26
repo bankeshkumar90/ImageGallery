@@ -12,7 +12,7 @@
 
     <LinearLayout
         android:id="@+id/add_camera"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?android:attr/selectableItemBackground"
         android:orientation="horizontal"
@@ -34,7 +34,7 @@
 
     <LinearLayout
         android:id="@+id/add_gallery"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?android:attr/selectableItemBackground"
         android:orientation="horizontal"

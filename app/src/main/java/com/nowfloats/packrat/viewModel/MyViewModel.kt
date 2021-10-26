@@ -25,4 +25,8 @@ class MyViewModel(private val repository: MyRepository) : ViewModel() {
     suspend fun deleteImage() {
         repository.deletePreviousImage()
     }
+
+     fun deleteImageById(id:Int) {
+        repository.deleteDetailById(id)
+    }
 }

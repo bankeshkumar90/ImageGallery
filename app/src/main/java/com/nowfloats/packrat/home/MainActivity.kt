@@ -25,6 +25,9 @@ import com.nowfloats.packrat.room.EntityClass
 import com.nowfloats.packrat.viewModel.MyViewModel
 import com.nowfloats.packrat.viewModel.ViewModelFactory
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 class MainActivity : AppCompatActivity(), ClickListener {
@@ -51,7 +54,7 @@ class MainActivity : AppCompatActivity(), ClickListener {
     }
 
     private fun setRecyclerView() {
-        val linearLayoutManager = LinearLayoutManager(this)
+        val linearLayoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         recyclerView.apply {
             layoutManager = linearLayoutManager
             adapter = imageAdapter
@@ -164,6 +167,15 @@ class MainActivity : AppCompatActivity(), ClickListener {
             startActivity(intent)
         })
     }
+
+    override fun onClickDelete(position: Int?) {
+        CoroutineScope(Dispatchers.IO).launch {
+            viewModel.deleteImageById(position!!)
+        }
+
+    }
+
+
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater

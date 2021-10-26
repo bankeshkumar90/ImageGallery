@@ -76,8 +76,9 @@ class CameraActivity : AppCompatActivity() {
                 below callback is evokes if the image is saved successfully in the storage
                  */
                 override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                    btnClick.visibility = View.GONE
-                    btnShowPreview.visibility = View.VISIBLE
+                    /*btnClick.visibility = View.GONE
+                    btnShowPreview.visibility = View.VISIBLE*/
+                    showPreview()
                 }
 
                 override fun onError(exception: ImageCaptureException) {
@@ -99,13 +100,22 @@ class CameraActivity : AppCompatActivity() {
             bundle.putString("image", imageName)
             val imagePreview = ImagePreview()
             imagePreview.arguments = bundle
-
             btnShowPreview.visibility = View.GONE
-
             val fragmentTransaction = supportFragmentManager.beginTransaction()
             fragmentTransaction.add(R.id.Frame, imagePreview, "ImagePreview").commit()
         }
 
+    }
+
+    private fun showPreview(){
+        val bundle = Bundle()
+        bundle.putString("uri", path)
+        bundle.putString("image", imageName)
+        val imagePreview = ImagePreview()
+        imagePreview.arguments = bundle
+//        btnShowPreview.visibility = View.GONE
+        val fragmentTransaction = supportFragmentManager.beginTransaction()
+        fragmentTransaction.add(R.id.Frame, imagePreview, "ImagePreview").commit()
     }
 
     private fun startCamera() {

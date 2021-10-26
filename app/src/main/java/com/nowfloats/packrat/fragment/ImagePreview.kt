@@ -2,6 +2,7 @@ package com.nowfloats.packrat.fragment
 
 import android.app.AlertDialog
 import android.content.DialogInterface
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.InputType
@@ -11,19 +12,25 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.nowfloats.packrat.R
+import com.nowfloats.packrat.adapter.ImageAdapter
+import com.nowfloats.packrat.camera.CameraActivity
+import com.nowfloats.packrat.clickInterface.ClickListener
+import com.nowfloats.packrat.home.ImageDetails
 import com.nowfloats.packrat.repository.MyRepository
 import com.nowfloats.packrat.room.EntityClass
 import com.nowfloats.packrat.viewModel.MyViewModel
 import com.nowfloats.packrat.viewModel.ViewModelFactory
 import com.nowfloats.packrat.home.MyApplication
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_image_preview.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
 
-class ImagePreview : Fragment() {
+class ImagePreview : Fragment(), ClickListener {
 
     lateinit var viewModel: MyViewModel
     lateinit var viewModelFactory: ViewModelFactory
@@ -32,6 +39,10 @@ class ImagePreview : Fragment() {
     private var uri: String? = ""
     private var albumName = ""
     private var imageName: String? = ""
+    private lateinit var imageAdapter: ImageAdapter
+    private var imageList = emptyList<EntityClass>()
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -44,17 +55,30 @@ class ImagePreview : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViews()
-
+        setRecyclerView()
         imgPreview.setImageURI(Uri.parse(uri))
         btnSaveImage.setOnClickListener {
             showDialog()
         }
+        btn_open_camera.setOnClickListener {
+            startActivity(Intent(context, CameraActivity::class.java))
+        }
+    }
 
+    private fun setRecyclerView() {
+        val linearLayoutManager =
+            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        camera_list.apply {
+            layoutManager = linearLayoutManager
+            adapter = imageAdapter
+        }
     }
 
     private fun initViews() {
         myApplication = activity?.application as MyApplication
         myRepository = myApplication.myRepository
+        imageList = arrayListOf<EntityClass>()
+        imageAdapter = ImageAdapter(imageList, this)
         viewModelFactory = ViewModelFactory(myRepository)
         viewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(MyViewModel::class.java)
@@ -70,6 +94,7 @@ class ImagePreview : Fragment() {
         // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
         input.setHint("Enter Album Name")
         input.inputType = InputType.TYPE_CLASS_TEXT
+
         builder.setView(input)
 
         // Set up the buttons
@@ -92,5 +117,28 @@ class ImagePreview : Fragment() {
             "Cancel",
             DialogInterface.OnClickListener { dialog, which -> dialog.cancel() })
         builder.show()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.displayImage().observe(this, androidx.lifecycle.Observer {
+            imageAdapter.updateList(it)
+        })
+    }
+
+    override fun onClick(position: Int) {
+        var uri = ""
+        viewModel.displayImage().observe(this, androidx.lifecycle.Observer {
+            uri = it[position].path
+            val intent = Intent(context, ImageDetails::class.java)
+            intent.putExtra("uri", uri)
+            startActivity(intent)
+        })
+    }
+
+    override fun onClickDelete(position: Int?) {
+        CoroutineScope(Dispatchers.IO).launch {
+            viewModel.deleteImageById(position!!)
+        }
     }
 }

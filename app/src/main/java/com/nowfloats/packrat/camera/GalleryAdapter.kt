@@ -60,15 +60,11 @@ class GalleryAdapter() :
         val viewHolder = holder as ImageListViewHolder
             println("image_path  " + imageList!!.get(position).image)
         Glide.with(context)
-            .load("/storage/emulated/0/DCIM/Camera/IMG_20201124_074737.jpg")
-//            .load(imageList!!.get(position).image)
+            .load(imageList!!.get(position).image)
             .placeholder(R.color.codeGray)
             .centerCrop()
             .transition(DrawableTransitionOptions.withCrossFade(500))
             .into(viewHolder.image)
-//            val bmImg = BitmapFactory.decodeFile("/storage/emulated/0/DCIM/Camera/IMG_20201124_074737.jpg")
-//            viewHolder.image.setImageBitmap(bmImg)
-//            viewHolder.image.setImageResource(imageList!!.get(position).image)
             viewHolder.checkBox.isChecked = imageList!![position].isSelected
         } else {
             val viewHolder = holder as ImagePickerViewHolder

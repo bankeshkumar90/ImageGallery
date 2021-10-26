@@ -20,4 +20,9 @@ class MyRepository(private val daoClass: DaoClass) {
     suspend fun deletePreviousImage() {
         daoClass.deleteAllImages()
     }
+
+    //use repository to call dao to delete the previous image_table
+     fun deleteDetailById(id:Int) {
+        daoClass.deleteById(id)
+    }
 }

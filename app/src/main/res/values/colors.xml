@@ -11,4 +11,7 @@
     <color name="codeGray">#e7e7e7</color>
     <color name="gray">#808080</color>
     <color name="transparent">#00000000</color>
+    <color name="light_grey">#848984</color>
+    <color name="rect_top">#F2F6E7</color>
+    <color name="rect_bottom">#FFFFFF</color>
 </resources>

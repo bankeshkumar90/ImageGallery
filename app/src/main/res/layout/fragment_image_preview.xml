@@ -11,23 +11,62 @@
         android:id="@+id/imgPreview"
         android:layout_width="@dimen/dp_400"
         android:layout_height="@dimen/dp_400"
+        android:layout_marginBottom="@dimen/dp_100"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bottom_frame"/>
 
 
-    <Button
-        android:id="@+id/btnSaveImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="#E4D908"
-        android:padding="@dimen/dp_10"
-        android:text="Save Image"
-        android:textAllCaps="false"
+    <FrameLayout
+        android:id="@+id/bottom_frame"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_100"
+        app:layout_constraintBottom_toTopOf="@+id/list_bottom"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_50"
+            android:layout_gravity="bottom"
+            android:background="@color/rect_top"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/btn_open_camera"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:src="@drawable/open_camera" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/btnSaveImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginTop="@dimen/dp_15"
+            android:src="@drawable/save_image"
+            android:textAllCaps="false" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/list_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_70"
+        android:background="@color/rect_bottom"
+        android:gravity="center"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imgPreview" />
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/camera_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -25,7 +25,7 @@ import java.util.*
 
 class GalleryActivity : AppCompatActivity() {
 
-    val REQUEST_IMAGE_CAPTURE = 1
+//    val REQUEST_IMAGE_CAPTURE = 1
     val PICK_IMAGES = 2
     val STORAGE_PERMISSION = 100
 
@@ -120,7 +120,7 @@ class GalleryActivity : AppCompatActivity() {
     }
 
     // start the image capture Intent
-    fun takePicture() {
+    /*fun takePicture() {
         val builder = VmPolicy.Builder()
         StrictMode.setVmPolicy(builder.build())
         val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
@@ -130,7 +130,7 @@ class GalleryActivity : AppCompatActivity() {
             cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile))
             startActivityForResult(cameraIntent, REQUEST_IMAGE_CAPTURE)
         }
-    }
+    }*/
 
     fun getPickImageIntent() {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
@@ -180,29 +180,6 @@ class GalleryActivity : AppCompatActivity() {
         return image
     }
 
-   /* fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == RESULT_OK) {
-            if (requestCode == REQUEST_IMAGE_CAPTURE) {
-                if (mCurrentPhotoPath != null) {
-                    addImage(mCurrentPhotoPath!!)
-                }
-            } else if (requestCode == PICK_IMAGES) {
-                if (data.clipData != null) {
-                    val mClipData = data.clipData
-                    for (i in 0 until mClipData!!.itemCount) {
-                        val item = mClipData.getItemAt(i)
-                        val uri = item.uri
-                        getImageFilePath(uri)
-                    }
-                } else if (data.data != null) {
-                    val uri = data.data
-                    getImageFilePath(uri)
-                }
-            }
-        }
-    }*/
-
     // Get image file path
     fun getImageFilePath(uri: Uri?) {
         val cursor = contentResolver.query(uri!!, projection, null, null, null)
@@ -247,11 +224,11 @@ class GalleryActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == RESULT_OK) {
-            if (requestCode == REQUEST_IMAGE_CAPTURE) {
+            /*if (requestCode == REQUEST_IMAGE_CAPTURE) {
                 if (mCurrentPhotoPath != null) {
                     addImage(mCurrentPhotoPath!!)
                 }
-            } else if (requestCode == PICK_IMAGES) {
+            } else*/ if (requestCode == PICK_IMAGES) {
                 if (data!!.clipData != null) {
                     val mClipData = data.clipData
                     for (i in 0 until mClipData!!.itemCount) {

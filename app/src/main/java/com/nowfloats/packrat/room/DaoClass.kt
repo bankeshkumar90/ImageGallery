@@ -25,5 +25,8 @@ interface DaoClass {
 
     //delete previous data present in database
     @Query("DELETE FROM image_table")
-     fun deleteAllImages()
+    fun deleteAllImages()
+
+    @Query("DELETE FROM image_table WHERE id = :id")
+    fun deleteById(id: Int)
 }
