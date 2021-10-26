@@ -1,6 +1,7 @@
 package com.nowfloats.packrat.dialog
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import android.widget.Toast
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.nowfloats.packrat.R
 import com.nowfloats.packrat.camera.CameraActivity
+import com.nowfloats.packrat.camera.GalleryActivity
 import kotlinx.android.synthetic.main.layout_modal_bottom_sheet.*
 
 class BottomViewDialog : BottomSheetDialogFragment() {
@@ -35,8 +37,9 @@ class BottomViewDialog : BottomSheetDialogFragment() {
         }
         add_gallery.setOnClickListener {
             //handle click event
-            startActivity(Intent(context, CameraActivity::class.java))
+            startActivity(Intent(context, GalleryActivity::class.java))
             Toast.makeText(context, "Second Button Clicked", Toast.LENGTH_SHORT).show()
         }
     }
+
 }

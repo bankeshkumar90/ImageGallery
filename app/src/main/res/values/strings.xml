@@ -4,5 +4,7 @@
     <string name="save_image">Save Image</string>
     <string name="hello">Hello</string>
     <string name="add_shelf">Add Shelf</string>
+    <string name="ok">OK</string>
+    <string name="camera">Camera</string>
     <string name="add_product">Add Product</string>
 </resources>
