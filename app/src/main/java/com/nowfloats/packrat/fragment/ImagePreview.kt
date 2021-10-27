@@ -37,7 +37,7 @@ class ImagePreview : Fragment(), ClickListener {
     lateinit var myApplication: MyApplication
     lateinit var myRepository: MyRepository
     private var uri: String? = ""
-    private var albumName = ""
+//    private var albumName = ""
     private var imageName: String? = ""
     private lateinit var imageAdapter: ImageAdapter
     private var imageList = emptyList<EntityClass>()
@@ -58,7 +58,14 @@ class ImagePreview : Fragment(), ClickListener {
         setRecyclerView()
         imgPreview.setImageURI(Uri.parse(uri))
         btnSaveImage.setOnClickListener {
-            showDialog()
+//            showDialog()
+            val current_time = Calendar.getInstance().time
+//            albumName = input.text.toString()
+            val entityClass =
+                EntityClass(imageName!!, current_time.toString(),  uri!!)
+            CoroutineScope(Dispatchers.IO).launch {
+                viewModel.addImage(entityClass)
+            }
         }
         btn_open_camera.setOnClickListener {
             startActivity(Intent(context, CameraActivity::class.java))
@@ -84,30 +91,18 @@ class ImagePreview : Fragment(), ClickListener {
             .get(MyViewModel::class.java)
     }
 
-    fun showDialog() {
+    /*fun showDialog() {
         val builder: AlertDialog.Builder = android.app.AlertDialog.Builder(requireActivity())
         builder.setTitle("Album Name")
-
         val current_time = Calendar.getInstance().time
-        // Set up the input
         val input = EditText(requireContext())
-        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
         input.setHint("Enter Album Name")
         input.inputType = InputType.TYPE_CLASS_TEXT
-
         builder.setView(input)
-
-        // Set up the buttons
         builder.setPositiveButton("OK", DialogInterface.OnClickListener { dialog, which ->
             albumName = input.text.toString()
             val entityClass =
                 EntityClass(imageName!!, current_time.toString(), albumName, uri!!)
-
-            /*
-            below code saves the image information such as image name, album name, time stamp,
-             image path url into database using a coroutine
-             */
-
             CoroutineScope(Dispatchers.IO).launch {
                 viewModel.addImage(entityClass)
             }
@@ -117,7 +112,7 @@ class ImagePreview : Fragment(), ClickListener {
             "Cancel",
             DialogInterface.OnClickListener { dialog, which -> dialog.cancel() })
         builder.show()
-    }
+    }*/
 
     override fun onResume() {
         super.onResume()

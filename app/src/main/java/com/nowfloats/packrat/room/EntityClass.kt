@@ -9,7 +9,7 @@ import androidx.room.PrimaryKey
 data class EntityClass(
     @ColumnInfo(name = "image_name") var name: String,
     @ColumnInfo(name = "time_stamp") var time: String,
-    @ColumnInfo(name = "album_name") var album: String,
+//    @ColumnInfo(name = "album_name") var album: String,
     @ColumnInfo(name = "path") var path: String
 ) {
     @PrimaryKey(autoGenerate = true)

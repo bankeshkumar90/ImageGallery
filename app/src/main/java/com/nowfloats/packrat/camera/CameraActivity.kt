@@ -38,13 +38,9 @@ class CameraActivity : AppCompatActivity() {
 
     private fun initViewsAndListeners() {
         myApplication = application as MyApplication
-
         myRepository = myApplication.myRepository
-
         viewModelFactory = ViewModelFactory(myRepository)
-
-        viewModel = ViewModelProviders.of(this, viewModelFactory)
-            .get(MyViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(MyViewModel::class.java)
 
         btnClick.setOnClickListener {
             takePhotos()
@@ -119,11 +115,9 @@ class CameraActivity : AppCompatActivity() {
     }
 
     private fun startCamera() {
-
         /*
         initiates the cameraX into the UI
          */
-
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
         cameraProviderFuture.addListener(Runnable {
             val cameraProvider = cameraProviderFuture.get()

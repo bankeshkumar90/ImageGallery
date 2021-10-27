@@ -43,7 +43,7 @@
             android:layout_width="@dimen/dp_50"
             android:layout_height="@dimen/dp_50"
             android:layout_gravity="center"
-            android:background="@drawable/camera"
+            android:background="@drawable/capture"
             android:visibility="visible" />
     </LinearLayout>
     <FrameLayout

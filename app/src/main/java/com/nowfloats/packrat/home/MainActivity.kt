@@ -30,44 +30,44 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
-class MainActivity : AppCompatActivity(), ClickListener {
+class MainActivity : AppCompatActivity() {
 
     private lateinit var myApplication: MyApplication
     private lateinit var myRepository: MyRepository
     private lateinit var viewModel: MyViewModel
     private lateinit var viewModelFactory: ViewModelFactory
-    private var imageList = emptyList<EntityClass>()
-    private lateinit var imageAdapter: ImageAdapter
+//    private var imageList = emptyList<EntityClass>()
+//    private lateinit var imageAdapter: ImageAdapter
     private val CAMERA_REQESUT_CODE = 1
     private lateinit var bottomViewDialog: BottomViewDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.dashboard_activity)
         supportActionBar?.elevation = 0F
         checkPermissions()
 
         initViewsAndListeners()
 
-        setRecyclerView()
+//        setRecyclerView()
 
     }
 
-    private fun setRecyclerView() {
+   /* private fun setRecyclerView() {
         val linearLayoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         recyclerView.apply {
             layoutManager = linearLayoutManager
             adapter = imageAdapter
         }
-    }
+    }*/
 
     override fun onResume() {
         super.onResume()
 
-        viewModel.displayImage().observe(this, Observer {
+       /* viewModel.displayImage().observe(this, Observer {
             progressBar.visibility = View.GONE
             imageAdapter.updateList(it)
-        })
+        })*/
 
     }
 
@@ -78,9 +78,9 @@ class MainActivity : AppCompatActivity(), ClickListener {
         myApplication = application as MyApplication
         myRepository = myApplication.myRepository
 
-        imageList = arrayListOf<EntityClass>()
+//        imageList = arrayListOf<EntityClass>()
 
-        imageAdapter = ImageAdapter(imageList, this)
+//        imageAdapter = ImageAdapter(imageList, this)
 
         viewModelFactory = ViewModelFactory(myRepository)
 
@@ -158,7 +158,7 @@ class MainActivity : AppCompatActivity(), ClickListener {
     /*
        below function is called everytime any view is clicked in the recyclerview
    */
-    override fun onClick(position: Int) {
+    /*override fun onClick(position: Int) {
         var uri = ""
         viewModel.displayImage().observe(this, Observer {
             uri = it[position].path
@@ -166,14 +166,14 @@ class MainActivity : AppCompatActivity(), ClickListener {
             intent.putExtra("uri", uri)
             startActivity(intent)
         })
-    }
+    }*/
 
-    override fun onClickDelete(position: Int?) {
+  /*  override fun onClickDelete(position: Int?) {
         CoroutineScope(Dispatchers.IO).launch {
             viewModel.deleteImageById(position!!)
         }
 
-    }
+    }*/
 
 
 
