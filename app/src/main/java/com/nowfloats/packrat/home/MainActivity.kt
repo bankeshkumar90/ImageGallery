@@ -2,32 +2,22 @@ package com.nowfloats.packrat.home
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
+import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.nowfloats.packrat.R
-import com.nowfloats.packrat.adapter.ImageAdapter
-import com.nowfloats.packrat.camera.CameraActivity
-import com.nowfloats.packrat.clickInterface.ClickListener
 import com.nowfloats.packrat.dialog.BottomViewDialog
 import com.nowfloats.packrat.repository.MyRepository
-import com.nowfloats.packrat.room.EntityClass
 import com.nowfloats.packrat.viewModel.MyViewModel
 import com.nowfloats.packrat.viewModel.ViewModelFactory
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 
 class MainActivity : AppCompatActivity() {
@@ -39,7 +29,7 @@ class MainActivity : AppCompatActivity() {
 //    private var imageList = emptyList<EntityClass>()
 //    private lateinit var imageAdapter: ImageAdapter
     private val CAMERA_REQESUT_CODE = 1
-    private lateinit var bottomViewDialog: BottomViewDialog
+//    private lateinit var bottomViewDialog: BottomViewDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,6 +38,7 @@ class MainActivity : AppCompatActivity() {
         checkPermissions()
 
         initViewsAndListeners()
+        setDashBoard()
 
 //        setRecyclerView()
 
@@ -87,13 +78,21 @@ class MainActivity : AppCompatActivity() {
         viewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(MyViewModel::class.java)
 
-        ll_shelfView.setOnClickListener {
+       /* ll_shelfView.setOnClickListener {
             dispatchTakePictureIntent()
         }
         ll_ProductView.setOnClickListener {
             dispatchTakePictureIntent()
-        }
+        }*/
 
+    }
+
+    fun setDashBoard(){
+        val ft: FragmentTransaction = supportFragmentManager.beginTransaction()
+        ft.replace(R.id.fram_dashboard, DashBoardFragment())
+        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+        ft.addToBackStack(null)
+        ft.commit()
     }
 
 
@@ -195,20 +194,20 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    @SuppressLint("WrongConstant")
+    /*@SuppressLint("WrongConstant")
     private fun dispatchTakePictureIntent() {
-        /*val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        *//*val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         try {
             startActivityForResult(takePictureIntent, CAMERA_REQESUT_CODE)
         } catch (e: ActivityNotFoundException) {
             // display error state to the user
-        }*/
-        /*BottomViewDialog().apply {
+        }*//*
+        *//*BottomViewDialog().apply {
             show(supportFragmentManager, BottomViewDialog.TAG)
-        }*/
+        }*//*
         bottomViewDialog = BottomViewDialog()
         bottomViewDialog.setStyle( 0, R.style.BottomSheetDialog)
         bottomViewDialog.show(supportFragmentManager, BottomViewDialog.TAG)
 
-    }
+    }*/
 }

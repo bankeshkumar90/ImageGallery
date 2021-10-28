@@ -1,12 +1,20 @@
 package com.nowfloats.packrat.camera
 
+import android.app.Activity
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProviders
 import com.nowfloats.packrat.fragment.ImagePreview
 import com.nowfloats.packrat.home.MyApplication
@@ -16,8 +24,9 @@ import com.nowfloats.packrat.viewModel.ViewModelFactory
 import kotlinx.android.synthetic.main.activity_camera.*
 import java.io.File
 import com.nowfloats.packrat.R
+import com.nowfloats.packrat.fragment.AddProduct
 
-class CameraActivity : AppCompatActivity() {
+class CameraFragment : Fragment() {
     private var camera: Camera? = null
     private var preview: Preview? = null
     lateinit var viewModel: MyViewModel
@@ -31,17 +40,28 @@ class CameraActivity : AppCompatActivity() {
     private var imageCapture: ImageCapture? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_camera)
-        initViewsAndListeners()
+
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.activity_camera, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        initViewsAndListeners(view)
         startCamera()
     }
 
-    private fun initViewsAndListeners() {
-        myApplication = application as MyApplication
+    private fun initViewsAndListeners(view: View) {
+        myApplication = activity?.application as MyApplication
         myRepository = myApplication.myRepository
         viewModelFactory = ViewModelFactory(myRepository)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(MyViewModel::class.java)
-
+        var btnClick = view.findViewById(R.id.btnClick) as Button
         btnClick.setOnClickListener {
             takePhotos()
         }
@@ -53,7 +73,7 @@ class CameraActivity : AppCompatActivity() {
         /*
         creates a new folder if not already present and add the image into the folder
          */
-        var file = File("${getExternalFilesDir(null)}${File.separator}${folderName}")
+        var file = File("${activity?.getExternalFilesDir(null)}${File.separator}${folderName}")
         if (!file.exists()) {
             file.mkdir()
         }
@@ -66,7 +86,7 @@ class CameraActivity : AppCompatActivity() {
 
         imageCapture?.takePicture(
             output,
-            ContextCompat.getMainExecutor(this),
+            ContextCompat.getMainExecutor(context),
             object : ImageCapture.OnImageSavedCallback {
                 /*
                 below callback is evokes if the image is saved successfully in the storage
@@ -79,7 +99,7 @@ class CameraActivity : AppCompatActivity() {
 
                 override fun onError(exception: ImageCaptureException) {
                     Toast.makeText(
-                        applicationContext,
+                        context,
                         "An error occurred while saving",
                         Toast.LENGTH_SHORT
                     ).show()
@@ -97,28 +117,34 @@ class CameraActivity : AppCompatActivity() {
             val imagePreview = ImagePreview()
             imagePreview.arguments = bundle
             btnShowPreview.visibility = View.GONE
-            val fragmentTransaction = supportFragmentManager.beginTransaction()
-            fragmentTransaction.add(R.id.Frame, imagePreview, "ImagePreview").commit()
+            /*val fragmentTransaction = fragmentManager!!.beginTransaction()
+            fragmentTransaction.add(R.id.Frame, imagePreview, "ImagePreview").commit()*/
+
+            val ft: FragmentTransaction = fragmentManager!!.beginTransaction()
+            ft.replace(R.id.fram_dashboard, imagePreview)
+            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+            ft.addToBackStack(null)
+            ft.commit()
         }
 
     }
 
-    private fun showPreview(){
+    private fun showPreview() {
         val bundle = Bundle()
         bundle.putString("uri", path)
         bundle.putString("image", imageName)
         val imagePreview = ImagePreview()
         imagePreview.arguments = bundle
 //        btnShowPreview.visibility = View.GONE
-        val fragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction.add(R.id.Frame, imagePreview, "ImagePreview").commit()
+        val fragmentTransaction = fragmentManager!!.beginTransaction()
+        fragmentTransaction.add(R.id.fram_dashboard, imagePreview, "ImagePreview").commit()
     }
 
     private fun startCamera() {
         /*
         initiates the cameraX into the UI
          */
-        val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
+        val cameraProviderFuture = ProcessCameraProvider.getInstance(context!!)
         cameraProviderFuture.addListener(Runnable {
             val cameraProvider = cameraProviderFuture.get()
             preview = Preview.Builder().build()
@@ -128,6 +154,6 @@ class CameraActivity : AppCompatActivity() {
                 CameraSelector.Builder().requireLensFacing(CameraSelector.LENS_FACING_BACK).build()
             cameraProvider.unbindAll()
             camera = cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageCapture)
-        }, ContextCompat.getMainExecutor(this))
+        }, ContextCompat.getMainExecutor(context))
     }
 }

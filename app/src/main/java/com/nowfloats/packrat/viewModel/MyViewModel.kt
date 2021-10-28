@@ -11,6 +11,7 @@ import com.nowfloats.packrat.room.EntityClass
  */
 class MyViewModel(private val repository: MyRepository) : ViewModel() {
 
+
     //addImage
     suspend fun addImage(entityClass: EntityClass) {
         repository.addImage(entityClass)

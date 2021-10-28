@@ -1,15 +1,14 @@
 package com.nowfloats.packrat.dialog
 
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.fragment.app.FragmentTransaction
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.nowfloats.packrat.R
-import com.nowfloats.packrat.camera.CameraActivity
+import com.nowfloats.packrat.camera.CameraFragment
 import com.nowfloats.packrat.camera.GalleryActivity
 import kotlinx.android.synthetic.main.layout_modal_bottom_sheet.*
 
@@ -32,7 +31,14 @@ class BottomViewDialog : BottomSheetDialogFragment() {
 
         add_camera.setOnClickListener {
             //handle click event
-            startActivity(Intent(context, CameraActivity::class.java))
+//            startActivity(Intent(context, CameraFragment::class.java))
+
+            dismiss()
+            val ft: FragmentTransaction = fragmentManager!!.beginTransaction()
+            ft.replace(R.id.fram_dashboard, CameraFragment())
+            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+            ft.addToBackStack(null)
+            ft.commit()
         }
         add_gallery.setOnClickListener {
             //handle click event

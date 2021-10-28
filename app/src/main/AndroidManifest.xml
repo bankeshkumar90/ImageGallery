@@ -23,7 +23,7 @@
         </activity>
 
         <activity android:name=".home.ImageDetails" />
-        <activity android:name=".camera.CameraActivity" />
+        <activity android:name=".camera.CameraFragment" />
         <activity android:name=".camera.GalleryActivity" />
 
     </application>

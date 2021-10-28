@@ -1,21 +1,18 @@
 package com.nowfloats.packrat.fragment
 
-import android.app.AlertDialog
-import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.text.InputType
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
+import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nowfloats.packrat.R
 import com.nowfloats.packrat.adapter.ImageAdapter
-import com.nowfloats.packrat.camera.CameraActivity
+import com.nowfloats.packrat.camera.CameraFragment
 import com.nowfloats.packrat.clickInterface.ClickListener
 import com.nowfloats.packrat.home.ImageDetails
 import com.nowfloats.packrat.repository.MyRepository
@@ -23,7 +20,6 @@ import com.nowfloats.packrat.room.EntityClass
 import com.nowfloats.packrat.viewModel.MyViewModel
 import com.nowfloats.packrat.viewModel.ViewModelFactory
 import com.nowfloats.packrat.home.MyApplication
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_image_preview.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -37,7 +33,8 @@ class ImagePreview : Fragment(), ClickListener {
     lateinit var myApplication: MyApplication
     lateinit var myRepository: MyRepository
     private var uri: String? = ""
-//    private var albumName = ""
+
+    //    private var albumName = ""
     private var imageName: String? = ""
     private lateinit var imageAdapter: ImageAdapter
     private var imageList = emptyList<EntityClass>()
@@ -62,14 +59,24 @@ class ImagePreview : Fragment(), ClickListener {
             val current_time = Calendar.getInstance().time
 //            albumName = input.text.toString()
             val entityClass =
-                EntityClass(imageName!!, current_time.toString(),  uri!!)
+                EntityClass(imageName!!, current_time.toString(), uri!!)
             CoroutineScope(Dispatchers.IO).launch {
                 viewModel.addImage(entityClass)
+                sendAddproductScreen()
             }
+
         }
         btn_open_camera.setOnClickListener {
-            startActivity(Intent(context, CameraActivity::class.java))
+            startActivity(Intent(context, CameraFragment::class.java))
         }
+    }
+
+    private fun sendAddproductScreen() {
+        val ft: FragmentTransaction = fragmentManager!!.beginTransaction()
+        ft.replace(R.id.fram_dashboard, AddProduct())
+        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+        ft.addToBackStack(null)
+        ft.commit()
     }
 
     private fun setRecyclerView() {
