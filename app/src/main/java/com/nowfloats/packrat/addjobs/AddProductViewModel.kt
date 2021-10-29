@@ -1,4 +1,4 @@
-package com.nowfloats.packrat.addproduct
+package com.nowfloats.packrat.addjobs
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel

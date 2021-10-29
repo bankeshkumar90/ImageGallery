@@ -1,4 +1,4 @@
-package com.nowfloats.packrat.addproduct
+package com.nowfloats.packrat.addjobs
 
 import android.content.Context
 import android.net.Uri
@@ -25,7 +25,7 @@ class AddPagerAdapter(
     }
 
     override fun getItem(position: Int): Fragment {
-        return AddProductFragment.newInstance(position + 1)
+        return AddProductsFragment.newInstance(position + 1)
     }
 
     fun getTabView(position: Int): View {

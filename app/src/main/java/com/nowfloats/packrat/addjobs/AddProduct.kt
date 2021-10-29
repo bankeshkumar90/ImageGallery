@@ -1,4 +1,4 @@
-package com.nowfloats.packrat.imagepreiveiwfragment
+package com.nowfloats.packrat.addjobs
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,8 +9,6 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.nowfloats.packrat.R
-import com.nowfloats.packrat.addproduct.AddPagerAdapter
-import com.nowfloats.packrat.addproduct.AddProductViewModel
 import com.nowfloats.packrat.clickInterface.ClickListener
 import com.nowfloats.packrat.homescreen.MyApplication
 import com.nowfloats.packrat.databaserepository.MyRepository

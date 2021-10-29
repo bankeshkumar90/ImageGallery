@@ -1,4 +1,4 @@
-package com.nowfloats.packrat.addproduct
+package com.nowfloats.packrat.addjobs
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.nowfloats.packrat.R
 
-class AddProductFragment : Fragment() {
+class AddProductsFragment : Fragment() {
 
     private var mPage: Int = 0
 
@@ -30,10 +30,10 @@ class AddProductFragment : Fragment() {
     companion object {
         val ARG_PAGE = "ARG_FRAG_PAGE"
 
-        fun newInstance(page: Int): AddProductFragment {
+        fun newInstance(page: Int): AddProductsFragment {
             val args = Bundle()
             args.putInt(ARG_PAGE, page)
-            val fragment = AddProductFragment()
+            val fragment = AddProductsFragment()
             fragment.arguments = args
 
             return fragment

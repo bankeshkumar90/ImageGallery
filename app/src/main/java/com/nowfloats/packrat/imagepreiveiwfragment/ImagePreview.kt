@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nowfloats.packrat.R
+import com.nowfloats.packrat.addjobs.AddProduct
 import com.nowfloats.packrat.imagelistadapter.ImageAdapter
 import com.nowfloats.packrat.camera.CameraFragment
 import com.nowfloats.packrat.clickInterface.ClickListener
