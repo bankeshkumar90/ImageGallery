@@ -63,7 +63,12 @@ class ImagePreview : Fragment(), ClickListener {
 
         }
         btn_open_camera.setOnClickListener {
-            startActivity(Intent(context, CameraFragment::class.java))
+            //Will save the imagelist in viewmodel and after accepting then push it to local database
+            val ft: FragmentTransaction = fragmentManager!!.beginTransaction()
+            ft.replace(R.id.fram_dashboard, CameraFragment())
+            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+            ft.addToBackStack(null)
+            ft.commit()
         }
     }
 

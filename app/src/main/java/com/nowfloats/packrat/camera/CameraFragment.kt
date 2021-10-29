@@ -20,6 +20,7 @@ import com.nowfloats.packrat.imageViewModel.ViewModelFactory
 import kotlinx.android.synthetic.main.activity_camera.*
 import java.io.File
 import com.nowfloats.packrat.R
+import com.nowfloats.packrat.utils.AppConstant
 
 class CameraFragment : Fragment() {
     private var camera: Camera? = null
@@ -28,14 +29,12 @@ class CameraFragment : Fragment() {
     lateinit var viewModelFactory: ViewModelFactory
     var imageName = ""
     var path = ""
-    var folderName = "Camera Snapshots"
     lateinit var myApplication: MyApplication
     lateinit var myRepository: MyRepository
 
     private var imageCapture: ImageCapture? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
     }
 
     override fun onCreateView(
@@ -68,7 +67,7 @@ class CameraFragment : Fragment() {
         /*
         creates a new folder if not already present and add the image into the folder
          */
-        var file = File("${activity?.getExternalFilesDir(null)}${File.separator}${folderName}")
+        var file = File("${activity?.getExternalFilesDir(null)}${File.separator}${AppConstant.APP_FOLDER_NAME}")
         if (!file.exists()) {
             file.mkdir()
         }
@@ -95,7 +94,7 @@ class CameraFragment : Fragment() {
                 override fun onError(exception: ImageCaptureException) {
                     Toast.makeText(
                         context,
-                        "An error occurred while saving",
+                        "Some error occurred please re-try",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
