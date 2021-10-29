@@ -7,5 +7,12 @@
     <string name="ok">OK</string>
     <string name="camera">Camera</string>
     <string name="add_product">Add Product</string>
+    <string name="product">Product</string>
+    <string name="add_property">Add Property</string>
     <string name="shelf_images">shelf Images</string>
+    <string name="product_name">Product Name</string>
+    <string name="price">Price</string>
+    <string name="quantity">Quantity</string>
+    <string name="barcode">Barcode</string>
+    <string name="other">Other</string>
 </resources>

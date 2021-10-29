@@ -10,6 +10,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import com.nowfloats.packrat.R
+import com.nowfloats.packrat.clickInterface.ClicTabItemListener
+import com.nowfloats.packrat.clickInterface.ProdClickListener
 import com.nowfloats.packrat.roomdatabase.EntityClass
 
 class AddPagerAdapter(
@@ -18,25 +20,23 @@ class AddPagerAdapter(
     private var imageList: List<EntityClass>
 ) : FragmentPagerAdapter(fm) {
 
-    private val tabTitles = imageList//arrayOf("Tab 1", "Tab 2", "Tab 3")
 
     override fun getCount(): Int {
         return imageList.size
     }
 
     override fun getItem(position: Int): Fragment {
-        return AddProductsFragment.newInstance(position + 1)
+        return ProductDataFragment.newInstance(position + 1)
     }
 
-    fun getTabView(position: Int): View {
+    fun getTabView(position: Int,clickListener: ClicTabItemListener): View {
         val v = LayoutInflater.from(context).inflate(R.layout.image_items, null)
         val product_imageview = v.findViewById<View>(R.id.product_imageview) as ImageView
         val cross_imageview = v.findViewById<View>(R.id.close_imageview) as ImageView
         product_imageview.setImageURI(Uri.parse(imageList.get(position).path))
         cross_imageview.setOnClickListener {
-            Toast.makeText(context,"position "+position,Toast.LENGTH_LONG).show()
+            clickListener.onClickCross(imageList.get(position).id)
         }
-//        tabName.text = tabTitles[position]
         return v
     }
 

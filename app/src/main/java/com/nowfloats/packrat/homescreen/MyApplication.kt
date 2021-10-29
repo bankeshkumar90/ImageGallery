@@ -6,6 +6,10 @@ import com.nowfloats.packrat.roomdatabase.DatabaseClass
 
 //Application class
 class MyApplication : Application() {
+
+    override fun onCreate() {
+        super.onCreate()
+    }
     val daoClass by lazy {
         val listDatabase = DatabaseClass.getDatabase(this)
         listDatabase.getImageDao()

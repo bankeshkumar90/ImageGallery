@@ -18,4 +18,8 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
+    <color name="grey">#d4d4d4</color>
+    <color name="primary_color">#5D5D5A</color>
+    <color name="inventory_hint">#d1d1d1</color>
+    <color name="background_color">#FCFCFC</color>
 </resources>
