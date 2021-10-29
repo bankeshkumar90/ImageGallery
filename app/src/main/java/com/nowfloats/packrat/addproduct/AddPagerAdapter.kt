@@ -9,11 +9,8 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.nowfloats.packrat.R
-import com.nowfloats.packrat.room.EntityClass
-import kotlinx.android.synthetic.main.image_items.view.*
+import com.nowfloats.packrat.roomdatabase.EntityClass
 
 class AddPagerAdapter(
     fm: FragmentManager,

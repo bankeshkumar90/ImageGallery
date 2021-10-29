@@ -5,8 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.nowfloats.packrat.R
 import com.nowfloats.packrat.clickInterface.ClickListener
-import com.nowfloats.packrat.room.EntityClass
-import com.nowfloats.packrat.viewHolder.ViewHolder
+import com.nowfloats.packrat.roomdatabase.EntityClass
+import com.nowfloats.packrat.imageViewHolder.ViewHolder
 
 class AddProductAdapter(
     private var imageList: List<EntityClass>,

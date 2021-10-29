@@ -1,30 +1,25 @@
 package com.nowfloats.packrat.camera
 
-import android.app.Activity
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProviders
-import com.nowfloats.packrat.fragment.ImagePreview
-import com.nowfloats.packrat.home.MyApplication
-import com.nowfloats.packrat.repository.MyRepository
-import com.nowfloats.packrat.viewModel.MyViewModel
-import com.nowfloats.packrat.viewModel.ViewModelFactory
+import com.nowfloats.packrat.imagepreiveiwfragment.ImagePreview
+import com.nowfloats.packrat.homescreen.MyApplication
+import com.nowfloats.packrat.databaserepository.MyRepository
+import com.nowfloats.packrat.imageViewModel.MyViewModel
+import com.nowfloats.packrat.imageViewModel.ViewModelFactory
 import kotlinx.android.synthetic.main.activity_camera.*
 import java.io.File
 import com.nowfloats.packrat.R
-import com.nowfloats.packrat.fragment.AddProduct
 
 class CameraFragment : Fragment() {
     private var camera: Camera? = null
