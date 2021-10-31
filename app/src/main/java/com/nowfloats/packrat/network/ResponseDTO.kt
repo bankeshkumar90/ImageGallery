@@ -3,19 +3,28 @@ package com.nowfloats.packrat.network
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
+
+
 class ResponseDTO : Serializable {
     @SerializedName("data")
     val data: DataDTO? = null
 
+    @SerializedName("success")
+    val isSuccess = false
+
+    @SerializedName("status")
+    val status = 0
 
     @SerializedName("message")
-     val message: String? = null
+    private val message: String? = null
 
-
+    @SerializedName("CollectionId")
+    private val CollectionId: String? = null
     override fun toString(): String {
         return "Response{" +
                 "data = '" + data + '\'' +
-                ",message = '" + message + '\'' +
+                ",success = '" + message + '\'' +
+                ",status = '" + CollectionId + '\'' +
                 "}"
     }
 }

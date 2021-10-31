@@ -117,20 +117,18 @@ class AddProduct : Fragment(), ClicTabItemListener, ItemAdapter.ItemListener {
             val file = File(imagePath)
             val requestBody = RequestBody.create("image/*".toMediaTypeOrNull(), file)
             val part: MultipartBody.Part = createFormData("file", file.name, requestBody)
-
-            apiService.uploadImage(part, "sunday")?.enqueue(object : Callback<ResponseDTO> {
+            apiService.uploadImage(part, "bankesh123")?.enqueue(object : Callback<ResponseDTO> {
                 override fun onResponse(call: Call<ResponseDTO>, response: Response<ResponseDTO>) {
-                    Toast.makeText(myApplication, "" + response.body(), Toast.LENGTH_SHORT)
+                    Toast.makeText(context!!, "" + response.body(), Toast.LENGTH_SHORT)
                         .show()
                 }
-               // override fun on
-
 
                 override fun onFailure(call: Call<ResponseDTO>, t: Throwable) {
                     Toast.makeText(context!!, "" + t.message, Toast.LENGTH_SHORT).show()
                 }
-
             })
+
+
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -278,10 +276,6 @@ class AddProduct : Fragment(), ClicTabItemListener, ItemAdapter.ItemListener {
             e.printStackTrace()
         }
     }
-
-}
-
-private fun ResponseDTO.enqueue(callback: Callback<ResponseDTO>) {
 
 }
 
