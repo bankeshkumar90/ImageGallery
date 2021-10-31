@@ -2,8 +2,10 @@ package com.nowfloats.packrat.addjobs
 
 import android.annotation.SuppressLint
 import android.content.DialogInterface
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -37,11 +39,11 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.MultipartBody.Part.Companion.createFormData
 import okhttp3.RequestBody
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.File
-import kotlin.collections.ArrayList
 
 
 class AddProduct : Fragment(), ClicTabItemListener, ItemAdapter.ItemListener {
@@ -117,7 +119,44 @@ class AddProduct : Fragment(), ClicTabItemListener, ItemAdapter.ItemListener {
             val file = File(imagePath)
             val requestBody = RequestBody.create("image/*".toMediaTypeOrNull(), file)
             val part: MultipartBody.Part = createFormData("file", file.name, requestBody)
-            apiService.uploadImage(part, "bankesh123")?.enqueue(object : Callback<ResponseDTO> {
+
+
+            // MultipartBody.Part is used to send also the actual file name
+
+            //val requestFile: RequestBody = RequestBody.create(context!!.contentResolver.getType(Uri.fromFile( File(imagePath)))!!.toMediaTypeOrNull(), file)
+
+            // MultipartBody.Part is used to send also the actual file name
+            val body: MultipartBody.Part = createFormData("file", file.name, requestBody)
+
+            // add another part within the multipart request
+
+            // add another part within the multipart request
+            val descriptionString = "monday"
+            val description = RequestBody.create(
+                MultipartBody.FORM, descriptionString
+            )
+
+            // finally, execute the request
+
+            // finally, execute the request
+            val call: Call<ResponseBody?>? = apiService.upload( description , body)
+            call?.enqueue(object : Callback<ResponseBody?> {
+                override fun onResponse(
+                    call: Call<ResponseBody?>,
+                    response: Response<ResponseBody?>
+                ) {
+                    Log.v("Upload", "success")
+                    Toast.makeText(context!!, "" + "File uploaded successfully", Toast.LENGTH_SHORT)
+                        .show()
+                }
+
+                override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
+                    t.message?.let {
+                        Log.e("Upload error:", it) }
+                }
+            })
+
+        /*    apiService.uploadImage(part, "bankesh123")?.enqueue(object : Callback<ResponseDTO> {
                 override fun onResponse(call: Call<ResponseDTO>, response: Response<ResponseDTO>) {
                     Toast.makeText(context!!, "" + response.body(), Toast.LENGTH_SHORT)
                         .show()
@@ -127,7 +166,7 @@ class AddProduct : Fragment(), ClicTabItemListener, ItemAdapter.ItemListener {
                     Toast.makeText(context!!, "" + t.message, Toast.LENGTH_SHORT).show()
                 }
             })
-
+*/
 
         } catch (e: Exception) {
             e.printStackTrace()
