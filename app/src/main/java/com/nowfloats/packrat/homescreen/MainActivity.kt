@@ -173,7 +173,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    /*override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
         inflater.inflate(R.menu.home_menu, menu)
         return true
@@ -190,7 +190,7 @@ class MainActivity : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
-
+*/
     /*@SuppressLint("WrongConstant")
     private fun dispatchTakePictureIntent() {
         *//*val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)

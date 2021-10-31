@@ -22,4 +22,7 @@
     <color name="primary_color">#5D5D5A</color>
     <color name="inventory_hint">#d1d1d1</color>
     <color name="background_color">#FCFCFC</color>
+
+    <color name="colorSheetText">#DE000000</color>
+    <color name="colorSheetTitle">#8A000000</color>
 </resources>

@@ -3,24 +3,25 @@ package com.nowfloats.packrat.imagepreiveiwfragment
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nowfloats.packrat.R
 import com.nowfloats.packrat.addjobs.AddProduct
-import com.nowfloats.packrat.imagelistadapter.ImageAdapter
 import com.nowfloats.packrat.camera.CameraFragment
 import com.nowfloats.packrat.clickInterface.ClickListener
-import com.nowfloats.packrat.homescreen.ImageDetails
 import com.nowfloats.packrat.databaserepository.MyRepository
-import com.nowfloats.packrat.roomdatabase.EntityClass
+import com.nowfloats.packrat.homescreen.ImageDetails
+import com.nowfloats.packrat.homescreen.MyApplication
 import com.nowfloats.packrat.imageViewModel.MyViewModel
 import com.nowfloats.packrat.imageViewModel.ViewModelFactory
-import com.nowfloats.packrat.homescreen.MyApplication
+import com.nowfloats.packrat.imagelistadapter.ImageAdapter
+import com.nowfloats.packrat.roomdatabase.EntityClass
 import kotlinx.android.synthetic.main.fragment_image_preview.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -45,6 +46,7 @@ class ImagePreview : Fragment(), ClickListener {
     ): View? {
         uri = arguments?.getString("uri")
         imageName = arguments?.getString("image")
+        setHasOptionsMenu(false)
         return inflater.inflate(R.layout.fragment_image_preview, container, false)
     }
 
@@ -123,5 +125,8 @@ class ImagePreview : Fragment(), ClickListener {
         CoroutineScope(Dispatchers.IO).launch {
             viewModel.deleteImageById(position!!)
         }
+    }
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        menu.clear()
     }
 }
