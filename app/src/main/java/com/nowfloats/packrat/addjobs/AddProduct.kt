@@ -129,14 +129,10 @@ class AddProduct : Fragment(), ClicTabItemListener, ItemAdapter.ItemListener {
             val body: MultipartBody.Part = createFormData("file", file.name, requestBody)
 
             // add another part within the multipart request
-
-            // add another part within the multipart request
             val descriptionString = "monday"
             val description = RequestBody.create(
                 MultipartBody.FORM, descriptionString
             )
-
-            // finally, execute the request
 
             // finally, execute the request
             val call: Call<ResponseBody?>? = apiService.upload( description , body)
