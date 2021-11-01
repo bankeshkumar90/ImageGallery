@@ -1,8 +1,5 @@
 package com.nowfloats.packrat.addjobs
 
-import android.annotation.SuppressLint
-import android.content.DialogInterface
-import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -10,16 +7,11 @@ import android.view.*
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.tabs.TabLayout
 import com.nowfloats.packrat.R
-import com.nowfloats.packrat.bottomsheetdialog.Item
-import com.nowfloats.packrat.bottomsheetdialog.ItemAdapter
 import com.nowfloats.packrat.clickInterface.ClicTabItemListener
 import com.nowfloats.packrat.databaserepository.MyRepository
 import com.nowfloats.packrat.homescreen.MyApplication
@@ -31,7 +23,6 @@ import com.nowfloats.packrat.network.ResponseDTO
 import com.nowfloats.packrat.roomdatabase.EntityClass
 import com.nowfloats.packrat.utils.AppConstant
 import kotlinx.android.synthetic.main.fragment_add_product.*
-import kotlinx.android.synthetic.main.sheet.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -47,7 +38,7 @@ import retrofit2.Response
 import java.io.File
 
 
-class AddProduct : Fragment(), ClicTabItemListener, ItemAdapter.ItemListener {
+class AddProduct : Fragment(), ClicTabItemListener {
     private lateinit var addViewModel: AddProductViewModel
     lateinit var viewModel: MyViewModel
     lateinit var viewModelFactory: ViewModelFactory
@@ -60,10 +51,10 @@ class AddProduct : Fragment(), ClicTabItemListener, ItemAdapter.ItemListener {
     var viewPager: ViewPager? = null
     var pagerAdapter: AddPagerAdapter? = null
 
-    private var mAdapter: ItemAdapter? = null
-    private var mBehavior: BottomSheetBehavior<*>? = null
-    private var mBottomSheetDialog: BottomSheetDialog? = null
-    private var mDialogBehavior: BottomSheetBehavior<*>? = null
+    /*   private var mAdapter: ItemAdapter? = null
+       private var mBehavior: BottomSheetBehavior<*>? = null
+       private var mBottomSheetDialog: BottomSheetDialog? = null
+       private var mDialogBehavior: BottomSheetBehavior<*>? = null*/
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,13 +78,18 @@ class AddProduct : Fragment(), ClicTabItemListener, ItemAdapter.ItemListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViews()
-        bindBottomView(view)
+//        bindBottomView(view)
         setRecyclerView()
         btn_add_product.setOnClickListener {
             addViewModel.addViewOnClick()
             //showBottomSheetView()
         }
         //showBottomSheetDialog()
+        addViewModel.getProductData.observe(this, Observer {
+            CoroutineScope(Dispatchers.IO).launch {
+                viewModel.addProductData(it)
+            }
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -104,14 +100,14 @@ class AddProduct : Fragment(), ClicTabItemListener, ItemAdapter.ItemListener {
     fun uploadAllImages(imagePathList: List<EntityClass>) {
         for (imagepath in imagePathList) {
             Handler().postDelayed({
-                GlobalScope.launch (Dispatchers.Main) {
+                GlobalScope.launch(Dispatchers.Main) {
                     uploadImageService(imagepath.path.toString())
                 }
             }, 1000)
         }
     }
 
-     fun uploadImageService(imagePath: String) {
+    fun uploadImageService(imagePath: String) {
         try {
             val apiService = Network.instance.create(
                 ApiService::class.java
@@ -174,10 +170,15 @@ class AddProduct : Fragment(), ClicTabItemListener, ItemAdapter.ItemListener {
         when (item.itemId) {
             R.id.upload -> {
                 //Upload image file function goes here - startImageUploadService(getRandomCollectionId())
-                uploadAllImages(imageList )
+            //    uploadAllImages(imageList)
+                saveProductDatainDb()
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun saveProductDatainDb() {
+        addViewModel.getDataForm()
     }
 
     private fun initViews() {
@@ -238,7 +239,7 @@ class AddProduct : Fragment(), ClicTabItemListener, ItemAdapter.ItemListener {
 //        setCustomviewPager()
     }
 
-    private fun showBottomSheetView() {
+    /* private fun showBottomSheetView() {
         mBehavior!!.state = BottomSheetBehavior.STATE_EXPANDED
         if (mBottomSheetDialog != null) {
             mBottomSheetDialog!!.dismiss()
@@ -247,63 +248,63 @@ class AddProduct : Fragment(), ClicTabItemListener, ItemAdapter.ItemListener {
 
 
     fun bindBottomView(view: View) {
-        val mBottomSheet = view.findViewById<View>(R.id.bottomSheetF);
-        mBehavior = BottomSheetBehavior.from(mBottomSheet)
-        mBehavior!!.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-            override fun onStateChanged(bottomSheet: View, newState: Int) {}
-            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+         val mBottomSheet = view.findViewById<View>(R.id.bottomSheetF);
+         mBehavior = BottomSheetBehavior.from(mBottomSheet)
+         mBehavior!!.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+             override fun onStateChanged(bottomSheet: View, newState: Int) {}
+             override fun onSlide(bottomSheet: View, slideOffset: Float) {
 
-            }
-        })
+             }
+         })
 
-        val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+         val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 
-        mAdapter = ItemAdapter(createItems(), this)
-        recyclerView.apply {
-            layoutManager = linearLayoutManager
-            adapter = mAdapter
-        }
+         mAdapter = ItemAdapter(createItems(), this)
+         recyclerView.apply {
+             layoutManager = linearLayoutManager
+             adapter = mAdapter
+         }
 
-    }
+     }
 
-    fun createItems(): List<Item> {
-        val items = ArrayList<Item>()
-        items.add(Item(R.drawable.ic_preview_24dp, "Product"))
-        items.add(Item(R.drawable.ic_share_24dp, "Price"))
-        items.add(Item(R.drawable.ic_link_24dp, "Barcode"))
-        items.add(Item(R.drawable.ic_content_copy_24dp, "Quantity"))
-        items.add(Item(R.drawable.ic_content_copy_24dp, "Others"))
-        return items
-    }
+     fun createItems(): List<Item> {
+         val items = ArrayList<Item>()
+         items.add(Item(R.drawable.ic_preview_24dp, "Product"))
+         items.add(Item(R.drawable.ic_share_24dp, "Price"))
+         items.add(Item(R.drawable.ic_link_24dp, "Barcode"))
+         items.add(Item(R.drawable.ic_content_copy_24dp, "Quantity"))
+         items.add(Item(R.drawable.ic_content_copy_24dp, "Others"))
+         return items
+     }
 
-    override fun onItemClick(item: Item?) {
-        Toast.makeText(context!!, "" + item?.getTitle(), Toast.LENGTH_LONG)
-            .show()
-    }
+     override fun onItemClick(item: Item?) {
+         Toast.makeText(context!!, "" + item?.mTitle, Toast.LENGTH_LONG)
+             .show()
+     }
 
-    @SuppressLint("InflateParams")
-    private fun showBottomSheetDialog() {
-        if (mBehavior!!.state == BottomSheetBehavior.STATE_EXPANDED) {
-            mBehavior!!.state = BottomSheetBehavior.STATE_COLLAPSED
-        }
-        val view: View = layoutInflater.inflate(R.layout.sheet, null)
-        view.findViewById<View>(R.id.fakeShadow).visibility = View.GONE
-        val recyclerView = view.findViewById<View>(R.id.recyclerView) as RecyclerView
-        recyclerView.setHasFixedSize(true)
-        recyclerView.layoutManager = LinearLayoutManager(context!!)
-        recyclerView.adapter = ItemAdapter(createItems(), object : ItemAdapter.ItemListener {
-            override fun onItemClick(item: Item?) {
-                mDialogBehavior!!.state = BottomSheetBehavior.STATE_HIDDEN
-            }
-        })
-        mBottomSheetDialog = BottomSheetDialog(context!!)
-        mBottomSheetDialog!!.setContentView(view)
-        mDialogBehavior = BottomSheetBehavior.from(view.parent as View)
-        mBottomSheetDialog!!.show()
-        mBottomSheetDialog!!.setOnDismissListener(DialogInterface.OnDismissListener {
-            mBottomSheetDialog = null
-        })
-    }
+     @SuppressLint("InflateParams")
+     private fun showBottomSheetDialog() {
+         if (mBehavior!!.state == BottomSheetBehavior.STATE_EXPANDED) {
+             mBehavior!!.state = BottomSheetBehavior.STATE_COLLAPSED
+         }
+         val view: View = layoutInflater.inflate(R.layout.sheet, null)
+         view.findViewById<View>(R.id.fakeShadow).visibility = View.GONE
+         val recyclerView = view.findViewById<View>(R.id.recyclerView) as RecyclerView
+         recyclerView.setHasFixedSize(true)
+         recyclerView.layoutManager = LinearLayoutManager(context!!)
+         recyclerView.adapter = ItemAdapter(createItems(), object : ItemAdapter.ItemListener {
+             override fun onItemClick(item: Item?) {
+                 mDialogBehavior!!.state = BottomSheetBehavior.STATE_HIDDEN
+             }
+         })
+         mBottomSheetDialog = BottomSheetDialog(context!!)
+         mBottomSheetDialog!!.setContentView(view)
+         mDialogBehavior = BottomSheetBehavior.from(view.parent as View)
+         mBottomSheetDialog!!.show()
+         mBottomSheetDialog!!.setOnDismissListener(DialogInterface.OnDismissListener {
+             mBottomSheetDialog = null
+         })
+     }*/
 
     private fun startImageUploadService(collectionId: String) {
         try {

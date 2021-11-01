@@ -26,4 +26,5 @@ class ProductViewHolder(private val view: View, private val clickListener: ProdC
 //            clickListener.onClick(adapterPosition)
         }
     }
+
 }

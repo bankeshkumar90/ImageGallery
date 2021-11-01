@@ -1,9 +1,11 @@
 package com.nowfloats.packrat.imageViewModel
 
+import android.os.Process
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.nowfloats.packrat.databaserepository.MyRepository
 import com.nowfloats.packrat.roomdatabase.EntityClass
+import com.nowfloats.packrat.roomdatabase.ProductFormData
 
 /**
  * This is a VM layer in the `MVVM` architecture, where we are notifying the Activity/view about the
@@ -29,5 +31,10 @@ class MyViewModel(private val repository: MyRepository) : ViewModel() {
 
      fun deleteImageById(id:Int) {
         repository.deleteDetailById(id)
+    }
+
+    //addImage
+    suspend fun addProductData(productFormData: ProductFormData) {
+        repository.addProductData(productFormData)
     }
 }

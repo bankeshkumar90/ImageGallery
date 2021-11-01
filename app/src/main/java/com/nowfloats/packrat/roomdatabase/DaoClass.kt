@@ -27,4 +27,8 @@ interface DaoClass {
 
     @Query("DELETE FROM image_table WHERE id = :id")
     fun deleteById(id: Int)
+
+
+    @Insert
+    fun addProductData(productFormData: ProductFormData)
 }

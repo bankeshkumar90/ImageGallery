@@ -3,6 +3,7 @@ package com.nowfloats.packrat.databaserepository
 import androidx.lifecycle.LiveData
 import com.nowfloats.packrat.roomdatabase.DaoClass
 import com.nowfloats.packrat.roomdatabase.EntityClass
+import com.nowfloats.packrat.roomdatabase.ProductFormData
 
 class MyRepository(private val daoClass: DaoClass) {
 
@@ -24,5 +25,10 @@ class MyRepository(private val daoClass: DaoClass) {
     //use repository to call dao to delete the previous image_table
      fun deleteDetailById(id:Int) {
         daoClass.deleteById(id)
+    }
+
+    //adds the image into the room database
+    suspend  fun addProductData(productFormData: ProductFormData) {
+        daoClass.addProductData(productFormData)
     }
 }

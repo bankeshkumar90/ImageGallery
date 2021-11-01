@@ -4,16 +4,25 @@ import android.app.Dialog
 import android.os.Bundle
 import android.view.View
 import androidx.annotation.NonNull
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.nowfloats.packrat.R
+import com.nowfloats.packrat.addjobs.AddProductViewModel
 import java.util.*
 
 class FullBottomSheetDialogFragment : BottomSheetDialogFragment(), ItemAdapter.ItemListener {
     private var mBehavior: BottomSheetBehavior<View>? = null
+    private lateinit var dataDialogModel: AddProductViewModel
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        dataDialogModel =
+            ViewModelProviders.of(requireActivity()).get(AddProductViewModel::class.java)
+    }
 
     @NonNull
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -24,7 +33,7 @@ class FullBottomSheetDialogFragment : BottomSheetDialogFragment(), ItemAdapter.I
         val recyclerView: RecyclerView = view.findViewById<View>(R.id.recyclerView) as RecyclerView
         recyclerView.setHasFixedSize(true)
         recyclerView.setLayoutManager(LinearLayoutManager(getContext()))
-        val itemAdapter = ItemAdapter(createItems(),  this)
+        val itemAdapter = ItemAdapter(createItems(), this)
         recyclerView.setAdapter(itemAdapter)
         dialog.setContentView(view)
         mBehavior = BottomSheetBehavior.from(view.parent as View)
@@ -48,5 +57,6 @@ class FullBottomSheetDialogFragment : BottomSheetDialogFragment(), ItemAdapter.I
 
     override fun onItemClick(item: Item?) {
         mBehavior?.setState(BottomSheetBehavior.STATE_HIDDEN)
+        dataDialogModel.bottomDialogClick(item!!)
     }
 }

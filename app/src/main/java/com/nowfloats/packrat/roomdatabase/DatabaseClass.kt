@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 //database class which returns the instance of our database
-@Database(entities = [EntityClass::class], version = 1)
+@Database(entities = [EntityClass::class,ProductFormData::class], version = 1)
 abstract class DatabaseClass : RoomDatabase() {
 
     abstract fun getImageDao(): DaoClass
@@ -26,7 +26,5 @@ abstract class DatabaseClass : RoomDatabase() {
             }
             return INSTANCE!!
         }
-
     }
-
 }

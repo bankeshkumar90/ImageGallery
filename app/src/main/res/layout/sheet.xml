@@ -6,6 +6,7 @@
     android:layout_height="wrap_content"
     android:layout_gravity="bottom"
     android:elevation="4dp"
+    android:background="@drawable/top_rounded"
     android:orientation="vertical"
     tools:ignore="UnusedAttribute">
 

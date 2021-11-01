@@ -37,8 +37,8 @@ class ItemAdapter(private val mItems: List<Item>, private var mListener: ItemLis
         var item: Item? = null
         fun setData(item: Item) {
             this.item = item
-            imageView.setImageResource(item.getDrawableResource())
-            textView.setText(item.getTitle())
+            imageView.setImageResource(item.icPreview24dp)
+            textView.setText(item.mTitle)
         }
 
         override fun onClick(v: View) {
