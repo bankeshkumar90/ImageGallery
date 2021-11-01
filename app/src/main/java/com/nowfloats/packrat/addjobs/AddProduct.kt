@@ -29,6 +29,7 @@ import com.nowfloats.packrat.network.ApiService
 import com.nowfloats.packrat.network.Network
 import com.nowfloats.packrat.network.ResponseDTO
 import com.nowfloats.packrat.roomdatabase.EntityClass
+import com.nowfloats.packrat.utils.AppConstant
 import kotlinx.android.synthetic.main.fragment_add_product.*
 import kotlinx.android.synthetic.main.sheet.*
 import kotlinx.coroutines.CoroutineScope
@@ -129,7 +130,7 @@ class AddProduct : Fragment(), ClicTabItemListener, ItemAdapter.ItemListener {
             val body: MultipartBody.Part = createFormData("file", file.name, requestBody)
 
             // add another part within the multipart request
-            val descriptionString = "monday"
+            val descriptionString = AppConstant().getRandomCollectionId(context!!)
             val description = RequestBody.create(
                 MultipartBody.FORM, descriptionString
             )
