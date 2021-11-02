@@ -3,13 +3,16 @@ package com.nowfloats.packrat.addjobs
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.core.view.get
 import androidx.recyclerview.widget.RecyclerView
 import com.nowfloats.packrat.R
 import com.nowfloats.packrat.clickInterface.ProdClickListener
@@ -20,8 +23,9 @@ import kotlinx.android.synthetic.main.product_data.view.*
 class ProductDataAdapter(var context: Context, private val clickListener: ProdClickListener) :
     RecyclerView.Adapter<ProductDataAdapter.PickerViewHolder>() {
     private lateinit var ln: LinearLayout
-    private var prodList = ArrayList<ProductEntityClass>()
+    private var viewList = ArrayList<Int>()
     private var pholder: PickerViewHolder? = null
+    private var adpterposion: Int = 0
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PickerViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.product_data, parent, false)
@@ -29,28 +33,29 @@ class ProductDataAdapter(var context: Context, private val clickListener: ProdCl
     }
 
     override fun onBindViewHolder(holder: PickerViewHolder, position: Int) {
-        pholder = holder
-        val dataModel = prodList[position]
-        holder.setData(dataModel)
+//        pholder = holder
+        adpterposion = position
+        holder.setData(position)
     }
 
     override fun getItemCount(): Int {
-        return prodList.size
+        return viewList.size
     }
 
     //updates the latest data of the database
-    fun updateList(prodListentity: ProductEntityClass) {
-        this.prodList.add(prodListentity)
+    fun updateList(positionview: Int) {
+        this.viewList.add(positionview)
         notifyDataSetChanged()
     }
 
     fun deleteview(position: Int) {
-        this.prodList.removeAt(position)
+        this.viewList.removeAt(position)
         notifyDataSetChanged()
     }
 
     @SuppressLint("NewApi")
-    fun setFormView(hint: String) {
+    fun setFormView(hint: String, holder: PickerViewHolder, position: Int) {
+        pholder = holder
         val linearLayoutParent = LinearLayout(context)
         linearLayoutParent.orientation = LinearLayout.HORIZONTAL
         val linearLayoutParentParams = LinearLayout.LayoutParams(
@@ -94,22 +99,25 @@ class ProductDataAdapter(var context: Context, private val clickListener: ProdCl
         linearLayoutParent.addView(editText1)
 
 
-        val textView = TextView(context)
-        textView.layoutParams =
-            LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT, 1.8f
-            )
-//        val drawable1 = ContextCompat.getDrawable(context, R.drawable.ic_arrow_down)
-//        editText.setCompoundDrawablesWithIntrinsicBounds(null, null, drawabl, null)
-        textView.setPadding(0, 0, 5, 0)
-        textView.setText("X")
-        textView.backgroundTintList = ColorStateList.valueOf(context.getColor(R.color.grey))
-        textView.setTextColor(context.getColor(R.color.primary_color))
-        textView.textSize = context.resources.getDimension(R.dimen.dp_8)
-        linearLayoutParent.addView(textView)
-        if (pholder?.add_form != null) {
-            pholder!!.add_form.addView(linearLayoutParent);
+        val imageView = ImageView(context)
+        var layoutparam = LinearLayout.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT, 1.8f
+        )
+        layoutparam.gravity = Gravity.CENTER
+        imageView.layoutParams = layoutparam
+        imageView.setPadding(0, 0, 5, 0)
+        imageView.setImageResource(R.drawable.ic_remove_selected)
+        imageView.setOnClickListener {
+            if (holder?.add_form != null) {
+                println("values>>>1>$hint $position  ${holder.add_product_count.text}")
+                holder!!.add_form.removeView(linearLayoutParent);
+                notifyDataSetChanged()
+            }
+        }
+        linearLayoutParent.addView(imageView)
+        if (holder?.add_form != null) {
+            holder!!.add_form.addView(linearLayoutParent);
             notifyDataSetChanged()
         }
     }
@@ -129,9 +137,9 @@ class ProductDataAdapter(var context: Context, private val clickListener: ProdCl
             }
         }
 
-        fun setData(prodentity: ProductEntityClass) {
+        fun setData(position: Int) {
             itemView.apply {
-//            tvAlbumName.text = entityClass.album
+                add_product_count.text = (position + 1).toString()
 //            tvImageName.text = entityClass.name
                 /*product_imageview.setImageURI(Uri.parse(entityClass.path))  // sets the image using the uri present in database
                 close_imageview.setOnClickListener {
@@ -171,19 +179,19 @@ class ProductDataAdapter(var context: Context, private val clickListener: ProdCl
                 for (i in 0 until subchildcount) {
                     var viewchildfirst = viewparent.getChildAt(0)
                     var viewchildsecond = viewparent.getChildAt(1)
-                    if (viewchildfirst is EditText && viewchildfirst.text.toString()contentEquals("Product")) {
+                    if (viewchildfirst is EditText && viewchildfirst.text.toString() contentEquals ("Product")) {
                         if (viewchildsecond is EditText)
                             productName = viewchildsecond.text.toString()
-                    } else if (viewchildfirst is EditText && viewchildfirst.text.toString()contentEquals("Price")) {
+                    } else if (viewchildfirst is EditText && viewchildfirst.text.toString() contentEquals ("Price")) {
                         if (viewchildsecond is EditText)
                             productprice = viewchildsecond.text.toString()
-                    } else if (viewchildfirst is EditText && viewchildfirst.text.toString()contentEquals("Barcode")) {
+                    } else if (viewchildfirst is EditText && viewchildfirst.text.toString() contentEquals ("Barcode")) {
                         if (viewchildsecond is EditText)
                             productBarCode = viewchildsecond.text.toString()
-                    } else if (viewchildfirst is EditText && viewchildfirst.text.toString()contentEquals("Quantity")) {
+                    } else if (viewchildfirst is EditText && viewchildfirst.text.toString() contentEquals ("Quantity")) {
                         if (viewchildsecond is EditText)
                             productQuantity = viewchildsecond.text.toString()
-                    } else if (viewchildfirst is EditText && viewchildfirst.text.toString()contentEquals("Others")) {
+                    } else if (viewchildfirst is EditText && viewchildfirst.text.toString() contentEquals ("Others")) {
                         if (viewchildsecond is EditText)
                             productOthers = viewchildsecond.text.toString()
                     }

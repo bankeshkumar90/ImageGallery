@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nowfloats.packrat.R
 import com.nowfloats.packrat.addjobs.AddProduct
+import com.nowfloats.packrat.addjobs.AddProductFragment
 import com.nowfloats.packrat.camera.CameraFragment
 import com.nowfloats.packrat.clickInterface.ClickListener
 import com.nowfloats.packrat.databaserepository.MyRepository

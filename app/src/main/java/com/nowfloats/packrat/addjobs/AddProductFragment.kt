@@ -7,12 +7,15 @@ import android.view.*
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.nowfloats.packrat.R
 import com.nowfloats.packrat.clickInterface.ClicTabItemListener
+import com.nowfloats.packrat.clickInterface.ClickListener
 import com.nowfloats.packrat.databaserepository.MyRepository
 import com.nowfloats.packrat.homescreen.MyApplication
 import com.nowfloats.packrat.imageViewModel.MyViewModel
@@ -29,7 +32,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.MultipartBody.Part.Companion.createFormData
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -37,19 +39,19 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.io.File
 
-
-class AddProduct : Fragment(), ClicTabItemListener {
+class AddProductFragment : Fragment(), ClicTabItemListener, ClickListener {
     private lateinit var addViewModel: AddProductViewModel
     lateinit var viewModel: MyViewModel
     lateinit var viewModelFactory: ViewModelFactory
     lateinit var myApplication: MyApplication
     lateinit var myRepository: MyRepository
 
-    //    private lateinit var imageAdapter: AddProductAdapter
+    private lateinit var imageAdapter: AddProductTopAdapter
     private var imageList = emptyList<EntityClass>()
-    var tabLayout: TabLayout? = null
-    var viewPager: ViewPager? = null
-    var pagerAdapter: AddPagerAdapter? = null
+    private var fragmentList = ArrayList<Fragment>()
+//    var tabLayout: TabLayout? = null
+//    var viewPager: ViewPager? = null
+//    var pagerAdapter: AddPagerAdapter? = null
 
     /*   private var mAdapter: ItemAdapter? = null
        private var mBehavior: BottomSheetBehavior<*>? = null
@@ -79,7 +81,7 @@ class AddProduct : Fragment(), ClicTabItemListener {
         super.onViewCreated(view, savedInstanceState)
         initViews()
 //        bindBottomView(view)
-        setRecyclerView()
+        setTopRecyclerView()
         btn_add_product.setOnClickListener {
             addViewModel.addViewOnClick()
             //showBottomSheetView()
@@ -115,7 +117,8 @@ class AddProduct : Fragment(), ClicTabItemListener {
 
             val file = File(imagePath)
             val requestBody = RequestBody.create("image/*".toMediaTypeOrNull(), file)
-            val part: MultipartBody.Part = createFormData("file", file.name, requestBody)
+            val part: MultipartBody.Part =
+                MultipartBody.Part.createFormData("file", file.name, requestBody)
 
 
             // MultipartBody.Part is used to send also the actual file name
@@ -123,7 +126,8 @@ class AddProduct : Fragment(), ClicTabItemListener {
             //val requestFile: RequestBody = RequestBody.create(context!!.contentResolver.getType(Uri.fromFile( File(imagePath)))!!.toMediaTypeOrNull(), file)
 
             // MultipartBody.Part is used to send also the actual file name
-            val body: MultipartBody.Part = createFormData("file", file.name, requestBody)
+            val body: MultipartBody.Part =
+                MultipartBody.Part.createFormData("file", file.name, requestBody)
 
             // add another part within the multipart request
             val descriptionString = AppConstant().getRandomCollectionId(context!!)
@@ -132,7 +136,7 @@ class AddProduct : Fragment(), ClicTabItemListener {
             )
 
             // finally, execute the request
-            val call: Call<ResponseBody?>? = apiService.upload( description , body)
+            val call: Call<ResponseBody?>? = apiService.upload(description, body)
             call?.enqueue(object : Callback<ResponseBody?> {
                 override fun onResponse(
                     call: Call<ResponseBody?>,
@@ -145,21 +149,22 @@ class AddProduct : Fragment(), ClicTabItemListener {
 
                 override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
                     t.message?.let {
-                        Log.e("Upload error:", it) }
+                        Log.e("Upload error:", it)
+                    }
                 }
             })
 
-        /*    apiService.uploadImage(part, "bankesh123")?.enqueue(object : Callback<ResponseDTO> {
-                override fun onResponse(call: Call<ResponseDTO>, response: Response<ResponseDTO>) {
-                    Toast.makeText(context!!, "" + response.body(), Toast.LENGTH_SHORT)
-                        .show()
-                }
+            /*    apiService.uploadImage(part, "bankesh123")?.enqueue(object : Callback<ResponseDTO> {
+                    override fun onResponse(call: Call<ResponseDTO>, response: Response<ResponseDTO>) {
+                        Toast.makeText(context!!, "" + response.body(), Toast.LENGTH_SHORT)
+                            .show()
+                    }
 
-                override fun onFailure(call: Call<ResponseDTO>, t: Throwable) {
-                    Toast.makeText(context!!, "" + t.message, Toast.LENGTH_SHORT).show()
-                }
-            })
-*/
+                    override fun onFailure(call: Call<ResponseDTO>, t: Throwable) {
+                        Toast.makeText(context!!, "" + t.message, Toast.LENGTH_SHORT).show()
+                    }
+                })
+    */
 
         } catch (e: Exception) {
             e.printStackTrace()
@@ -170,7 +175,7 @@ class AddProduct : Fragment(), ClicTabItemListener {
         when (item.itemId) {
             R.id.upload -> {
                 //Upload image file function goes here - startImageUploadService(getRandomCollectionId())
-            //    uploadAllImages(imageList)
+                //    uploadAllImages(imageList)
                 saveProductDatainDb()
             }
         }
@@ -188,12 +193,13 @@ class AddProduct : Fragment(), ClicTabItemListener {
         viewModelFactory = ViewModelFactory(myRepository)
         viewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(MyViewModel::class.java)
-        viewPager = view?.findViewById(R.id.add_fragment)
-        tabLayout = view?.findViewById(R.id.sliding_tabs)
-        setCustomviewPager()
+//        viewPager = view?.findViewById(R.id.add_fragment)
+//        tabLayout = view?.findViewById(R.id.sliding_tabs)
+        imageAdapter = AddProductTopAdapter(imageList, this)
+//        setCustomviewPager()
     }
 
-    private fun setCustomviewPager() {
+    /*private fun setCustomviewPager() {
         viewModel.displayImage().observe(this, androidx.lifecycle.Observer {
             imageList = it
             pagerAdapter = AddPagerAdapter(fragmentManager!!, context!!, imageList)
@@ -220,15 +226,16 @@ class AddProduct : Fragment(), ClicTabItemListener {
                 //tab.getCustomView().findViewById(R.id.tab_badge);
             }
         })
-    }
+    }*/
 
-    private fun setRecyclerView() {
-        /*val linearLayoutManager =
-            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        tab_recycler.apply {
-            layoutManager = linearLayoutManager
-            adapter = imageAdapter
-        }*/
+    private fun setTopRecyclerView() {
+//        val linearLayoutManager =
+//            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+//        tab_recycler.apply {
+//            layoutManager = linearLayoutManager
+//            adapter = imageAdapter
+//        }
+
     }
 
     override fun onClickCross(position: Int?) {
@@ -313,7 +320,36 @@ class AddProduct : Fragment(), ClicTabItemListener {
         }
     }
 
+    override fun onClick(position: Int) {
+        val ft: FragmentTransaction = fragmentManager!!.beginTransaction()
+        ft.replace(R.id.add_fragment, fragmentList.get(position))
+        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+        ft.addToBackStack(null)
+        ft.commit()
+    }
+
+    override fun onClickDelete(position: Int?) {
+        CoroutineScope(Dispatchers.IO).launch {
+            viewModel.deleteImageById(position!!)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.displayImage().observe(this, {
+            imageAdapter.updateList(it)
+            addFragmentWithList(it)
+        })
+    }
+
+    fun addFragmentWithList(imageList: List<EntityClass>) {
+        for (i in 0 until imageList.size) {
+            var fragitem = ProductDataFragment.newInstance(i)
+            fragmentList.add(fragitem)
+        }
+    }
 }
+
 
 private fun <T> Call<T>?.enqueue(callback: Callback<ResponseDTO>) {
 
