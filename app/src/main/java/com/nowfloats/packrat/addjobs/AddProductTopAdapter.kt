@@ -20,7 +20,7 @@ class AddProductTopAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val dataModel = imageList[position]
-        holder.setImage(dataModel)
+        //holder.setImage(dataModel)
     }
 
     override fun getItemCount(): Int {

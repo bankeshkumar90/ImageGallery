@@ -11,13 +11,13 @@ import kotlinx.android.synthetic.main.image_items.view.*
 class ViewHolder(private val view: View, private val clickListener: ClickListener) :
     RecyclerView.ViewHolder(view) {
 
-    fun setImage(entityClass: EntityClass) {
+    fun setImage( imagePath:String, pos: Int) {
         view.apply {
 //            tvAlbumName.text = entityClass.album
 //            tvImageName.text = entityClass.name
-            product_imageview.setImageURI(Uri.parse(entityClass.path))  // sets the image using the uri present in database
+            product_imageview.setImageURI(Uri.parse(imagePath))  // sets the image using the uri present in database
             close_imageview.setOnClickListener {
-                clickListener.onClickDelete(entityClass.id)
+                clickListener.onClickDelete(adapterPosition)
             }
         }
 

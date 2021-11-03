@@ -6,8 +6,13 @@ import android.provider.Settings
 
 class AppConstant {
     companion object{
-        val APP_FOLDER_NAME = "PackRat"
-        val APP_BASE_URL = "app_end_point_will_go_here"
+        const val APP_FOLDER_NAME = "PackRat"
+        const val APP_BASE_URL = "app_end_point_will_go_here"
+        const val IMAGE_LIST = "imagePathList"
+        const val IMAGE_URI = "image_uri"
+        const val REQ_CAMERA_CODE = 100
+        const val REQ_GALLERY_CODE = 101
+        const val REQUEST_TYPE = "request_type"
     }
 
     fun getRandomCollectionId(context: Context):String{

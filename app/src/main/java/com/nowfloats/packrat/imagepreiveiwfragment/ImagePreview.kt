@@ -1,6 +1,5 @@
 package com.nowfloats.packrat.imagepreiveiwfragment
 
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -13,21 +12,21 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nowfloats.packrat.R
 import com.nowfloats.packrat.addjobs.AddProduct
-import com.nowfloats.packrat.addjobs.AddProductFragment
 import com.nowfloats.packrat.camera.CameraFragment
 import com.nowfloats.packrat.clickInterface.ClickListener
 import com.nowfloats.packrat.databaserepository.MyRepository
-import com.nowfloats.packrat.homescreen.ImageDetails
 import com.nowfloats.packrat.homescreen.MyApplication
 import com.nowfloats.packrat.imageViewModel.MyViewModel
 import com.nowfloats.packrat.imageViewModel.ViewModelFactory
 import com.nowfloats.packrat.imagelistadapter.ImageAdapter
 import com.nowfloats.packrat.roomdatabase.EntityClass
+import com.nowfloats.packrat.utils.AppConstant
 import kotlinx.android.synthetic.main.fragment_image_preview.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
+import kotlin.collections.ArrayList
 
 class ImagePreview : Fragment(), ClickListener {
 
@@ -38,15 +37,17 @@ class ImagePreview : Fragment(), ClickListener {
     private var uri: String? = ""
     private var imageName: String? = ""
     private lateinit var imageAdapter: ImageAdapter
-    private var imageList = emptyList<EntityClass>()
+    //private var imageList = emptyList<EntityClass>()
+    private var imagePathList = ArrayList<String>()
 
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        uri = arguments?.getString("uri")
+        uri = arguments?.getString(AppConstant.IMAGE_URI)
         imageName = arguments?.getString("image")
+        imagePathList = arguments?.getStringArrayList(AppConstant.IMAGE_LIST) as ArrayList<String>
         setHasOptionsMenu(false)
         return inflater.inflate(R.layout.fragment_image_preview, container, false)
     }
@@ -59,7 +60,7 @@ class ImagePreview : Fragment(), ClickListener {
         btnSaveImage.setOnClickListener {
             val currentTime = Calendar.getInstance().time
             val entityClass =
-                EntityClass(imageName!!, currentTime.toString(), uri!!)
+                EntityClass(uri!!, currentTime.toString(), uri!!)
             CoroutineScope(Dispatchers.IO).launch {
                 viewModel.addImage(entityClass)
                 sendAddproductScreen()
@@ -67,7 +68,7 @@ class ImagePreview : Fragment(), ClickListener {
 
         }
         btn_open_camera.setOnClickListener {
-            //Will save the imagelist in viewmodel and after accepting then push it to local database
+            //Will save the imagelist in viewmodel and after uploading then push it to local database
             val ft: FragmentTransaction = fragmentManager!!.beginTransaction()
             ft.replace(R.id.fram_dashboard, CameraFragment())
             ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
@@ -96,10 +97,10 @@ class ImagePreview : Fragment(), ClickListener {
     private fun initViews() {
         myApplication = activity?.application as MyApplication
         myRepository = myApplication.myRepository
-        imageList = arrayListOf<EntityClass>()
-        imageAdapter = ImageAdapter(imageList, this)
+        //imageList = arrayListOf<EntityClass>()
+        imageAdapter = ImageAdapter( this, imagePathList)
         viewModelFactory = ViewModelFactory(myRepository)
-        viewModel = ViewModelProviders.of(this, viewModelFactory)
+        viewModel = ViewModelProviders.of(activity!!, viewModelFactory)
             .get(MyViewModel::class.java)
     }
 
@@ -107,19 +108,16 @@ class ImagePreview : Fragment(), ClickListener {
 
     override fun onResume() {
         super.onResume()
-        viewModel.displayImage().observe(this, {
+        /*viewModel.displayImage().observe(this, {
             imageAdapter.updateList(it)
+        })*/
+        viewModel.imageArrayList.observe(this,{
+            imageAdapter.updateImageList(it)
         })
     }
 
     override fun onClick(position: Int) {
-        var uri = ""
-        viewModel.displayImage().observe(this, {
-            uri = it[position].path
-            val intent = Intent(context, ImageDetails::class.java)
-            intent.putExtra("uri", uri)
-            startActivity(intent)
-        })
+        imgPreview.setImageURI(Uri.parse(imagePathList[position]))
     }
 
     override fun onClickDelete(position: Int?) {

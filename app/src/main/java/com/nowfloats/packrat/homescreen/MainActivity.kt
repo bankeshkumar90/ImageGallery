@@ -15,6 +15,10 @@ import com.nowfloats.packrat.R
 import com.nowfloats.packrat.databaserepository.MyRepository
 import com.nowfloats.packrat.imageViewModel.MyViewModel
 import com.nowfloats.packrat.imageViewModel.ViewModelFactory
+import androidx.lifecycle.ViewModelProvider
+
+
+
 
 
 class MainActivity : AppCompatActivity() {
@@ -72,10 +76,9 @@ class MainActivity : AppCompatActivity() {
 
         viewModelFactory = ViewModelFactory(myRepository)
 
-        viewModel = ViewModelProviders.of(this, viewModelFactory)
-            .get(MyViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(MyViewModel::class.java)
 
-       /* ll_shelfView.setOnClickListener {
+        /* ll_shelfView.setOnClickListener {
             dispatchTakePictureIntent()
         }
         ll_ProductView.setOnClickListener {
@@ -173,24 +176,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
-    /*override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        val inflater = menuInflater
-        inflater.inflate(R.menu.home_menu, menu)
-        return true
-    }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.status -> {
-                true
-            }
-            R.id.setting -> {
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-*/
     /*@SuppressLint("WrongConstant")
     private fun dispatchTakePictureIntent() {
         *//*val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
