@@ -35,6 +35,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center|right"
                 android:layout_marginRight="@dimen/dp_10"
+                android:visibility="gone"
                 android:src="@drawable/add_image" />
         </LinearLayout>
 

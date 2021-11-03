@@ -16,4 +16,5 @@
     <string name="barcode">Barcode</string>
     <string name="other">Other</string>
     <string name="upload">Upload</string>
+    <string name="title">Select Details</string>
 </resources>
