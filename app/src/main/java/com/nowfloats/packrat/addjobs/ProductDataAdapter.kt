@@ -12,18 +12,20 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import androidx.core.view.get
 import androidx.recyclerview.widget.RecyclerView
 import com.nowfloats.packrat.R
 import com.nowfloats.packrat.clickInterface.ProdClickListener
-import com.nowfloats.packrat.roomdatabase.ProductEntityClass
 import com.nowfloats.packrat.roomdatabase.ProductFormData
 import kotlinx.android.synthetic.main.product_data.view.*
 
-class ProductDataAdapter(var context: Context, private val clickListener: ProdClickListener) :
+class ProductDataAdapter(
+    var context: Context,
+    private val clickListener: ProdClickListener
+) :
     RecyclerView.Adapter<ProductDataAdapter.PickerViewHolder>() {
     private lateinit var ln: LinearLayout
-    private var viewList = ArrayList<Int>()
+
+    public var viewList = ArrayList<Int>()
     private var pholder: PickerViewHolder? = null
     private var adpterposion: Int = 0
 
@@ -39,18 +41,30 @@ class ProductDataAdapter(var context: Context, private val clickListener: ProdCl
     }
 
     override fun getItemCount(): Int {
-        return viewList.size
+        return viewList!!.size
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return position
     }
 
     //updates the latest data of the database
     fun updateList(positionview: Int) {
-        this.viewList.add(positionview)
+        viewList?.add(adpterposion)
+//        this.viewList.add(positionview)
+//        notifyItemInserted(viewList!!.size - 1);
+//        notifyDataSetChanged()
+        notifyItemChanged(adpterposion)
+    }
+
+    fun setData(listview: ArrayList<Int>) {
+        viewList = listview
         notifyDataSetChanged()
     }
 
     fun deleteview(position: Int) {
-        this.viewList.removeAt(position)
-        notifyDataSetChanged()
+        viewList!!.removeAt(position)
+        notifyItemInserted(viewList!!.size - 1);
     }
 
     @SuppressLint("NewApi")
@@ -109,18 +123,31 @@ class ProductDataAdapter(var context: Context, private val clickListener: ProdCl
         imageView.setPadding(0, 0, 5, 0)
         imageView.setImageResource(R.drawable.ic_remove_selected)
         imageView.setOnClickListener {
-            if (holder?.add_form != null) {
-                println("values>>>1>$hint $position  ${holder.add_product_count.text}")
-                holder!!.add_form.removeView(linearLayoutParent);
+            if (pholder?.add_form != null) {
+                println("values>>>1>$hint $position  ${pholder!!.add_product_count.text}")
+                pholder!!.add_form.removeView(linearLayoutParent);
                 notifyDataSetChanged()
             }
         }
         linearLayoutParent.addView(imageView)
-        if (holder?.add_form != null) {
-            holder!!.add_form.addView(linearLayoutParent);
-            notifyDataSetChanged()
-        }
+//        if (pholder?.add_form != null) {
+//            var viewsub  = LayoutInflater.from(context).inflate(R.layout.product_itemview,  null)
+        println("values>>>1>$hint $position  ${pholder!!.add_product_count.text} ")
+        pholder!!.add_form.addView(linearLayoutParent);
+//            notifyItemChanged(position)
+//        }
     }
+
+    /*fun addExtraTextView() {
+        (itemView as ViewGroup).addView(extraTextView, layoutParams)
+        viewAdded = true
+    }
+
+    fun removeExtraTextView() {
+        (itemView as ViewGroup).removeView(extraTextView)
+        viewAdded = false
+    }*/
+
 
     class PickerViewHolder(itemView: View, private val clickListener: ProdClickListener) :
         RecyclerView.ViewHolder(itemView) {
@@ -154,7 +181,7 @@ class ProductDataAdapter(var context: Context, private val clickListener: ProdCl
                 }
 
             }
-
+            itemView.setTag(position)
             itemView.setOnClickListener {
 //            clickListener.onClick(adapterPosition)
             }

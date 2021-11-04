@@ -18,7 +18,7 @@ class ProductViewHolder(private val view: View, private val clickListener: ProdC
                 clickListener.onClickDelete(entityClass.id)
             }*/
             add_prop_id.setOnClickListener {
-                clickListener.onClickAdd(adapterPosition)
+//                clickListener.onClickAdd(adapterPosition)
             }
         }
 

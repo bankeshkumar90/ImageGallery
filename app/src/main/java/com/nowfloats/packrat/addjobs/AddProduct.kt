@@ -132,7 +132,7 @@ class AddProduct : Fragment(), ClicTabItemListener {
             )
 
             // finally, execute the request
-            val call: Call<ResponseBody?>? = apiService.upload( description , body)
+            val call: Call<ResponseBody?>? = apiService.upload(description, body)
             call?.enqueue(object : Callback<ResponseBody?> {
                 override fun onResponse(
                     call: Call<ResponseBody?>,
@@ -145,21 +145,22 @@ class AddProduct : Fragment(), ClicTabItemListener {
 
                 override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
                     t.message?.let {
-                        Log.e("Upload error:", it) }
+                        Log.e("Upload error:", it)
+                    }
                 }
             })
 
-        /*    apiService.uploadImage(part, "bankesh123")?.enqueue(object : Callback<ResponseDTO> {
-                override fun onResponse(call: Call<ResponseDTO>, response: Response<ResponseDTO>) {
-                    Toast.makeText(context!!, "" + response.body(), Toast.LENGTH_SHORT)
-                        .show()
-                }
+            /*    apiService.uploadImage(part, "bankesh123")?.enqueue(object : Callback<ResponseDTO> {
+                    override fun onResponse(call: Call<ResponseDTO>, response: Response<ResponseDTO>) {
+                        Toast.makeText(context!!, "" + response.body(), Toast.LENGTH_SHORT)
+                            .show()
+                    }
 
-                override fun onFailure(call: Call<ResponseDTO>, t: Throwable) {
-                    Toast.makeText(context!!, "" + t.message, Toast.LENGTH_SHORT).show()
-                }
-            })
-*/
+                    override fun onFailure(call: Call<ResponseDTO>, t: Throwable) {
+                        Toast.makeText(context!!, "" + t.message, Toast.LENGTH_SHORT).show()
+                    }
+                })
+    */
 
         } catch (e: Exception) {
             e.printStackTrace()
@@ -170,7 +171,7 @@ class AddProduct : Fragment(), ClicTabItemListener {
         when (item.itemId) {
             R.id.upload -> {
                 //Upload image file function goes here - startImageUploadService(getRandomCollectionId())
-            //    uploadAllImages(imageList)
+                //    uploadAllImages(imageList)
                 saveProductDatainDb()
             }
         }
@@ -197,14 +198,22 @@ class AddProduct : Fragment(), ClicTabItemListener {
         viewModel.displayImage().observe(this, androidx.lifecycle.Observer {
             imageList = it
             pagerAdapter = AddPagerAdapter(fragmentManager!!, context!!, imageList)
+            setupViewPager(pagerAdapter!!,imageList)
             viewPager!!.adapter = pagerAdapter
             tabLayout!!.setupWithViewPager(viewPager)
             tabLayout!!.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab) {
-
+                    val frag: Fragment = pagerAdapter!!.getItem(tab.position)
+                    if (frag != null && frag is ProductDataFragment) {
+                        (frag as ProductDataFragment).setTabclickRefresh(tab.position)
+                    }
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab) {
+                    val frag: Fragment = pagerAdapter!!.getItem(tab.position)
+                    if (frag != null && frag is ProductDataFragment) {
+                        (frag as ProductDataFragment).setTabclickUnselect(tab.position)
+                    }
 
                 }
 
@@ -220,6 +229,19 @@ class AddProduct : Fragment(), ClicTabItemListener {
                 //tab.getCustomView().findViewById(R.id.tab_badge);
             }
         })
+    }
+
+    private fun setupViewPager(adapter: AddPagerAdapter, imageList: List<EntityClass>) {
+        for (i in 0 until imageList.size) {
+            var list:List<Int> = ArrayList<Int>()
+            val f1 = ProductDataFragment.newInstance(context!!, i, list)
+            adapter.addFragment(f1)
+        }
+        /*val f2 = AddFragment.newInstance("Dashboard")
+        adapter.addFragment(f2, "Dashboard")
+
+        val f3 = AddFragment.newInstance("Profile")
+        adapter.addFragment(f3, "Profile")*/
     }
 
     private fun setRecyclerView() {

@@ -343,10 +343,10 @@ class AddProductFragment : Fragment(), ClicTabItemListener, ClickListener {
     }
 
     fun addFragmentWithList(imageList: List<EntityClass>) {
-        for (i in 0 until imageList.size) {
+        /*for (i in 0 until imageList.size) {
             var fragitem = ProductDataFragment.newInstance(i)
             fragmentList.add(fragitem)
-        }
+        }*/
     }
 }
 

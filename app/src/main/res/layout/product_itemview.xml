@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:id="@+id/pname_ln"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="3"
+        android:orientation="horizontal"
+        android:visibility="visible">
+
+        <EditText
+            android:id="@+id/product_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:backgroundTint="@color/grey"
+            android:drawableEnd="@drawable/ic_arrow_down"
+            android:drawablePadding="@dimen/dp_10"
+            android:fontFamily="@font/roboto_medium"
+            android:lines="1"
+            android:paddingTop="@dimen/dp_10"
+            android:paddingBottom="@dimen/dp_10"
+            android:text=""
+            android:textColor="@color/primary_color"
+            android:textColorHint="@color/inventory_hint"
+            android:textSize="@dimen/sp_14" />
+
+        <EditText
+            android:id="@+id/variant_edittext"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_22"
+            android:layout_weight="1"
+            android:backgroundTint="@color/grey"
+            android:enabled="false"
+            android:focusableInTouchMode="true"
+            android:fontFamily="@font/roboto_medium"
+            android:inputType="none"
+            android:text=""
+            android:textColor="@color/primary_color"
+            android:textColorHint="@color/inventory_hint"
+            android:textSize="@dimen/sp_14" />
+
+        <ImageView
+            android:id="@+id/product_dlt"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginRight="@dimen/dp_10"
+            android:src="@drawable/ic_remove_selected"
+            android:gravity="center" />
+    </LinearLayout>
+</LinearLayout>
