@@ -20,12 +20,13 @@ import kotlinx.android.synthetic.main.product_data.view.*
 
 class ProductDataAdapter(
     var context: Context,
-    private val clickListener: ProdClickListener
+    private val clickListener: ProdClickListener,
+    var productList: ArrayList<metaDataBeanItem>
 ) :
     RecyclerView.Adapter<ProductDataAdapter.PickerViewHolder>() {
     private lateinit var ln: LinearLayout
 
-    public var viewList = ArrayList<Int>()
+    //public var viewList = ArrayList<Int>()
     private var pholder: PickerViewHolder? = null
     private var adpterposion: Int = 0
 
@@ -34,14 +35,14 @@ class ProductDataAdapter(
         return PickerViewHolder(view, clickListener)
     }
 
-    override fun onBindViewHolder(holder: PickerViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: PickerViewHolder, @SuppressLint("RecyclerView") position: Int) {
 //        pholder = holder
         adpterposion = position
         holder.setData(position)
     }
 
     override fun getItemCount(): Int {
-        return viewList!!.size
+        return productList!!.size
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -49,104 +50,29 @@ class ProductDataAdapter(
     }
 
     //updates the latest data of the database
-    fun updateList(positionview: Int) {
-        viewList?.add(adpterposion)
+    fun updateList(objectMetaData: metaDataBeanItem) {
+        productList?.add(objectMetaData)
 //        this.viewList.add(positionview)
 //        notifyItemInserted(viewList!!.size - 1);
 //        notifyDataSetChanged()
         notifyItemChanged(adpterposion)
     }
 
-    fun setData(listview: ArrayList<Int>) {
-        viewList = listview
+    fun setData(listview: ArrayList<metaDataBeanItem>) {
+        productList = listview
         notifyDataSetChanged()
     }
 
     fun deleteview(position: Int) {
-        viewList!!.removeAt(position)
-        notifyItemInserted(viewList!!.size - 1);
+        productList!!.removeAt(position)
+        notifyItemInserted(position)
     }
 
     @SuppressLint("NewApi")
     fun setFormView(hint: String, holder: PickerViewHolder, position: Int) {
         pholder = holder
-        val linearLayoutParent = LinearLayout(context)
-        linearLayoutParent.orientation = LinearLayout.HORIZONTAL
-        val linearLayoutParentParams = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT, 0f
-        )
-        linearLayoutParent.layoutParams = linearLayoutParentParams
-        linearLayoutParent.setPadding(0, 0, 0, 0)
 
-        val editText = EditText(context)
-
-        editText.layoutParams =
-            LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT, 1f
-            )
-        val drawable = ContextCompat.getDrawable(context, R.drawable.ic_arrow_down)
-        editText.setCompoundDrawablesWithIntrinsicBounds(null, null, drawable, null)
-        editText.setPadding(20, 20, 20, 20)
-        editText.setText(hint)
-        editText.backgroundTintList = ColorStateList.valueOf(context.getColor(R.color.grey))
-        editText.setTextColor(context.getColor(R.color.primary_color))
-        editText.textSize = context.resources.getDimension(R.dimen.dp_8)
-        editText.setHintTextColor(context.getColor(R.color.inventory_hint))
-        linearLayoutParent.addView(editText)
-
-        val editText1 = EditText(context)
-        editText1.layoutParams =
-            LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT, 1f
-            )
-//        val drawable1 = ContextCompat.getDrawable(context, R.drawable.ic_arrow_down)
-//        editText.setCompoundDrawablesWithIntrinsicBounds(null, null, drawabl, null)
-        editText1.setPadding(20, 20, 20, 20)
-//        editText1.setHint(hint)
-        editText1.backgroundTintList = ColorStateList.valueOf(context.getColor(R.color.grey))
-        editText1.setTextColor(context.getColor(R.color.primary_color))
-        editText1.textSize = context.resources.getDimension(R.dimen.dp_8)
-        editText1.setHintTextColor(context.getColor(R.color.inventory_hint))
-        linearLayoutParent.addView(editText1)
-
-
-        val imageView = ImageView(context)
-        var layoutparam = LinearLayout.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT, 1.8f
-        )
-        layoutparam.gravity = Gravity.CENTER
-        imageView.layoutParams = layoutparam
-        imageView.setPadding(0, 0, 5, 0)
-        imageView.setImageResource(R.drawable.ic_remove_selected)
-        imageView.setOnClickListener {
-            if (pholder?.add_form != null) {
-                println("values>>>1>$hint $position  ${pholder!!.add_product_count.text}")
-                pholder!!.add_form.removeView(linearLayoutParent);
-                notifyDataSetChanged()
-            }
-        }
-        linearLayoutParent.addView(imageView)
-//        if (pholder?.add_form != null) {
-//            var viewsub  = LayoutInflater.from(context).inflate(R.layout.product_itemview,  null)
-        println("values>>>1>$hint $position  ${pholder!!.add_product_count.text} ")
-        pholder!!.add_form.addView(linearLayoutParent);
-//            notifyItemChanged(position)
-//        }
     }
-
-    /*fun addExtraTextView() {
-        (itemView as ViewGroup).addView(extraTextView, layoutParams)
-        viewAdded = true
-    }
-
-    fun removeExtraTextView() {
-        (itemView as ViewGroup).removeView(extraTextView)
-        viewAdded = false
-    }*/
 
 
     class PickerViewHolder(itemView: View, private val clickListener: ProdClickListener) :

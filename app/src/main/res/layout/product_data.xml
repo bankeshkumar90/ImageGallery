@@ -13,13 +13,13 @@
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent">
 
-    <!--<androidx.cardview.widget.CardView
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardCornerRadius="@dimen/dp_3"
         app:cardElevation="@dimen/dp_5"
         android:layout_marginTop="@dimen/dp_10"
-        android:visibility="visible">-->
+        android:visibility="visible">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -99,8 +99,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
-                android:orientation="horizontal"
-                android:visibility="gone">
+                android:orientation="horizontal">
 
                 <EditText
                     android:id="@+id/product_name"
@@ -130,20 +129,18 @@
                     android:enabled="false"
                     android:focusableInTouchMode="true"
                     android:fontFamily="@font/roboto_medium"
-                    android:inputType="none"
+                    android:inputType="text"
                     android:text=""
                     android:textColor="@color/primary_color"
                     android:textColorHint="@color/inventory_hint"
                     android:textSize="@dimen/sp_14" />
 
-                <TextView
+                <ImageView
                     android:id="@+id/product_dlt"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginRight="@dimen/dp_10"
-                    android:gravity="center"
-                    android:text="X"
-                    android:textColor="@color/grey" />
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@drawable/ic_remove_selected" />
             </LinearLayout>
 
             <LinearLayout
@@ -151,8 +148,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
-                android:orientation="horizontal"
-                android:visibility="gone">
+                android:orientation="horizontal">
 
                 <EditText
                     android:id="@+id/price_name"
@@ -188,14 +184,12 @@
                     android:textColorHint="@color/inventory_hint"
                     android:textSize="@dimen/sp_14" />
 
-                <TextView
+                <ImageView
                     android:id="@+id/price_dlt"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginRight="@dimen/dp_10"
-                    android:gravity="center"
-                    android:text="X"
-                    android:textColor="@color/grey" />
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@drawable/ic_remove_selected" />
             </LinearLayout>
 
             <LinearLayout
@@ -203,8 +197,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
-                android:orientation="horizontal"
-                android:visibility="gone">
+                android:orientation="horizontal">
 
                 <EditText
                     android:id="@+id/barcode_name"
@@ -240,14 +233,12 @@
                     android:textColorHint="@color/inventory_hint"
                     android:textSize="@dimen/sp_14" />
 
-                <TextView
+                <ImageView
                     android:id="@+id/barcode_dlt"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginRight="@dimen/dp_10"
-                    android:gravity="center"
-                    android:text="X"
-                    android:textColor="@color/grey" />
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@drawable/ic_remove_selected" />
             </LinearLayout>
 
             <LinearLayout
@@ -255,8 +246,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
-                android:orientation="horizontal"
-                android:visibility="gone">
+                android:orientation="horizontal">
 
                 <EditText
                     android:id="@+id/product_quantity"
@@ -292,18 +282,66 @@
                     android:textColorHint="@color/inventory_hint"
                     android:textSize="@dimen/sp_14" />
 
-                <TextView
+                <ImageView
                     android:id="@+id/quatity_dlt"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginRight="@dimen/dp_10"
-                    android:gravity="center"
-                    android:text="X"
-                    android:textColor="@color/grey" />
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@drawable/ic_remove_selected" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/pOther"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/product_other"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/grey"
+                    android:drawableEnd="@drawable/ic_arrow_down"
+                    android:drawablePadding="@dimen/dp_10"
+                    android:fontFamily="@font/roboto_medium"
+                    android:lines="1"
+                    android:paddingTop="@dimen/dp_10"
+                    android:paddingBottom="@dimen/dp_10"
+                    android:text=""
+                    android:textColor="@color/primary_color"
+                    android:textColorHint="@color/inventory_hint"
+                    android:textSize="@dimen/sp_14" />
+
+                <EditText
+                    android:id="@+id/edt_other"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_22"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/grey"
+                    android:enabled="false"
+                    android:focusableInTouchMode="true"
+                    android:fontFamily="@font/roboto_medium"
+                    android:inputType="none"
+                    android:text=""
+                    android:textColor="@color/primary_color"
+                    android:textColorHint="@color/inventory_hint"
+                    android:textSize="@dimen/sp_14" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@drawable/ic_remove_selected"/>
+
+
             </LinearLayout>
 
         </LinearLayout>
-<!--    </androidx.cardview.widget.CardView>-->
+    </androidx.cardview.widget.CardView>
       <ImageView
           android:id="@+id/dlt_cross"
         android:layout_width="wrap_content"

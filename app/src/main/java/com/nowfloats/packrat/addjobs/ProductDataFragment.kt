@@ -33,9 +33,9 @@ class ProductDataFragment : Fragment(), ProdClickListener {
     private lateinit var prodAdapter: ProductDataAdapter
     private lateinit var bottomViewDialog: FullBottomSheetDialogFragment
     private var isclickBottomView = false
+    //private var allProducts: ArrayList<Int>? = ArrayList<Int>()
+    private var productList:ArrayList<metaDataBeanItem> = ArrayList<metaDataBeanItem>()
 
-    //    private lateinit var linearLayout: LinearLayout
-    private var allProducts: ArrayList<Int>? = ArrayList<Int>()
 //    private var alllistProduct: ArrayList<ArrayList<Int>?>? = ArrayList<ArrayList<Int>?>()
 
     //    val linkList: LinkedList<ArrayList<Int>> = LinkedList(alllistProduct)
@@ -77,15 +77,14 @@ class ProductDataFragment : Fragment(), ProdClickListener {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater!!.inflate(R.layout.product_item, container, false)
-        prodAdapter = ProductDataAdapter(ctx, this)
+        prodAdapter = ProductDataAdapter(ctx, this, productList)
         setObserver()
         return view
     }
 
     fun setObserver() {
         dataModel.clickadd.observe(this, Observer {
-//            var prodlist = ProductEntityClass("", "", "", "")
-            prodAdapter.updateList(it)
+            prodAdapter.updateList(metaDataBeanItem())
         })
         dataModel.addBottomClick.observe(this, Observer {
             if (isclickBottomView) {
@@ -121,7 +120,7 @@ class ProductDataFragment : Fragment(), ProdClickListener {
         linearLayoutManager.setReverseLayout(true);
         add_recyclerview.layoutManager = linearLayoutManager
         add_recyclerview.adapter = prodAdapter
-        prodAdapter.setData(allProducts!!)
+        prodAdapter.setData(productList!!)
         prodAdapter.notifyDataSetChanged()
 //        prodAdapter.notifyItemChanged(tabPosition)
 //        prodAdapter.setData(allProducts!!)
@@ -181,13 +180,13 @@ class ProductDataFragment : Fragment(), ProdClickListener {
         if (SharedPreferencesManager(ctx).getListFromLocal("item_$tabPosi") != null)
             println("chaeck_tab_click>0>  $tabPosi  =  $tabPosition  ${SharedPreferencesManager(ctx).getListFromLocal("item_$tabPosi")!!.size}")
         if (SharedPreferencesManager(ctx).getListFromLocal("item_$tabPosi") != null) {
-            if (allProducts!!.size>0)
-                allProducts!!.clear()
+            if (productList!!.size>0)
+                productList!!.clear()
             for (i in 0 until SharedPreferencesManager(ctx).getListFromLocal("item_$tabPosi")!!.size) {
-                allProducts!!.add(SharedPreferencesManager(ctx).getListFromLocal("item_$tabPosi")!!.get(i)!!)
+                //productList!!.add(SharedPreferencesManager(ctx).getListFromLocal("item_$tabPosi")!!.get(i)!!)
             }
         }else{
-            println("chaeck_tab_click>0>else  $tabPosi  =  $tabPosition  ${allProducts!!.size}")
+            println("chaeck_tab_click>0>else  $tabPosi  =  $tabPosition  ${productList!!.size}")
         }
         android.os.Handler().postDelayed({
             GlobalScope.launch(Dispatchers.Main) {
@@ -197,8 +196,8 @@ class ProductDataFragment : Fragment(), ProdClickListener {
     }
 
     public fun setTabclickUnselect(tabPosi: Int) {
-        SharedPreferencesManager(ctx).saveListInLocal(prodAdapter!!.viewList, "item_$tabPosi")
-        prodAdapter!!.viewList?.clear()
+        //SharedPreferencesManager(ctx).saveListInLocal(prodAdapter!!.viewList, "item_$tabPosi")
+        //prodAdapter!!.viewList?.clear()
         println("chaeck_tab_click>1>  $tabPosi  =  $tabPosition  ${SharedPreferencesManager(ctx).getListFromLocal("item_$tabPosi")!!.size}")
     }
 
