@@ -88,10 +88,8 @@ class ProductDataFragment : Fragment(), ProdClickListener {
         })
         dataModel.addBottomClick.observe(this, Observer {
             if (isclickBottomView) {
-                val viewHolder: ProductDataAdapter.PickerViewHolder? =
-                    add_recyclerview.findViewHolderForAdapterPosition(addclick_position) as ProductDataAdapter.PickerViewHolder?
+                val viewHolder: ProductDataAdapter.PickerViewHolder? = add_recyclerview.findViewHolderForAdapterPosition(addclick_position) as ProductDataAdapter.PickerViewHolder?
                 prodAdapter.setFormView(it!!.mTitle, viewHolder!!, addclick_position)
-
                 isclickBottomView = false
             }
 
@@ -103,7 +101,6 @@ class ProductDataFragment : Fragment(), ProdClickListener {
         })
         dataModel.getData.observe(this, Observer {
             dataModel.getProductData.value = prodAdapter.getProductFormData()
-
         })
     }
 
@@ -165,7 +162,7 @@ class ProductDataFragment : Fragment(), ProdClickListener {
         println("values>>>0>$position")
         addclick_position = position
         isclickBottomView = true
-        bottomViewDialog = FullBottomSheetDialogFragment()
+        bottomViewDialog = FullBottomSheetDialogFragment(position)
         bottomViewDialog.setStyle(0, R.style.BottomSheetDialog)
         bottomViewDialog.show(fragmentManager!!, BottomViewDialog.TAG)
     }
@@ -198,7 +195,7 @@ class ProductDataFragment : Fragment(), ProdClickListener {
     public fun setTabclickUnselect(tabPosi: Int) {
         //SharedPreferencesManager(ctx).saveListInLocal(prodAdapter!!.viewList, "item_$tabPosi")
         //prodAdapter!!.viewList?.clear()
-        println("chaeck_tab_click>1>  $tabPosi  =  $tabPosition  ${SharedPreferencesManager(ctx).getListFromLocal("item_$tabPosi")!!.size}")
+       // println("chaeck_tab_click>1>  $tabPosi  =  $tabPosition  ${SharedPreferencesManager(ctx).getListFromLocal("item_$tabPosi")!!.size}")
     }
 
 }

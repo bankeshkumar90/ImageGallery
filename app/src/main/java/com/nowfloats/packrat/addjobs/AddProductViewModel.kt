@@ -11,13 +11,14 @@ import java.io.Serializable
 class AddProductViewModel(application: Application) : AndroidViewModel(application), Serializable {
     var clickadd: MutableLiveData<Int> = MutableLiveData()
     var addBottomClick: MutableLiveData<Item> = MutableLiveData()
+    var addBottomClickPosition: MutableLiveData<Int> = MutableLiveData()
     var clickdeleteview: MutableLiveData<Int> = MutableLiveData()
     var deleteFormViews: MutableLiveData<Int> = MutableLiveData()
     var getProductData: MutableLiveData<ProductFormData> = MutableLiveData()
     var getData: MutableLiveData<Boolean> = MutableLiveData()
 
     init {
-
+        print("meesaage1212")
     }
 
     fun deleteViewOnClick(position: Int) {
@@ -28,8 +29,9 @@ class AddProductViewModel(application: Application) : AndroidViewModel(applicati
         clickadd.value = 1
     }
 
-    fun bottomDialogClick(item: Item) {
+    fun bottomDialogClick(item: Item, position: Int) {
         addBottomClick.value = item
+        addBottomClickPosition.value = position
     }
 
     fun deleteAddFormViews() {

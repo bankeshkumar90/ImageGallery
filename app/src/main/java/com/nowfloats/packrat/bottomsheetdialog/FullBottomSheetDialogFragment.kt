@@ -12,9 +12,10 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.nowfloats.packrat.R
 import com.nowfloats.packrat.addjobs.AddProductViewModel
+import java.text.FieldPosition
 import java.util.*
 
-class FullBottomSheetDialogFragment : BottomSheetDialogFragment(), ItemAdapter.ItemListener {
+class FullBottomSheetDialogFragment(var recyclerViewPosition:Int) : BottomSheetDialogFragment(), ItemAdapter.ItemListener {
     private var mBehavior: BottomSheetBehavior<View>? = null
     private lateinit var dataDialogModel: AddProductViewModel
 
@@ -33,7 +34,7 @@ class FullBottomSheetDialogFragment : BottomSheetDialogFragment(), ItemAdapter.I
         val recyclerView: RecyclerView = view.findViewById<View>(R.id.recyclerView) as RecyclerView
         recyclerView.setHasFixedSize(true)
         recyclerView.setLayoutManager(LinearLayoutManager(getContext()))
-        val itemAdapter = ItemAdapter(createItems(), this)
+        val itemAdapter = ItemAdapter(createItems(), this, recyclerViewPosition)
         recyclerView.setAdapter(itemAdapter)
         dialog.setContentView(view)
         mBehavior = BottomSheetBehavior.from(view.parent as View)
@@ -47,16 +48,16 @@ class FullBottomSheetDialogFragment : BottomSheetDialogFragment(), ItemAdapter.I
 
     fun createItems(): List<Item> {
         val items = ArrayList<Item>()
-        items.add(Item(R.drawable.ic_preview_24dp, "Product"))
-        items.add(Item(R.drawable.ic_share_24dp, "Price"))
-        items.add(Item(R.drawable.ic_link_24dp, "Barcode"))
-        items.add(Item(R.drawable.ic_content_copy_24dp, "Quantity"))
-        items.add(Item(R.drawable.ic_content_copy_24dp, "Others"))
+        items.add(Item(R.drawable.ic_preview_24dp, context!!.getString(R.string.product)))
+        items.add(Item(R.drawable.ic_share_24dp, context!!.getString(R.string.price)))
+        items.add(Item(R.drawable.ic_link_24dp, context!!.getString(R.string.barcode)))
+        items.add(Item(R.drawable.ic_content_copy_24dp, context!!.getString(R.string.quantity)))
+        items.add(Item(R.drawable.ic_content_copy_24dp, context!!.getString(R.string.other)))
         return items
     }
 
-    override fun onItemClick(item: Item?) {
+    override fun onItemClick(item: Item?, position: Int) {
         mBehavior?.setState(BottomSheetBehavior.STATE_HIDDEN)
-        dataDialogModel.bottomDialogClick(item!!)
+        dataDialogModel.bottomDialogClick(item!!, position)
     }
 }

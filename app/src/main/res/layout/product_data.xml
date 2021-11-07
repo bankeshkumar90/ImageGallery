@@ -13,13 +13,13 @@
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent">
 
-    <androidx.cardview.widget.CardView
+    <!--<androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardCornerRadius="@dimen/dp_3"
         app:cardElevation="@dimen/dp_5"
         android:layout_marginTop="@dimen/dp_10"
-        android:visibility="visible">
+        android:visibility="visible">-->
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -95,14 +95,14 @@
                 android:orientation="vertical"/>
 
             <LinearLayout
-                android:id="@+id/pname_ln"
+                android:id="@+id/ll_pname"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
                 android:orientation="horizontal">
 
                 <EditText
-                    android:id="@+id/product_name"
+                    android:id="@+id/labelProduct"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -115,6 +115,7 @@
                     android:paddingTop="@dimen/dp_10"
                     android:paddingBottom="@dimen/dp_10"
                     android:text=""
+                    android:enabled="false"
                     android:textColor="@color/primary_color"
                     android:textColorHint="@color/inventory_hint"
                     android:textSize="@dimen/sp_14" />
@@ -126,7 +127,6 @@
                     android:layout_marginStart="@dimen/dp_22"
                     android:layout_weight="1"
                     android:backgroundTint="@color/grey"
-                    android:enabled="false"
                     android:focusableInTouchMode="true"
                     android:fontFamily="@font/roboto_medium"
                     android:inputType="text"
@@ -136,7 +136,7 @@
                     android:textSize="@dimen/sp_14" />
 
                 <ImageView
-                    android:id="@+id/product_dlt"
+                    android:id="@+id/productDelete"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -144,14 +144,14 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/pprice_ln"
+                android:id="@+id/ll_pprice"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
                 android:orientation="horizontal">
 
                 <EditText
-                    android:id="@+id/price_name"
+                    android:id="@+id/labelPrice"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -164,6 +164,7 @@
                     android:paddingTop="@dimen/dp_10"
                     android:paddingBottom="@dimen/dp_10"
                     android:text=""
+                    android:enabled="false"
                     android:textColor="@color/primary_color"
                     android:textColorHint="@color/inventory_hint"
                     android:textSize="@dimen/sp_14" />
@@ -175,7 +176,6 @@
                     android:layout_marginStart="@dimen/dp_22"
                     android:layout_weight="1"
                     android:backgroundTint="@color/grey"
-                    android:enabled="false"
                     android:focusableInTouchMode="true"
                     android:fontFamily="@font/roboto_medium"
                     android:inputType="none"
@@ -185,7 +185,7 @@
                     android:textSize="@dimen/sp_14" />
 
                 <ImageView
-                    android:id="@+id/price_dlt"
+                    android:id="@+id/priceDelete"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -193,14 +193,14 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/pbarcode_ln"
+                android:id="@+id/ll_barcode"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
                 android:orientation="horizontal">
 
                 <EditText
-                    android:id="@+id/barcode_name"
+                    android:id="@+id/labelBarcode"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -210,6 +210,7 @@
                     android:drawablePadding="@dimen/dp_10"
                     android:fontFamily="@font/roboto_medium"
                     android:lines="1"
+                    android:enabled="false"
                     android:paddingTop="@dimen/dp_10"
                     android:paddingBottom="@dimen/dp_10"
                     android:text=""
@@ -224,7 +225,6 @@
                     android:layout_marginStart="@dimen/dp_22"
                     android:layout_weight="1"
                     android:backgroundTint="@color/grey"
-                    android:enabled="false"
                     android:focusableInTouchMode="true"
                     android:fontFamily="@font/roboto_medium"
                     android:inputType="none"
@@ -234,7 +234,7 @@
                     android:textSize="@dimen/sp_14" />
 
                 <ImageView
-                    android:id="@+id/barcode_dlt"
+                    android:id="@+id/barcodeDelete"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -242,14 +242,14 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/pquantity_ln"
+                android:id="@+id/llPquantity"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
                 android:orientation="horizontal">
 
                 <EditText
-                    android:id="@+id/product_quantity"
+                    android:id="@+id/labelQuantity"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -262,6 +262,7 @@
                     android:paddingTop="@dimen/dp_10"
                     android:paddingBottom="@dimen/dp_10"
                     android:text=""
+                    android:enabled="false"
                     android:textColor="@color/primary_color"
                     android:textColorHint="@color/inventory_hint"
                     android:textSize="@dimen/sp_14" />
@@ -273,7 +274,6 @@
                     android:layout_marginStart="@dimen/dp_22"
                     android:layout_weight="1"
                     android:backgroundTint="@color/grey"
-                    android:enabled="false"
                     android:focusableInTouchMode="true"
                     android:fontFamily="@font/roboto_medium"
                     android:inputType="none"
@@ -283,7 +283,7 @@
                     android:textSize="@dimen/sp_14" />
 
                 <ImageView
-                    android:id="@+id/quatity_dlt"
+                    android:id="@+id/quantityDelete"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -291,14 +291,14 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/pOther"
+                android:id="@+id/llPOther"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
                 android:orientation="horizontal">
 
                 <EditText
-                    android:id="@+id/product_other"
+                    android:id="@+id/labelOthers"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -322,7 +322,6 @@
                     android:layout_marginStart="@dimen/dp_22"
                     android:layout_weight="1"
                     android:backgroundTint="@color/grey"
-                    android:enabled="false"
                     android:focusableInTouchMode="true"
                     android:fontFamily="@font/roboto_medium"
                     android:inputType="none"
@@ -332,16 +331,18 @@
                     android:textSize="@dimen/sp_14" />
 
                 <ImageView
+                    android:id="@+id/othersDelete"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:background="@drawable/ic_remove_selected"/>
 
-
             </LinearLayout>
 
         </LinearLayout>
+<!--
     </androidx.cardview.widget.CardView>
+-->
       <ImageView
           android:id="@+id/dlt_cross"
         android:layout_width="wrap_content"

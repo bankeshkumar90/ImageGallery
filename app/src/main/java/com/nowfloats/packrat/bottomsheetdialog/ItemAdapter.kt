@@ -9,7 +9,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.nowfloats.packrat.R
 
-class ItemAdapter(private val mItems: List<Item>, private var mListener: ItemListener?) :
+class ItemAdapter(private val mItems: List<Item>, private var mListener: ItemListener?,var recylerPosition: Int) :
     RecyclerView.Adapter<ItemAdapter.ViewHolder?>() {
     fun setListener(listener: ItemListener?) {
         mListener = listener
@@ -43,7 +43,7 @@ class ItemAdapter(private val mItems: List<Item>, private var mListener: ItemLis
 
         override fun onClick(v: View) {
             if (mListener != null) {
-                mListener!!.onItemClick(item)
+                mListener!!.onItemClick(item, recylerPosition)
             }
         }
 
@@ -55,6 +55,6 @@ class ItemAdapter(private val mItems: List<Item>, private var mListener: ItemLis
     }
 
     interface ItemListener {
-        fun onItemClick(item: Item?)
+        fun onItemClick(item: Item?, position: Int)
     }
 }
