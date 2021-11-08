@@ -194,6 +194,9 @@ class ProductDataFragment : Fragment(), ProdClickListener {
         dataModel.deleteViewOnClick(position!!)
     }
 
+    override fun onItemDeleteAtPos(position: Int, productList: ArrayList<metaDataBeanItem>) {
+     }
+
     fun setTabclickRefresh(tabPosition: Int) {
         try {
             var selectedTabProducts = dataModel.fragmentMapObj.get(tabPosition)

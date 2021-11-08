@@ -83,30 +83,40 @@ class ProductDataAdapter(
             productList[position].priceVisible = false
             productList[position].price = ""
             productList[position].priceValue = ""
+            holder.priceValue.setText("")
+            clickListener.onItemDeleteAtPos(position,productList)
             notifyDataSetChanged()
         })
         holder.productDelete.setOnClickListener(View.OnClickListener {
             productList[position].productVisible = false
             productList[position].productName = ""
             productList[position].productValue = ""
+            holder.productValue.setText("")
+            clickListener.onItemDeleteAtPos(position,productList)
             notifyDataSetChanged()
         })
         holder.barcodeDelete.setOnClickListener(View.OnClickListener {
             productList[position].barcodeVisbile = false
             productList[position].barcode = ""
             productList[position].barcodeValue = ""
+            holder.valueBarcode.setText("")
+            clickListener.onItemDeleteAtPos(position,productList)
             notifyDataSetChanged()
         })
         holder.quantityDelete.setOnClickListener(View.OnClickListener {
             productList[position].quantityVisible = false
             productList[position].quantity = ""
             productList[position].quantityValue = ""
+            holder.quantityValue.setText("")
+            clickListener.onItemDeleteAtPos(position,productList)
             notifyDataSetChanged()
         })
         holder.othersDelete.setOnClickListener(View.OnClickListener {
             productList[position].othersVisible = false
             productList[position].othersName = ""
             productList[position].othersValue = ""
+            holder.othersValue.setText("")
+            clickListener.onItemDeleteAtPos(position,productList)
             notifyDataSetChanged()
          })
 

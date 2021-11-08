@@ -70,7 +70,7 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
     private var addclick_position = 0
     private lateinit var viewObj:View
     private var previousSelectedPosition = 0
-    private val DELAY = 200L
+    private val DELAY = 500L
     /*   private var mAdapter: ItemAdapter? = null
        private var mBehavior: BottomSheetBehavior<*>? = null
        private var mBottomSheetDialog: BottomSheetDialog? = null
@@ -372,6 +372,9 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
 
     override fun onClickDelete(position: Int?) {
         //will delete prd frag instance
+        if (position != null) {
+            saveCurrentData(position)
+        }
     }
 
     fun setObserver() {
@@ -395,13 +398,18 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
             prodAdapter.deleteview(it)
         })
         addViewModel.getData.observe(this, Observer {
-            addViewModel.getProductData.value = prodAdapter.getProductFormData()
+            //addViewModel.getProductData.value = prodAdapter.getProductFormData()
         })
         //setRecyclerView(productList)
     }
     override fun onClickItemDelete(position: Int?) {
         addViewModel.deleteViewOnClick(position!!)
     }
+
+    override fun onItemDeleteAtPos(position: Int, productList: ArrayList<metaDataBeanItem>) {
+       saveCurrentData(previousSelectedPosition)
+    }
+
     @SuppressLint("WrongConstant")
     override fun onClickAdd(position: Int) {
 //        bottomViewDialog = BottomViewAddProductData()
@@ -451,20 +459,25 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
     fun saveCurrentData(position: Int){
         for (i in 0 until prodAdapter.productList.size){
             try {
-                //val view = viewObj.productListItem.getChildAt(i)
-                val productValue: EditText = viewObj.productListItem.getChildAt(i).findViewById(R.id.valueProduct)
+                val view = viewObj.productListItem.findViewHolderForLayoutPosition(i)
+                //val productValue: EditText = view.productListItem.getChildAt(i).findViewById(R.id.valueProduct)
+                val productValue: EditText = view?.itemView?.findViewById(R.id.valueProduct)!!
                 prodAdapter.productList[i].productValue = productValue.text.toString()
 
-                val priceValue: EditText = viewObj.productListItem.getChildAt(i).findViewById(R.id.valuePrice)
+                //val priceValue: EditText = viewObj.productListItem.getChildAt(i).findViewById(R.id.valuePrice)
+                val priceValue: EditText = view?.itemView?.findViewById(R.id.valuePrice)
                 prodAdapter.productList[i].priceValue = priceValue.text.toString()
 
-                val barCodeValue: EditText = viewObj.productListItem.getChildAt(i).findViewById(R.id.valueBarcode)
+                //val barCodeValue: EditText = viewObj.productListItem.getChildAt(i).findViewById(R.id.valueBarcode)
+                val barCodeValue: EditText = view?.itemView?.findViewById(R.id.valueBarcode)
                 prodAdapter.productList[i].barcodeValue = barCodeValue.text.toString()
 
-                val quantityValue: EditText = viewObj.productListItem.getChildAt(i).findViewById(R.id.valueQuantity)
+                //val quantityValue: EditText = viewObj.productListItem.getChildAt(i).findViewById(R.id.valueQuantity)
+                val quantityValue: EditText = view?.itemView?.findViewById(R.id.valueQuantity)
                 prodAdapter.productList[i].quantityValue = quantityValue.text.toString()
 
-                val othersValue: EditText = viewObj.productListItem.getChildAt(i).findViewById(R.id.valueOthers)
+                //val othersValue: EditText = viewObj.productListItem.getChildAt(i).findViewById(R.id.valueOthers)
+                val othersValue: EditText = view?.itemView?.findViewById(R.id.valueOthers)
                 prodAdapter.productList[i].othersValue = othersValue.text.toString()
             }catch (e:Exception){
                 e.printStackTrace()
