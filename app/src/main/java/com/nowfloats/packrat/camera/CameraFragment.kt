@@ -95,7 +95,6 @@ class CameraFragment : Fragment() {
         imagePreview.arguments = bundle
         val fragmentTransaction = fragmentManager!!.beginTransaction()
         fragmentTransaction.add(R.id.fram_dashboard, imagePreview, "ImagePreview").commit()
-
     }
 
 

@@ -121,7 +121,7 @@
                     android:textSize="@dimen/sp_14" />
 
                 <EditText
-                    android:id="@+id/variant_edittext"
+                    android:id="@+id/valueProduct"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dp_22"
@@ -129,8 +129,9 @@
                     android:backgroundTint="@color/grey"
                     android:focusableInTouchMode="true"
                     android:fontFamily="@font/roboto_medium"
-                    android:inputType="text"
+                    android:digits="@string/regex_input"
                     android:text=""
+                    android:maxLines="1"
                     android:textColor="@color/primary_color"
                     android:textColorHint="@color/inventory_hint"
                     android:textSize="@dimen/sp_14" />
@@ -170,7 +171,7 @@
                     android:textSize="@dimen/sp_14" />
 
                 <EditText
-                    android:id="@+id/edt_price"
+                    android:id="@+id/valuePrice"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dp_22"
@@ -178,8 +179,9 @@
                     android:backgroundTint="@color/grey"
                     android:focusableInTouchMode="true"
                     android:fontFamily="@font/roboto_medium"
-                    android:inputType="none"
+                    android:inputType="number"
                     android:text=""
+                    android:maxLines="1"
                     android:textColor="@color/primary_color"
                     android:textColorHint="@color/inventory_hint"
                     android:textSize="@dimen/sp_14" />
@@ -219,7 +221,7 @@
                     android:textSize="@dimen/sp_14" />
 
                 <EditText
-                    android:id="@+id/edt_barcode"
+                    android:id="@+id/valueBarcode"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dp_22"
@@ -227,8 +229,8 @@
                     android:backgroundTint="@color/grey"
                     android:focusableInTouchMode="true"
                     android:fontFamily="@font/roboto_medium"
-                    android:inputType="none"
-                    android:text=""
+                    android:digits="@string/regex_input"
+                    android:maxLines="1"                    android:text=""
                     android:textColor="@color/primary_color"
                     android:textColorHint="@color/inventory_hint"
                     android:textSize="@dimen/sp_14" />
@@ -268,7 +270,7 @@
                     android:textSize="@dimen/sp_14" />
 
                 <EditText
-                    android:id="@+id/edt_quantity"
+                    android:id="@+id/valueQuantity"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dp_22"
@@ -276,7 +278,7 @@
                     android:backgroundTint="@color/grey"
                     android:focusableInTouchMode="true"
                     android:fontFamily="@font/roboto_medium"
-                    android:inputType="none"
+                    android:inputType="number"
                     android:text=""
                     android:textColor="@color/primary_color"
                     android:textColorHint="@color/inventory_hint"
@@ -316,7 +318,7 @@
                     android:textSize="@dimen/sp_14" />
 
                 <EditText
-                    android:id="@+id/edt_other"
+                    android:id="@+id/valueOthers"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dp_22"
@@ -324,8 +326,9 @@
                     android:backgroundTint="@color/grey"
                     android:focusableInTouchMode="true"
                     android:fontFamily="@font/roboto_medium"
-                    android:inputType="none"
+                    android:digits="@string/regex_input"
                     android:text=""
+                    android:maxLines="1"
                     android:textColor="@color/primary_color"
                     android:textColorHint="@color/inventory_hint"
                     android:textSize="@dimen/sp_14" />

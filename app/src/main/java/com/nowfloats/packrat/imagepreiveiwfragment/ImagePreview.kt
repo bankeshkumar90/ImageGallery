@@ -78,8 +78,13 @@ class ImagePreview : Fragment(), ClickListener {
     }
 
     private fun sendAddproductScreen() {
+        val bundle = Bundle()
+        bundle.putStringArrayList(AppConstant.IMAGE_LIST, imagePathList )
+        val addProduct = AddProduct()
+        addProduct.arguments = bundle
+
         val ft: FragmentTransaction = fragmentManager!!.beginTransaction()
-        ft.replace(R.id.fram_dashboard, AddProduct())
+        ft.replace(R.id.fram_dashboard, addProduct)
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
         ft.addToBackStack(null)
         ft.commit()

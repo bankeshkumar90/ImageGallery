@@ -6,6 +6,7 @@ import android.provider.Settings
 
 class AppConstant {
     companion object{
+        const val VIEW_DELAY: Long = 200L
         const val APP_FOLDER_NAME = "PackRat"
         const val APP_BASE_URL = "app_end_point_will_go_here"
         const val IMAGE_LIST = "imagePathList"

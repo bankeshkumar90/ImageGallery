@@ -1,28 +1,41 @@
 package com.nowfloats.packrat.addjobs
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import android.view.*
+import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.nowfloats.packrat.R
+import com.nowfloats.packrat.bottomsheetdialog.BottomViewDialog
+import com.nowfloats.packrat.bottomsheetdialog.FullBottomSheetDialogFragment
 import com.nowfloats.packrat.clickInterface.ClicTabItemListener
+import com.nowfloats.packrat.clickInterface.ClickListener
+import com.nowfloats.packrat.clickInterface.ProdClickListener
 import com.nowfloats.packrat.databaserepository.MyRepository
 import com.nowfloats.packrat.homescreen.MyApplication
 import com.nowfloats.packrat.imageViewModel.MyViewModel
 import com.nowfloats.packrat.imageViewModel.ViewModelFactory
+import com.nowfloats.packrat.imagelistadapter.ImageAdapter
 import com.nowfloats.packrat.network.ApiService
 import com.nowfloats.packrat.network.Network
 import com.nowfloats.packrat.network.ResponseDTO
 import com.nowfloats.packrat.roomdatabase.EntityClass
 import com.nowfloats.packrat.utils.AppConstant
 import kotlinx.android.synthetic.main.fragment_add_product.*
+import kotlinx.android.synthetic.main.fragment_add_product.view.*
+import kotlinx.android.synthetic.main.fragment_image_preview.*
+import kotlinx.android.synthetic.main.product_item.*
+import kotlinx.android.synthetic.main.product_item.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -38,19 +51,26 @@ import retrofit2.Response
 import java.io.File
 
 
-class AddProduct : Fragment(), ClicTabItemListener {
+class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickListener {
     private lateinit var addViewModel: AddProductViewModel
     lateinit var viewModel: MyViewModel
     lateinit var viewModelFactory: ViewModelFactory
     lateinit var myApplication: MyApplication
     lateinit var myRepository: MyRepository
 
-    //    private lateinit var imageAdapter: AddProductAdapter
     private var imageList = emptyList<EntityClass>()
     var tabLayout: TabLayout? = null
     var viewPager: ViewPager? = null
     var pagerAdapter: AddPagerAdapter? = null
-
+    private var imagePathList = ArrayList<String>()
+    private lateinit var imageAdapter: ImageAdapter
+    private lateinit var bottomViewDialog: FullBottomSheetDialogFragment
+    private var isclickBottomView = false
+    private lateinit var prodAdapter: ProductDataAdapter
+    private var addclick_position = 0
+    private lateinit var viewObj:View
+    private var previousSelectedPosition = 0
+    private val DELAY = 200L
     /*   private var mAdapter: ItemAdapter? = null
        private var mBehavior: BottomSheetBehavior<*>? = null
        private var mBottomSheetDialog: BottomSheetDialog? = null
@@ -77,11 +97,15 @@ class AddProduct : Fragment(), ClicTabItemListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initViews()
+        viewObj = view
+        imagePathList = arguments?.getStringArrayList(AppConstant.IMAGE_LIST) as ArrayList<String>
+        initViews(view)
 //        bindBottomView(view)
-        setRecyclerView()
         btn_add_product.setOnClickListener {
-            addViewModel.addViewOnClick()
+            saveCurrentData(previousSelectedPosition)
+            Handler().postDelayed({
+                addViewModel.addViewOnClick()
+            },DELAY)
             //showBottomSheetView()
         }
         //showBottomSheetDialog()
@@ -182,17 +206,31 @@ class AddProduct : Fragment(), ClicTabItemListener {
         addViewModel.getDataForm()
     }
 
-    private fun initViews() {
+    private fun initViews(view: View) {
         myApplication = activity?.application as MyApplication
         myRepository = myApplication.myRepository
         imageList = arrayListOf<EntityClass>()
         viewModelFactory = ViewModelFactory(myRepository)
         viewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(MyViewModel::class.java)
-        viewPager = view?.findViewById(R.id.add_fragment)
-        tabLayout = view?.findViewById(R.id.sliding_tabs)
-        setCustomviewPager()
+        //viewPager = view?.findViewById(R.id.add_fragment)
+        //tabLayout = view?.findViewById(R.id.sliding_tabs)
+        //setCustomviewPager()
+        initHeaderItems(view)
     }
+    private fun initHeaderItems(view: View){
+        val linearLayoutManager =
+            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        imageAdapter = ImageAdapter( this, imagePathList)
+        view.tab_recycler.apply {
+            layoutManager = linearLayoutManager
+            adapter = imageAdapter
+        }
+        setProductRecyclerView(ArrayList<metaDataBeanItem>())
+        setObserver()
+    }
+
+
 
     private fun setCustomviewPager() {
         viewModel.displayImage().observe(this, androidx.lifecycle.Observer {
@@ -233,8 +271,8 @@ class AddProduct : Fragment(), ClicTabItemListener {
     private fun setupViewPager(adapter: AddPagerAdapter, imageList: List<EntityClass>) {
         for (i in 0 until imageList.size) {
             var list:List<Int> = ArrayList<Int>()
-            val f1 = ProductDataFragment.newInstance(context!!, i, list)
-            adapter.addFragment(f1)
+            //val f1 = ProductDataFragment.newInstance(context!!, i, list)
+            //adapter.addFragment(f1)
         }
         /*val f2 = AddFragment.newInstance("Dashboard")
         adapter.addFragment(f2, "Dashboard")
@@ -243,14 +281,7 @@ class AddProduct : Fragment(), ClicTabItemListener {
         adapter.addFragment(f3, "Profile")*/
     }
 
-    private fun setRecyclerView() {
-        /*val linearLayoutManager =
-            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        tab_recycler.apply {
-            layoutManager = linearLayoutManager
-            adapter = imageAdapter
-        }*/
-    }
+
 
     override fun onClickCross(position: Int?) {
         CoroutineScope(Dispatchers.IO).launch {
@@ -333,6 +364,118 @@ class AddProduct : Fragment(), ClicTabItemListener {
             e.printStackTrace()
         }
     }
+
+    override fun onClick(position: Int) {
+        //will add prod fragment instance here -  saveCurrentWithOldPosition(oldPosition:Int)
+        shelfSelected(position)
+    }
+
+    override fun onClickDelete(position: Int?) {
+        //will delete prd frag instance
+    }
+
+    fun setObserver() {
+        addViewModel.clickadd.observe(this, Observer {
+            prodAdapter.updateList(metaDataBeanItem())
+        })
+        addViewModel.addBottomClick.observe(this, Observer {
+            if (isclickBottomView) {
+                saveCurrentData(previousSelectedPosition)
+                Handler().postDelayed({
+                    val viewHolder: ProductDataAdapter.PickerViewHolder? = viewObj.productListItem.findViewHolderForAdapterPosition(addclick_position) as ProductDataAdapter.PickerViewHolder?
+                    prodAdapter.setFormView(it!!.mTitle, viewHolder!!, addclick_position)
+                    isclickBottomView = false
+                }, DELAY)
+            }
+
+            /* Toast.makeText(context!!, "" + it?.mTitle, Toast.LENGTH_LONG)
+                 .show()*/
+        })
+        addViewModel.clickdeleteview.observe(this, Observer {
+            prodAdapter.deleteview(it)
+        })
+        addViewModel.getData.observe(this, Observer {
+            addViewModel.getProductData.value = prodAdapter.getProductFormData()
+        })
+        //setRecyclerView(productList)
+    }
+    override fun onClickItemDelete(position: Int?) {
+        addViewModel.deleteViewOnClick(position!!)
+    }
+    @SuppressLint("WrongConstant")
+    override fun onClickAdd(position: Int) {
+//        bottomViewDialog = BottomViewAddProductData()
+        println("values>>>0>$position")
+        addclick_position = position
+        isclickBottomView = true
+        bottomViewDialog = FullBottomSheetDialogFragment(position)
+        bottomViewDialog.setStyle(0, R.style.BottomSheetDialog)
+        bottomViewDialog.show(fragmentManager!!, BottomViewDialog.TAG)
+    }
+
+    private fun setProductRecyclerView(prducts :ArrayList<metaDataBeanItem>) {
+        try {
+            val linearLayoutManager =
+                LinearLayoutManager(context!!, LinearLayoutManager.VERTICAL, false)
+            linearLayoutManager.setReverseLayout(true)
+            viewObj.productListItem.layoutManager = linearLayoutManager
+            prodAdapter = ProductDataAdapter(context!!, this, prducts)
+            viewObj.productListItem.adapter = prodAdapter
+            prodAdapter.setData(prducts!!)
+            prodAdapter.notifyDataSetChanged()
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
+    }
+    private fun updateRecylerView(prducts :ArrayList<metaDataBeanItem>){
+        prodAdapter = ProductDataAdapter(context!!, this, prducts)
+        viewObj.productListItem.adapter = prodAdapter
+        prodAdapter.setData(prducts!!)
+        prodAdapter.notifyDataSetChanged()
+    }
+    fun shelfSelected(position: Int?){
+        saveCurrentData(previousSelectedPosition)
+        if(previousSelectedPosition==position)
+            return
+        Handler().postDelayed({
+            previousSelectedPosition = position!!
+            if(addViewModel.fragmentMapObj.get(position)==null)
+                setProductRecyclerView(ArrayList<metaDataBeanItem>())
+            else {
+                updateRecylerView(addViewModel.fragmentMapObj.get(position)!!)
+            }
+        }, DELAY)
+
+    }
+
+    fun saveCurrentData(position: Int){
+        for (i in 0 until prodAdapter.productList.size){
+            try {
+                //val view = viewObj.productListItem.getChildAt(i)
+                val productValue: EditText = viewObj.productListItem.getChildAt(i).findViewById(R.id.valueProduct)
+                prodAdapter.productList[i].productValue = productValue.text.toString()
+
+                val priceValue: EditText = viewObj.productListItem.getChildAt(i).findViewById(R.id.valuePrice)
+                prodAdapter.productList[i].priceValue = priceValue.text.toString()
+
+                val barCodeValue: EditText = viewObj.productListItem.getChildAt(i).findViewById(R.id.valueBarcode)
+                prodAdapter.productList[i].barcodeValue = barCodeValue.text.toString()
+
+                val quantityValue: EditText = viewObj.productListItem.getChildAt(i).findViewById(R.id.valueQuantity)
+                prodAdapter.productList[i].quantityValue = quantityValue.text.toString()
+
+                val othersValue: EditText = viewObj.productListItem.getChildAt(i).findViewById(R.id.valueOthers)
+                prodAdapter.productList[i].othersValue = othersValue.text.toString()
+            }catch (e:Exception){
+                e.printStackTrace()
+            }
+        }
+        addViewModel.updateFragmentIndex(position, prodAdapter.productList)
+    }
+
+}
+
+fun Bundle.putParcelable(requestType: String, get: ArrayList<metaDataBeanItem>?) {
 
 }
 

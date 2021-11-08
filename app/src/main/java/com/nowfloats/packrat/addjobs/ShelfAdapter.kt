@@ -18,12 +18,12 @@ import com.nowfloats.packrat.clickInterface.ProdClickListener
 import com.nowfloats.packrat.roomdatabase.ProductFormData
 import kotlinx.android.synthetic.main.product_data.view.*
 
-class ProductDataAdapter(
+class ShelfAdapter(
     var context: Context,
     private val clickListener: ProdClickListener,
     var productList: ArrayList<metaDataBeanItem>
 ) :
-    RecyclerView.Adapter<ProductDataAdapter.PickerViewHolder>() {
+    RecyclerView.Adapter<ShelfAdapter.PickerViewHolder>() {
     private lateinit var ln: LinearLayout
 
     //public var viewList = ArrayList<Int>()
@@ -41,72 +41,52 @@ class ProductDataAdapter(
         holder.setData(position)
         if(productList[position].productVisible==false){
             holder.ll_pname.visibility = View.GONE
-        }else {
+        }else
             holder.ll_pname.visibility = View.VISIBLE
-            holder.labelProduct.setText(productList[position].productName)
-            holder.productValue.setText(productList[position].productValue)
-        }
 
         if(productList[position].priceVisible==false){
             holder.ll_pprice.visibility = View.GONE
-        }else {
+        }else
             holder.ll_pprice.visibility = View.VISIBLE
-            holder.labelPrice.setText(productList[position].price)
-            holder.priceValue.setText(productList[position].priceValue)
-        }
 
         if(productList[position].barcodeVisbile==false){
             holder.ll_barcode.visibility = View.GONE
-        }else {
+        }else
             holder.ll_barcode.visibility = View.VISIBLE
-            holder.labelBarcode.setText(productList[position].barcode)
-            holder.valueBarcode.setText(productList[position].barcodeValue)
-        }
 
         if(productList[position].quantityVisible==false){
             holder.llPquantity.visibility = View.GONE
-        }else {
-            holder.labelQuantity.setText(productList[position].quantity)
-            holder.quantityValue.setText(productList[position].quantityValue)
+        }else
             holder.llPquantity.visibility = View.VISIBLE
-        }
 
         if(productList[position].othersVisible==false){
             holder.llPOther.visibility = View.GONE
-        }else {
+        }else
             holder.llPOther.visibility = View.VISIBLE
-            holder.labelOthers.setText(productList[position].othersName)
-            holder.othersValue.setText(productList[position].othersValue)
-        }
 
         holder.priceDelete.setOnClickListener(View.OnClickListener {
             productList[position].priceVisible = false
             productList[position].price = ""
-            productList[position].priceValue = ""
             notifyDataSetChanged()
         })
         holder.productDelete.setOnClickListener(View.OnClickListener {
             productList[position].productVisible = false
             productList[position].productName = ""
-            productList[position].productValue = ""
             notifyDataSetChanged()
         })
         holder.barcodeDelete.setOnClickListener(View.OnClickListener {
             productList[position].barcodeVisbile = false
             productList[position].barcode = ""
-            productList[position].barcodeValue = ""
             notifyDataSetChanged()
         })
         holder.quantityDelete.setOnClickListener(View.OnClickListener {
             productList[position].quantityVisible = false
             productList[position].quantity = ""
-            productList[position].quantityValue = ""
             notifyDataSetChanged()
         })
         holder.othersDelete.setOnClickListener(View.OnClickListener {
             productList[position].othersVisible = false
             productList[position].othersName = ""
-            productList[position].othersValue = ""
             notifyDataSetChanged()
          })
 
@@ -139,38 +119,36 @@ class ProductDataAdapter(
             e.printStackTrace()
         }
     }
-    fun updateFormView(selectedValue: String, position: Int){
+
+    @SuppressLint("NewApi")
+    fun setFormView(selectedValue: String, holder: PickerViewHolder, position: Int) {
+        pholder = holder
         if(selectedValue.equals(context.resources.getString(R.string.product))){
             productList[position].productVisible = true
             productList[position].productName = selectedValue
             pholder?.labelProduct?.setText(selectedValue)
-        }
+         }
         if(selectedValue.equals(context.resources.getString(R.string.price))){
             productList[position].priceVisible = true
             productList[position].price = selectedValue
             pholder?.labelPrice?.setText(selectedValue)
-        }
+         }
         if(selectedValue.equals(context.resources.getString(R.string.barcode))){
             productList[position].barcodeVisbile = true
             productList[position].barcode = selectedValue
             pholder?.labelBarcode?.setText(selectedValue)
-        }
+         }
         if(selectedValue.equals(context.resources.getString(R.string.quantity))){
             productList[position].quantityVisible = true
             productList[position].quantity = selectedValue
             pholder?.labelQuantity?.setText(selectedValue)
-        }
+         }
         if(selectedValue.equals(context.resources.getString(R.string.other))){
             productList[position].othersVisible = true
             productList[position].othersName = selectedValue
             pholder?.labelOthers?.setText(selectedValue)
-        }
+         }
         notifyDataSetChanged()
-    }
-    @SuppressLint("NewApi")
-    fun setFormView(selectedValue: String, holder: PickerViewHolder, position: Int) {
-        pholder = holder
-        updateFormView(selectedValue, position)
     }
 
 
@@ -198,12 +176,6 @@ class ProductDataAdapter(
         var labelQuantity: EditText
         var labelOthers: EditText
 
-        var productValue: EditText
-        var priceValue: EditText
-        var valueBarcode: EditText
-        var quantityValue: EditText
-        var othersValue: EditText
-
         init {
             add_prop_id = itemView.findViewById(R.id.add_prop_id)
             add_form = itemView.findViewById(R.id.ln_form)
@@ -226,12 +198,6 @@ class ProductDataAdapter(
             labelBarcode = itemView.findViewById(R.id.labelBarcode)
             labelQuantity = itemView.findViewById(R.id.labelQuantity)
             labelOthers = itemView.findViewById(R.id.labelOthers)
-
-             productValue =itemView.findViewById(R.id.valueProduct)
-             priceValue = itemView.findViewById(R.id.valuePrice)
-             valueBarcode = itemView.findViewById(R.id.valueBarcode)
-             quantityValue = itemView.findViewById(R.id.valueQuantity)
-             othersValue = itemView.findViewById(R.id.valueOthers)
 
             add_prop_id.setOnClickListener { v ->
 

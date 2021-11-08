@@ -2,6 +2,7 @@ package com.nowfloats.packrat.addjobs
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent.getIntent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -17,6 +18,7 @@ import com.nowfloats.packrat.R
 import com.nowfloats.packrat.bottomsheetdialog.BottomViewDialog
 import com.nowfloats.packrat.bottomsheetdialog.FullBottomSheetDialogFragment
 import com.nowfloats.packrat.clickInterface.ProdClickListener
+import com.nowfloats.packrat.utils.AppConstant
 import com.nowfloats.packrat.utils.SharedPreferencesManager
 import kotlinx.android.synthetic.main.product_item.*
 import kotlinx.android.synthetic.main.product_item.view.*
@@ -51,6 +53,14 @@ class ProductDataFragment : Fragment(), ProdClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         dataModel = ViewModelProviders.of(requireActivity()).get(AddProductViewModel::class.java)
+        try {
+            val items = arguments?.getParcelable<metaDataBeanItem>(AppConstant.REQUEST_TYPE)
+            val item = arguments?.getParcelable<metaDataBeanItem>(AppConstant.REQUEST_TYPE) as ArrayList<metaDataBeanItem>
+            productList = items as ArrayList<metaDataBeanItem>
+
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
         if (getArguments() != null) {
             /*if (allProducts!!.size > 0)
                 allProducts!!.clear()
@@ -81,6 +91,11 @@ class ProductDataFragment : Fragment(), ProdClickListener {
         setRecyclerView(productList)
         setObserver()
         return view
+    }
+
+    override fun onPause() {
+        super.onPause()
+        //will update after test
     }
 
     fun setObserver() {
@@ -142,7 +157,7 @@ class ProductDataFragment : Fragment(), ProdClickListener {
         fun newInstance(
             ctx: Context,
             tabPosition: Int,
-            pList: List<Int>
+            pList: ArrayList<metaDataBeanItem>
         ): ProductDataFragment {
             /*  val args = Bundle()
               args.putInt(Positionval, tabPosition)
@@ -153,7 +168,7 @@ class ProductDataFragment : Fragment(), ProdClickListener {
             val fragment = ProductDataFragment()
             fragment.ctx = ctx
             val args = Bundle()
-            args.putIntegerArrayList(ARG_PRODUCTS, pList as ArrayList<Int>)
+            args.putParcelable(AppConstant.REQUEST_TYPE, pList as ArrayList<metaDataBeanItem>)
             args.putInt("KEY_POSITION", tabPosition)
             fragment.arguments = args
             return fragment

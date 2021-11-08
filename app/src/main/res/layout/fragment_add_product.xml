@@ -47,17 +47,18 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/top_lin"
             app:tabGravity="fill"
-            app:tabMode="scrollable" />
+            app:tabMode="scrollable"
+            android:visibility="gone"/>
         <!--  app:tabIndicatorColor="@color/colorAccent"
           app:tabMode="fixed"
           app:tabSelectedTextColor="@color/colorPrimary"
           app:tabTextColor="@color/colorAccent"-->
-        <!--<androidx.recyclerview.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/tab_recycler"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/top_lin" />-->
+            app:layout_constraintTop_toBottomOf="@+id/top_lin" />
 
         <LinearLayout
             android:id="@+id/add_lin"
@@ -94,6 +95,12 @@
              app:layout_constraintEnd_toEndOf="parent"
              app:layout_constraintStart_toStartOf="parent"
              app:layout_constraintTop_toBottomOf="@+id/add_lin" />-->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/productListItem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/top_lin" />
 
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/add_fragment"
