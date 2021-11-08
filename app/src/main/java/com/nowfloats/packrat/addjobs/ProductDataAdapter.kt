@@ -112,8 +112,12 @@ class ProductDataAdapter(
     }
 
     fun deleteview(position: Int) {
-        productList!!.removeAt(position)
-        notifyItemInserted(position)
+        try{
+            productList!!.removeAt(position)
+            notifyDataSetChanged()
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
     }
 
     @SuppressLint("NewApi")

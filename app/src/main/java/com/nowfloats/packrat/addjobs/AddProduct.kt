@@ -214,7 +214,6 @@ class AddProduct : Fragment(), ClicTabItemListener {
                     if (frag != null && frag is ProductDataFragment) {
                         (frag as ProductDataFragment).setTabclickUnselect(tab.position)
                     }
-
                 }
 
                 override fun onTabReselected(tab: TabLayout.Tab) {

@@ -19,6 +19,7 @@ import com.nowfloats.packrat.bottomsheetdialog.FullBottomSheetDialogFragment
 import com.nowfloats.packrat.clickInterface.ProdClickListener
 import com.nowfloats.packrat.utils.SharedPreferencesManager
 import kotlinx.android.synthetic.main.product_item.*
+import kotlinx.android.synthetic.main.product_item.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -46,8 +47,7 @@ class ProductDataFragment : Fragment(), ProdClickListener {
     private var addclick_position = 0
     private var tabPosition = 0
     private var _hasLoadedOnce = false
-
-
+    lateinit var viewObj:View
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         dataModel = ViewModelProviders.of(requireActivity()).get(AddProductViewModel::class.java)
@@ -77,7 +77,8 @@ class ProductDataFragment : Fragment(), ProdClickListener {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater!!.inflate(R.layout.product_item, container, false)
-        prodAdapter = ProductDataAdapter(ctx, this, productList)
+        viewObj = view
+        setRecyclerView(productList)
         setObserver()
         return view
     }
@@ -102,6 +103,7 @@ class ProductDataFragment : Fragment(), ProdClickListener {
         dataModel.getData.observe(this, Observer {
             dataModel.getProductData.value = prodAdapter.getProductFormData()
         })
+        //setRecyclerView(productList)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -110,15 +112,20 @@ class ProductDataFragment : Fragment(), ProdClickListener {
 //        setRecyclerView()
     }
 
-    private fun setRecyclerView() {
-        val linearLayoutManager =
-            LinearLayoutManager(ctx, LinearLayoutManager.VERTICAL, false)
-//        linearLayoutManager.setStackFromEnd(true);
-        linearLayoutManager.setReverseLayout(true);
-        add_recyclerview.layoutManager = linearLayoutManager
-        add_recyclerview.adapter = prodAdapter
-        prodAdapter.setData(productList!!)
-        prodAdapter.notifyDataSetChanged()
+
+    private fun setRecyclerView( prducts :ArrayList<metaDataBeanItem>) {
+        try {
+            val linearLayoutManager =
+                LinearLayoutManager(ctx, LinearLayoutManager.VERTICAL, false)
+            linearLayoutManager.setReverseLayout(true)
+            viewObj.add_recyclerview.layoutManager = linearLayoutManager
+            prodAdapter = ProductDataAdapter(ctx, this, productList)
+            viewObj.add_recyclerview.adapter = prodAdapter
+            prodAdapter.setData(prducts!!)
+            prodAdapter.notifyDataSetChanged()
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
 //        prodAdapter.notifyItemChanged(tabPosition)
 //        prodAdapter.setData(allProducts!!)
         /* add_recyclerview.apply {
@@ -172,13 +179,26 @@ class ProductDataFragment : Fragment(), ProdClickListener {
         dataModel.deleteViewOnClick(position!!)
     }
 
-    public fun setTabclickRefresh(tabPosi: Int) {
-//        prodAdapter.notifyDataSetChanged()
-        if (SharedPreferencesManager(ctx).getListFromLocal("item_$tabPosi") != null)
+    fun setTabclickRefresh(tabPosition: Int) {
+        try {
+            var selectedTabProducts = dataModel.fragmentMapObj.get(tabPosition)
+            if (selectedTabProducts != null) {
+                prodAdapter = ProductDataAdapter(ctx, this, selectedTabProducts)
+                android.os.Handler().postDelayed({
+                    GlobalScope.launch(Dispatchers.Main) {
+                        setRecyclerView(selectedTabProducts)
+                    }
+                }, 500)
+            }
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
+        /*if (SharedPreferencesManager(ctx).getListFromLocal("item_$tabPosi") != null)
             println("chaeck_tab_click>0>  $tabPosi  =  $tabPosition  ${SharedPreferencesManager(ctx).getListFromLocal("item_$tabPosi")!!.size}")
         if (SharedPreferencesManager(ctx).getListFromLocal("item_$tabPosi") != null) {
-            if (productList!!.size>0)
-                productList!!.clear()
+            if (productList!!.size>0){
+            }
+                //productList!!.clear()
             for (i in 0 until SharedPreferencesManager(ctx).getListFromLocal("item_$tabPosi")!!.size) {
                 //productList!!.add(SharedPreferencesManager(ctx).getListFromLocal("item_$tabPosi")!!.get(i)!!)
             }
@@ -189,13 +209,11 @@ class ProductDataFragment : Fragment(), ProdClickListener {
             GlobalScope.launch(Dispatchers.Main) {
                 setRecyclerView()
             }
-        }, 1000)
+        }, 500)*/
     }
 
-    public fun setTabclickUnselect(tabPosi: Int) {
-        //SharedPreferencesManager(ctx).saveListInLocal(prodAdapter!!.viewList, "item_$tabPosi")
-        //prodAdapter!!.viewList?.clear()
-       // println("chaeck_tab_click>1>  $tabPosi  =  $tabPosition  ${SharedPreferencesManager(ctx).getListFromLocal("item_$tabPosi")!!.size}")
+    fun setTabclickUnselect(tabPosition: Int) {
+            dataModel.updateFragmentIndex(tabPosition, prodAdapter.productList)
     }
 
 }
