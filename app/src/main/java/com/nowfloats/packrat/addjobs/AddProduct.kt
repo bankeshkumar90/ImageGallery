@@ -1,6 +1,7 @@
 package com.nowfloats.packrat.addjobs
 
 import android.annotation.SuppressLint
+import android.app.ProgressDialog
 import android.content.ContentUris
 import android.content.Context
 import android.net.Uri
@@ -80,6 +81,8 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
     private val DELAY = 500L
     private var uploadCycleCount = 0
     private var generatedCollectionId = ""
+    var loading: ProgressDialog? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         (activity as AppCompatActivity?)!!.supportActionBar!!.show()
@@ -172,6 +175,8 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
                     t.message?.let {
                         Log.e("Upload error:", it)
                     }
+                    loading?.dismiss()
+                    Toast.makeText(context!!, "" + "Something Went Wrong", Toast.LENGTH_SHORT).show()
                 }
             })
 
@@ -233,7 +238,7 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
 
                     if(product.othersVisible==true){
                         var othersObject= JSONObject()
-                        if(!product.productName.equals("")){
+                        if(!product.othersName.equals("",true)){
                             othersObject.put(product.othersName, product.othersValue)
                             jsonArray.put(othersObject)
                         }
@@ -267,11 +272,12 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
                 response: Response<ApiResponse?>
             ) {
                 Log.v("Saved", ""+response?.body()?.message)
-
+                loading?.dismiss()
                 landToDashBoard()
             }
 
             override fun onFailure(call: Call<ApiResponse?>, t: Throwable) {
+                loading?.dismiss()
                 t.message?.let {
                     Log.e("Upload error:", it)
                 }            }
@@ -285,6 +291,11 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
                 saveCurrentData(previousSelectedPosition)
                 saveProductDatainDb()
                 Handler().postDelayed({
+                    loading = ProgressDialog(viewObj.context!!)
+                    loading!!.setCancelable(true);
+                    loading!!.setMessage(AppConstant.IN_PROGRESS);
+                    loading!!.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                    loading!!.show()
                     generatedCollectionId = AppConstant().getRandomCollectionId(context!!)
                     uploadAllImages()
                     /*val apiService = Network.instance.create(

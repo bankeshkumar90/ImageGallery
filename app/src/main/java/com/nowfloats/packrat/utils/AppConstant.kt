@@ -24,6 +24,7 @@ class AppConstant {
         const val REQUEST_TYPE = "request_type"
         const val CREATED_BY = "bankesh@zibal.com"
         const val CREATED_BY_NAME = "bankesh"
+        const val IN_PROGRESS = "Uploading...."
 
         @JvmStatic
         @SuppressLint("NewApi")
