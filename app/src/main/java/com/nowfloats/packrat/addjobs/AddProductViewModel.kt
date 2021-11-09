@@ -7,6 +7,7 @@ import com.nowfloats.packrat.bottomsheetdialog.Item
 import com.nowfloats.packrat.clickInterface.ProdClickListener
 import com.nowfloats.packrat.roomdatabase.ProductFormData
 import java.io.Serializable
+import java.lang.Exception
 
 class AddProductViewModel(application: Application) : AndroidViewModel(application), Serializable {
     var clickadd: MutableLiveData<Int> = MutableLiveData()
@@ -49,5 +50,51 @@ class AddProductViewModel(application: Application) : AndroidViewModel(applicati
 
     fun updateFragmentIndex(tabPosition: Int, fragmentObj: ArrayList<metaDataBeanItem>){
         fragmentMapObj.put(tabPosition, fragmentObj)
+    }
+
+    fun deletFragmentData(deletedTabPos:Int, totalRemaining:Int): Int{
+        var calculateHeaderMap:HashMap<Int, ArrayList<metaDataBeanItem>> = HashMap<Int, ArrayList<metaDataBeanItem>>()
+        try {
+            fragmentMapObj.get(deletedTabPos)?.clear()
+            if(fragmentMapObj.size>0){
+                    if(deletedTabPos==0){
+                        for ((key, value) in fragmentMapObj) {
+                            if(key!=0) {
+                                calculateHeaderMap.put(key -1 , value)
+                            }
+                        }
+                    }else if(deletedTabPos == totalRemaining){
+                        for ((key, value) in fragmentMapObj) {
+                            if(key!=totalRemaining) {
+                                if(key > deletedTabPos)
+                                    calculateHeaderMap.put(key -1 , value)
+                                else
+                                    calculateHeaderMap.put(key , value)
+                            }
+                        }
+                    }else if(deletedTabPos < totalRemaining){
+                        for ((key, value) in fragmentMapObj) {
+                            if(key!= deletedTabPos) {
+                                if(key > deletedTabPos)
+                                    calculateHeaderMap.put(key -1 , value)
+                                else
+                                    calculateHeaderMap.put(key , value)
+                            }
+                        }
+                    }
+
+
+            }
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
+        finally {
+            fragmentMapObj = calculateHeaderMap
+        }
+
+        return fragmentMapObj.size
+    }
+    fun clearFragmentData(){
+        fragmentMapObj.clear()
     }
 }

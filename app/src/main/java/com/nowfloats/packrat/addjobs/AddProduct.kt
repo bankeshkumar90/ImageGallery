@@ -364,9 +364,32 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
 
     override fun onClickDelete(position: Int?) {
         //will delete prd frag instance
+        var imageDelted = false
         if (position != null) {
-            imageAdapter.deleteImage(position)
+            imageDelted = imageAdapter.deleteImage(position)
         }
+        if(imageDelted==false){
+            return
+        }
+        //first remove from savedfragment then reduce position by 1 if position >0 then set recy pos otherise landdashboard
+
+        if(imageAdapter.itemCount<1){
+            landToDashBoard()
+        }else{
+            addViewModel.deletFragmentData(position!!, imageAdapter.itemCount)
+
+            if(previousSelectedPosition>= imageAdapter.itemCount){
+                previousSelectedPosition = previousSelectedPosition - 1
+            }
+
+            try {
+                imageAdapter.setImageSelected(previousSelectedPosition)
+                setProductRecyclerView(addViewModel.fragmentMapObj.get(previousSelectedPosition)!!)
+            }catch (e:Exception){
+                e.printStackTrace()
+            }
+        }
+        //now cal
     }
 
     fun setObserver() {
@@ -388,6 +411,7 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
         })
         addViewModel.clickdeleteview.observe(this, Observer {
             prodAdapter.deleteview(it)
+            saveCurrentData(previousSelectedPosition)
         })
         addViewModel.saveMetaData.observe(this, Observer {
             //save our local values here
@@ -460,6 +484,7 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
         /*for (fragment in fragmentManager?.getFragments()!!) {
             fragmentManager?.beginTransaction()?.remove(fragment)?.commit()
         }*/
+
         for (fragment in requireActivity().supportFragmentManager.getFragments()) {
             requireActivity().supportFragmentManager.beginTransaction().remove(fragment).commit()
         }
@@ -471,6 +496,8 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
         ft.addToBackStack(null)
         ft.commit()
+        addViewModel?.clearFragmentData()
+        viewModel?.clearViewModelData()
     }
     fun saveCurrentData(position: Int){
         for (i in 0 until prodAdapter.productList.size){

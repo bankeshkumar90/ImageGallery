@@ -74,4 +74,8 @@ class MyViewModel(private val repository: MyRepository) : ViewModel() {
         }
         return null
     }
+    fun clearViewModelData(){
+        imageList.clear()
+        imageArrayList.value?.clear()
+    }
 }
