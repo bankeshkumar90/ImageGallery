@@ -7,7 +7,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class Network {
-    var BASE_URL = "https://imageuploadtogcptriggerbolb20211021131930.azurewebsites.net/"
+    var BASE_URL = "https://imageuploadtogcptriggerbolb20211021131930.azurewebsites.net/api/"
     companion object {
         private val httpLoggingInterceptor = HttpLoggingInterceptor().setLevel(
             HttpLoggingInterceptor.Level.BODY

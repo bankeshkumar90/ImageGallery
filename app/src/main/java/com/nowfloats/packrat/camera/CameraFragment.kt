@@ -106,11 +106,11 @@ class CameraFragment : Fragment() {
         image_uri = context?.contentResolver?.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
 
         val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
             cameraIntent.putExtra("android.intent.extras.LENS_FACING_FRONT", 0);
         } else {
             cameraIntent.putExtra("android.intent.extras.CAMERA_FACING", 0);
-        }
+        }*/
         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, image_uri)
         startActivityForResult(cameraIntent, TAKE_PHOTO_CODE)
     }
@@ -118,6 +118,7 @@ class CameraFragment : Fragment() {
     private fun openGallery(){
         val i = Intent()
         i.type = "image/*"
+        //i.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
         i.action = Intent.ACTION_GET_CONTENT
         // pass the constant to compare it
         // with the returned requestCode

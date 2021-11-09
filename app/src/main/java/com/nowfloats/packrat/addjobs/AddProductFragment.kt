@@ -20,6 +20,7 @@ import com.nowfloats.packrat.databaserepository.MyRepository
 import com.nowfloats.packrat.homescreen.MyApplication
 import com.nowfloats.packrat.imageViewModel.MyViewModel
 import com.nowfloats.packrat.imageViewModel.ViewModelFactory
+import com.nowfloats.packrat.network.ApiResponse
 import com.nowfloats.packrat.network.ApiService
 import com.nowfloats.packrat.network.Network
 import com.nowfloats.packrat.network.ResponseDTO
@@ -136,18 +137,18 @@ class AddProductFragment : Fragment(), ClicTabItemListener, ClickListener {
             )
 
             // finally, execute the request
-            val call: Call<ResponseBody?>? = apiService.upload(description, body)
-            call?.enqueue(object : Callback<ResponseBody?> {
+            val call: Call<ApiResponse?>? = apiService.upload(description, body)
+            call?.enqueue(object : Callback<ApiResponse?> {
                 override fun onResponse(
-                    call: Call<ResponseBody?>,
-                    response: Response<ResponseBody?>
+                    call: Call<ApiResponse?>,
+                    response: Response<ApiResponse?>
                 ) {
                     Log.v("Upload", "success")
                     Toast.makeText(context!!, "" + "File uploaded successfully", Toast.LENGTH_SHORT)
                         .show()
                 }
 
-                override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
+                override fun onFailure(call: Call<ApiResponse?>, t: Throwable) {
                     t.message?.let {
                         Log.e("Upload error:", it)
                     }

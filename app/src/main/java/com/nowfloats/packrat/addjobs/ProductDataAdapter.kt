@@ -116,6 +116,7 @@ class ProductDataAdapter(
             productList[position].othersName = ""
             productList[position].othersValue = ""
             holder.othersValue.setText("")
+            holder.labelOthers.setText("")
             clickListener.onItemDeleteAtPos(position,productList)
             notifyDataSetChanged()
          })
@@ -172,8 +173,8 @@ class ProductDataAdapter(
         }
         if(selectedValue.equals(context.resources.getString(R.string.other))){
             productList[position].othersVisible = true
-            productList[position].othersName = selectedValue
-            pholder?.labelOthers?.setText(selectedValue)
+            productList[position].othersName = ""
+            pholder?.labelOthers?.setText("")
         }
         notifyDataSetChanged()
     }

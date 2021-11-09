@@ -52,4 +52,13 @@ class ImageAdapter(
         positionSeleted = position
         notifyDataSetChanged()
     }
+
+    fun deleteImage(position: Int){
+        try {
+            imagePathList.removeAt(position)
+            notifyDataSetChanged()
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
+    }
 }

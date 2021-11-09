@@ -17,7 +17,7 @@
     <LinearLayout
         android:id="@+id/frame_layout"
         android:layout_width="@dimen/dp_64"
-        android:layout_height="@dimen/dp_70"
+        android:layout_height="72dp"
         android:layout_marginTop="@dimen/dp_10"
         android:layout_marginLeft="@dimen/dp_10"
         app:cardCornerRadius="@dimen/dp_5"
@@ -46,7 +46,8 @@
         <TextView
             android:id="@+id/imgSelected"
             android:layout_width="@dimen/dp_40"
-            android:layout_height="@dimen/dp_3"
+            android:layout_height="@dimen/dp_4"
+            android:layout_marginTop="@dimen/dp_5"
             android:visibility="invisible"
             android:layout_gravity="bottom|center"
             android:background="@color/dashboard_green"

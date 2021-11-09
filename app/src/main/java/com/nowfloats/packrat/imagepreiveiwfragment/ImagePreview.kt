@@ -87,6 +87,7 @@ class ImagePreview : Fragment(), ClickListener {
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
         ft.addToBackStack(null)
         ft.commit()
+
     }
 
     private fun setRecyclerView() {
@@ -125,6 +126,7 @@ class ImagePreview : Fragment(), ClickListener {
     }
 
     override fun onClickDelete(position: Int?) {
+        position?.let { imageAdapter.deleteImage(it) }
         CoroutineScope(Dispatchers.IO).launch {
             viewModel.deleteImageById(position!!)
         }

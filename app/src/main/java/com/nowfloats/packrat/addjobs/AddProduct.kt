@@ -1,19 +1,28 @@
 package com.nowfloats.packrat.addjobs
 
 import android.annotation.SuppressLint
+import android.content.ContentUris
+import android.content.Context
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.os.Handler
+import android.provider.DocumentsContract
+import android.provider.MediaStore
 import android.util.Log
 import android.view.*
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
+import com.google.gson.JsonObject
 import com.nowfloats.packrat.R
 import com.nowfloats.packrat.bottomsheetdialog.BottomViewDialog
 import com.nowfloats.packrat.bottomsheetdialog.FullBottomSheetDialogFragment
@@ -25,9 +34,7 @@ import com.nowfloats.packrat.homescreen.MyApplication
 import com.nowfloats.packrat.imageViewModel.MyViewModel
 import com.nowfloats.packrat.imageViewModel.ViewModelFactory
 import com.nowfloats.packrat.imagelistadapter.ImageAdapter
-import com.nowfloats.packrat.network.ApiService
-import com.nowfloats.packrat.network.Network
-import com.nowfloats.packrat.network.ResponseDTO
+import com.nowfloats.packrat.network.*
 import com.nowfloats.packrat.roomdatabase.EntityClass
 import com.nowfloats.packrat.utils.AppConstant
 import kotlinx.android.synthetic.main.fragment_add_product.*
@@ -41,10 +48,14 @@ import okhttp3.MultipartBody
 import okhttp3.MultipartBody.Part.Companion.createFormData
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
+import org.json.JSONArray
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.File
+import com.google.gson.JsonParser
+import com.nowfloats.packrat.homescreen.DashBoardFragment
 
 
 class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickListener {
@@ -67,11 +78,8 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
     private lateinit var viewObj:View
     private var previousSelectedPosition = 0
     private val DELAY = 500L
-    /*   private var mAdapter: ItemAdapter? = null
-       private var mBehavior: BottomSheetBehavior<*>? = null
-       private var mBottomSheetDialog: BottomSheetDialog? = null
-       private var mDialogBehavior: BottomSheetBehavior<*>? = null*/
-
+    private var uploadCycleCount = 0
+    private var generatedCollectionId = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         (activity as AppCompatActivity?)!!.supportActionBar!!.show()
@@ -117,13 +125,14 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    fun uploadAllImages(imagePathList: List<EntityClass>) {
+    fun uploadAllImages() {
         for (imagepath in imagePathList) {
             Handler().postDelayed({
                 GlobalScope.launch(Dispatchers.Main) {
-                    uploadImageService(imagepath.path.toString())
+                    var actualFilePath = AppConstant.getPath(context!!, Uri.parse(imagepath))
+                    uploadImageService(""+actualFilePath)
                 }
-            }, 1000)
+            }, DELAY)
         }
     }
 
@@ -132,67 +141,158 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
             val apiService = Network.instance.create(
                 ApiService::class.java
             )
-
             val file = File(imagePath)
             val requestBody = RequestBody.create("image/*".toMediaTypeOrNull(), file)
             val part: MultipartBody.Part = createFormData("file", file.name, requestBody)
-
-
-            // MultipartBody.Part is used to send also the actual file name
-
-            //val requestFile: RequestBody = RequestBody.create(context!!.contentResolver.getType(Uri.fromFile( File(imagePath)))!!.toMediaTypeOrNull(), file)
-
             // MultipartBody.Part is used to send also the actual file name
             val body: MultipartBody.Part = createFormData("file", file.name, requestBody)
 
             // add another part within the multipart request
-            val descriptionString = AppConstant().getRandomCollectionId(context!!)
             val description = RequestBody.create(
-                MultipartBody.FORM, descriptionString
+                MultipartBody.FORM, generatedCollectionId
             )
 
             // finally, execute the request
-            val call: Call<ResponseBody?>? = apiService.upload(description, body)
-            call?.enqueue(object : Callback<ResponseBody?> {
+            val call: Call<ApiResponse?>? = apiService.upload(description, body)
+            call?.enqueue(object : Callback<ApiResponse?> {
                 override fun onResponse(
-                    call: Call<ResponseBody?>,
-                    response: Response<ResponseBody?>
+                    call: Call<ApiResponse?>,
+                    response: Response<ApiResponse?>
                 ) {
                     Log.v("Upload", "success")
-                    Toast.makeText(context!!, "" + "File uploaded successfully", Toast.LENGTH_SHORT)
-                        .show()
+                    uploadCycleCount++
+                    if(uploadCycleCount>=imagePathList.size){
+                        Toast.makeText(context!!, "" + "File uploaded successfully", Toast.LENGTH_SHORT)
+                            .show()
+                        initMetaDataUpload(apiService)
+                    }
                 }
 
-                override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
+                override fun onFailure(call: Call<ApiResponse?>, t: Throwable) {
                     t.message?.let {
                         Log.e("Upload error:", it)
                     }
                 }
             })
 
-            /*    apiService.uploadImage(part, "bankesh123")?.enqueue(object : Callback<ResponseDTO> {
-                    override fun onResponse(call: Call<ResponseDTO>, response: Response<ResponseDTO>) {
-                        Toast.makeText(context!!, "" + response.body(), Toast.LENGTH_SHORT)
-                            .show()
-                    }
-
-                    override fun onFailure(call: Call<ResponseDTO>, t: Throwable) {
-                        Toast.makeText(context!!, "" + t.message, Toast.LENGTH_SHORT).show()
-                    }
-                })
-    */
 
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
 
+    private fun initMetaDataUpload(apiService:ApiService){
+        Handler().postDelayed({
+            GlobalScope.launch(Dispatchers.Main) {
+                saveMetaDataToServer(apiService)
+                /*val apiService = Network.instance.create(
+                ApiService::class.java
+                 )*/
+            }
+        }, DELAY)
+    }
+    private fun saveMetaDataToServer(apiService:ApiService){
+        /*val apiService = Network.instance.create(
+            ApiService::class.java
+        )*/
+        var productJSONArray = JSONArray()
+        var requestJSONObject = JSONObject()
+        //var propery :properies
+        //val propertyList = ArrayList<properies>()
+        val productList = ArrayList<products>()
+        try {
+            for (i in 0 until addViewModel.fragmentMapObj.size){
+                val products = addViewModel?.fragmentMapObj?.get(i)
+                for (product in products!!){
+                    var jsonArray = JSONArray()
+                    var jsonObjectProperties = JSONObject()
+
+                    if(product.productVisible==true){
+                        var productObject = JSONObject()
+                        productObject.put(product.productName, product.productValue)
+                        jsonArray.put(productObject)
+                    }
+
+                    if(product.priceVisible==true){
+                        var priceObject = JSONObject()
+                        priceObject.put(product.price, product.priceValue)
+                        jsonArray.put(priceObject)
+                    }
+
+                    if(product.barcodeVisbile==true){
+                        var barCodeObject = JSONObject()
+                        barCodeObject.put(product.barcode, product.barcodeValue)
+                        jsonArray.put(barCodeObject)
+                    }
+
+                    if(product.quantityVisible==true){
+                        var quantityObject = JSONObject()
+                        quantityObject.put(product.quantity, product.quantityValue)
+                        jsonArray.put(quantityObject)
+                    }
+
+                    if(product.othersVisible==true){
+                        var othersObject= JSONObject()
+                        if(!product.productName.equals("")){
+                            othersObject.put(product.othersName, product.othersValue)
+                            jsonArray.put(othersObject)
+                        }
+                    }
+                    if(jsonArray.length()>0) {
+                        jsonObjectProperties.put("properies", jsonArray)
+                        productJSONArray.put(jsonObjectProperties)
+                    }
+                }
+               /* propery = properies(jsonArray)
+                propertyList.add(propery)*/
+            }
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
+        requestJSONObject.put( "CreatedBy",AppConstant.CREATED_BY)
+        requestJSONObject.put( "CreatedByName",AppConstant.CREATED_BY_NAME)
+        requestJSONObject.put( "CollectionId",generatedCollectionId)
+        requestJSONObject.put( "products",productJSONArray)
+
+        val jsonParser = JsonParser()
+        var gsonObject = JsonObject()
+
+        gsonObject = jsonParser.parse(requestJSONObject.toString()) as JsonObject
+
+        val call: Call<ApiResponse?>? = apiService.saveMetaDataToServer(gsonObject)
+
+        call?.enqueue(object : Callback<ApiResponse?> {
+            override fun onResponse(
+                call: Call<ApiResponse?>,
+                response: Response<ApiResponse?>
+            ) {
+                Log.v("Saved", ""+response?.body()?.message)
+
+                landToDashBoard()
+            }
+
+            override fun onFailure(call: Call<ApiResponse?>, t: Throwable) {
+                t.message?.let {
+                    Log.e("Upload error:", it)
+                }            }
+        })
+    }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.upload -> {
                 //Upload image file function goes here - startImageUploadService(getRandomCollectionId())
                 //    uploadAllImages(imageList)
+                saveCurrentData(previousSelectedPosition)
                 saveProductDatainDb()
+                Handler().postDelayed({
+                    generatedCollectionId = AppConstant().getRandomCollectionId(context!!)
+                    uploadAllImages()
+                    /*val apiService = Network.instance.create(
+                    ApiService::class.java
+                     )
+                    saveMetaDataToServer(apiService)*/
+
+                },DELAY)
             }
         }
         return super.onOptionsItemSelected(item)
@@ -254,7 +354,7 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
     override fun onClickDelete(position: Int?) {
         //will delete prd frag instance
         if (position != null) {
-            saveCurrentData(position)
+            imageAdapter.deleteImage(position)
         }
     }
 
@@ -345,7 +445,22 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
         }, DELAY)
 
     }
-
+    fun landToDashBoard(){
+        /*for (fragment in fragmentManager?.getFragments()!!) {
+            fragmentManager?.beginTransaction()?.remove(fragment)?.commit()
+        }*/
+        for (fragment in requireActivity().supportFragmentManager.getFragments()) {
+            requireActivity().supportFragmentManager.beginTransaction().remove(fragment).commit()
+        }
+        (activity as AppCompatActivity?)!!.supportActionBar!!.show()
+        (activity as AppCompatActivity?)!!.supportActionBar!!.setTitle(R.string.app_name)
+        (activity as AppCompatActivity?)!!.supportActionBar!!.setDisplayHomeAsUpEnabled(false)
+        val ft: FragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
+        ft.replace(R.id.fram_dashboard, DashBoardFragment())
+        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+        ft.addToBackStack(null)
+        ft.commit()
+    }
     fun saveCurrentData(position: Int){
         for (i in 0 until prodAdapter.productList.size){
             try {
@@ -369,6 +484,9 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
                 //val othersValue: EditText = viewObj.productListItem.getChildAt(i).findViewById(R.id.valueOthers)
                 val othersValue: EditText = view?.itemView?.findViewById(R.id.valueOthers)
                 prodAdapter.productList[i].othersValue = othersValue.text.toString()
+
+                val othersName: EditText = view?.itemView?.findViewById(R.id.labelOthers)
+                prodAdapter.productList[i].othersName = othersName.text.toString()
             }catch (e:Exception){
                 e.printStackTrace()
             }
