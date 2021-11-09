@@ -220,6 +220,7 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
             layoutManager = linearLayoutManager
             adapter = imageAdapter
         }
+        imageAdapter.setImageSelected(0)
         setProductRecyclerView(ArrayList<metaDataBeanItem>())
         setObserver()
     }
@@ -243,7 +244,11 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
 
     override fun onClick(position: Int) {
         //will add prod fragment instance here -  saveCurrentWithOldPosition(oldPosition:Int)
+
         shelfSelected(position)
+        Handler().postDelayed({
+            imageAdapter.setImageSelected(position)
+        },DELAY)
     }
 
     override fun onClickDelete(position: Int?) {

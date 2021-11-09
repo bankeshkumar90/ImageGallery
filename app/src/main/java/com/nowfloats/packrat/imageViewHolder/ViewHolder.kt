@@ -2,7 +2,10 @@ package com.nowfloats.packrat.imageViewHolder
 
 import android.net.Uri
 import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.nowfloats.packrat.R
 import com.nowfloats.packrat.clickInterface.ClickListener
 import com.nowfloats.packrat.roomdatabase.EntityClass
 import kotlinx.android.synthetic.main.image_items.view.*
@@ -10,8 +13,11 @@ import kotlinx.android.synthetic.main.image_items.view.*
 //ViewHolder class which holds the data in our recycler view
 class ViewHolder(private val view: View, private val clickListener: ClickListener) :
     RecyclerView.ViewHolder(view) {
-
-    fun setImage( imagePath:String, pos: Int) {
+    var imageSelected: TextView
+        init {
+            imageSelected = view.findViewById(R.id.imgSelected)
+        }
+        fun setImage( imagePath:String, pos: Int) {
         view.apply {
 //            tvAlbumName.text = entityClass.album
 //            tvImageName.text = entityClass.name
