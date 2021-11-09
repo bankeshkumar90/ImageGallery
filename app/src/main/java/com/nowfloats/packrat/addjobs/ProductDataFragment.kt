@@ -2,8 +2,6 @@ package com.nowfloats.packrat.addjobs
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent.getIntent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,22 +10,16 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.nowfloats.packrat.R
 import com.nowfloats.packrat.bottomsheetdialog.BottomViewDialog
 import com.nowfloats.packrat.bottomsheetdialog.FullBottomSheetDialogFragment
 import com.nowfloats.packrat.clickInterface.ProdClickListener
 import com.nowfloats.packrat.utils.AppConstant
-import com.nowfloats.packrat.utils.SharedPreferencesManager
 import kotlinx.android.synthetic.main.product_item.*
 import kotlinx.android.synthetic.main.product_item.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import java.lang.reflect.Type
-import java.util.*
-import java.util.logging.Handler
 import kotlin.collections.ArrayList
 
 
@@ -109,15 +101,11 @@ class ProductDataFragment : Fragment(), ProdClickListener {
                 isclickBottomView = false
             }
 
-            /* Toast.makeText(context!!, "" + it?.mTitle, Toast.LENGTH_LONG)
-                 .show()*/
         })
         dataModel.clickdeleteview.observe(this, Observer {
             prodAdapter.deleteview(it)
         })
-        dataModel.getData.observe(this, Observer {
-            dataModel.getProductData.value = prodAdapter.getProductFormData()
-        })
+
         //setRecyclerView(productList)
     }
 

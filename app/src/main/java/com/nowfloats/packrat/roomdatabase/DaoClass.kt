@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import com.nowfloats.packrat.addjobs.metaDataBeanItem
 
 //Data Access Object
 @Dao
@@ -31,4 +32,10 @@ interface DaoClass {
 
     @Insert
     fun addProductData(productFormData: ProductFormData)
+
+    @Insert
+    fun saveProductMetaData(productMetaData: productDataInfo)
+
+    @Query("select * from productInfo")
+    fun getAllMetaData(): LiveData<List<productDataInfo>>
 }

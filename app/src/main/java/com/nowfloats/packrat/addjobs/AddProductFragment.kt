@@ -183,7 +183,7 @@ class AddProductFragment : Fragment(), ClicTabItemListener, ClickListener {
     }
 
     private fun saveProductDatainDb() {
-        addViewModel.getDataForm()
+        //addViewModel.getDataForm()
     }
 
     private fun initViews() {

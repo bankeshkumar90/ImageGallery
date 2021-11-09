@@ -2,9 +2,10 @@ package com.nowfloats.packrat.addjobs
 
 import android.os.Parcel
 import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
 
 data class metaDataBeanItem(
-    var id: String ="",
+    var id: Int =0,
     var productName: String ="",
     var productValue: String ="",
     var productVisible: Boolean = false,
@@ -19,19 +20,19 @@ data class metaDataBeanItem(
 
     var quantity: String ="",
     var quantityValue: String ="",
-    var quantityVisible :Boolean = false,
+    var quantityVisible:Boolean = false,
 
     var othersName: String ="",
     var othersValue: String ="",
-    var othersVisible : Boolean = false,
+    var othersVisible: Boolean = false,
 
     var weigth: String ="",
     var weigthValue: String ="",
-    var weightVisible : Boolean = false
+    var weightVisible: Boolean = false
 
 ): Parcelable {
     constructor(parcel: Parcel) : this(
-        parcel.readString()!!,
+        parcel.readInt()!!,
         parcel.readString()!!,
         parcel.readString()!!,
         parcel.readByte() != 0.toByte(),
@@ -54,7 +55,7 @@ data class metaDataBeanItem(
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(id)
+        parcel.writeInt(id)
         parcel.writeString(productName)
         parcel.writeString(productValue)
         parcel.writeByte(if (productVisible) 1 else 0)

@@ -59,8 +59,7 @@ class ImagePreview : Fragment(), ClickListener {
         imgPreview.setImageURI(Uri.parse(uri))
         btnSaveImage.setOnClickListener {
             val currentTime = Calendar.getInstance().time
-            val entityClass =
-                EntityClass(uri!!, currentTime.toString(), uri!!)
+            val entityClass = EntityClass( uri!!, currentTime.toString(), uri!!, AppConstant().getRandomCollectionId(context!!))
             CoroutineScope(Dispatchers.IO).launch {
                 viewModel.addImage(entityClass)
                 sendAddproductScreen()

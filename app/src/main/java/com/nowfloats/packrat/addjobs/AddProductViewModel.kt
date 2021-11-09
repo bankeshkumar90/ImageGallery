@@ -15,7 +15,7 @@ class AddProductViewModel(application: Application) : AndroidViewModel(applicati
     var clickdeleteview: MutableLiveData<Int> = MutableLiveData()
     var deleteFormViews: MutableLiveData<Int> = MutableLiveData()
     var getProductData: MutableLiveData<ProductFormData> = MutableLiveData()
-    var getData: MutableLiveData<Boolean> = MutableLiveData()
+    var saveMetaData: MutableLiveData<Boolean> = MutableLiveData()
     var fragmentMapObj:HashMap<Int, ArrayList<metaDataBeanItem>> = HashMap<Int, ArrayList<metaDataBeanItem>>()
 
     init {
@@ -43,8 +43,8 @@ class AddProductViewModel(application: Application) : AndroidViewModel(applicati
         getProductData.value = productFormData
     }
 
-    fun getDataForm() {
-        getData.value = true
+    fun saveFormMetaData() {
+        saveMetaData.value = true
     }
 
     fun updateFragmentIndex(tabPosition: Int, fragmentObj: ArrayList<metaDataBeanItem>){

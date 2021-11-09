@@ -9,7 +9,6 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -33,9 +32,6 @@ import com.nowfloats.packrat.roomdatabase.EntityClass
 import com.nowfloats.packrat.utils.AppConstant
 import kotlinx.android.synthetic.main.fragment_add_product.*
 import kotlinx.android.synthetic.main.fragment_add_product.view.*
-import kotlinx.android.synthetic.main.fragment_image_preview.*
-import kotlinx.android.synthetic.main.product_item.*
-import kotlinx.android.synthetic.main.product_item.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -203,7 +199,7 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
     }
 
     private fun saveProductDatainDb() {
-        addViewModel.getDataForm()
+        addViewModel.saveFormMetaData()
     }
 
     private fun initViews(view: View) {
@@ -213,9 +209,7 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
         viewModelFactory = ViewModelFactory(myRepository)
         viewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(MyViewModel::class.java)
-        //viewPager = view?.findViewById(R.id.add_fragment)
-        //tabLayout = view?.findViewById(R.id.sliding_tabs)
-        //setCustomviewPager()
+
         initHeaderItems(view)
     }
     private fun initHeaderItems(view: View){
@@ -232,130 +226,12 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
 
 
 
-    private fun setCustomviewPager() {
-        viewModel.displayImage().observe(this, androidx.lifecycle.Observer {
-            imageList = it
-            pagerAdapter = AddPagerAdapter(fragmentManager!!, context!!, imageList)
-            setupViewPager(pagerAdapter!!,imageList)
-            viewPager!!.adapter = pagerAdapter
-            tabLayout!!.setupWithViewPager(viewPager)
-            tabLayout!!.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-                override fun onTabSelected(tab: TabLayout.Tab) {
-                    val frag: Fragment = pagerAdapter!!.getItem(tab.position)
-                    if (frag != null && frag is ProductDataFragment) {
-                        (frag as ProductDataFragment).setTabclickRefresh(tab.position)
-                    }
-                }
-
-                override fun onTabUnselected(tab: TabLayout.Tab) {
-                    val frag: Fragment = pagerAdapter!!.getItem(tab.position)
-                    if (frag != null && frag is ProductDataFragment) {
-                        (frag as ProductDataFragment).setTabclickUnselect(tab.position)
-                    }
-                }
-
-                override fun onTabReselected(tab: TabLayout.Tab) {
-
-                }
-            })
-
-            // Iterate over all tabs and set the custom view
-            for (i in 0 until tabLayout!!.tabCount) {
-                val tab = tabLayout!!.getTabAt(i)
-                tab!!.customView = pagerAdapter?.getTabView(i, this)
-                //tab.getCustomView().findViewById(R.id.tab_badge);
-            }
-        })
-    }
-
-    private fun setupViewPager(adapter: AddPagerAdapter, imageList: List<EntityClass>) {
-        for (i in 0 until imageList.size) {
-            var list:List<Int> = ArrayList<Int>()
-            //val f1 = ProductDataFragment.newInstance(context!!, i, list)
-            //adapter.addFragment(f1)
-        }
-        /*val f2 = AddFragment.newInstance("Dashboard")
-        adapter.addFragment(f2, "Dashboard")
-
-        val f3 = AddFragment.newInstance("Profile")
-        adapter.addFragment(f3, "Profile")*/
-    }
-
-
 
     override fun onClickCross(position: Int?) {
         CoroutineScope(Dispatchers.IO).launch {
             viewModel.deleteImageById(position!!)
         }
-//        setCustomviewPager()
-    }
-
-    /* private fun showBottomSheetView() {
-        mBehavior!!.state = BottomSheetBehavior.STATE_EXPANDED
-        if (mBottomSheetDialog != null) {
-            mBottomSheetDialog!!.dismiss()
-        }
-    }
-
-
-    fun bindBottomView(view: View) {
-         val mBottomSheet = view.findViewById<View>(R.id.bottomSheetF);
-         mBehavior = BottomSheetBehavior.from(mBottomSheet)
-         mBehavior!!.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-             override fun onStateChanged(bottomSheet: View, newState: Int) {}
-             override fun onSlide(bottomSheet: View, slideOffset: Float) {
-
-             }
-         })
-
-         val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-
-         mAdapter = ItemAdapter(createItems(), this)
-         recyclerView.apply {
-             layoutManager = linearLayoutManager
-             adapter = mAdapter
-         }
-
      }
-
-     fun createItems(): List<Item> {
-         val items = ArrayList<Item>()
-         items.add(Item(R.drawable.ic_preview_24dp, "Product"))
-         items.add(Item(R.drawable.ic_share_24dp, "Price"))
-         items.add(Item(R.drawable.ic_link_24dp, "Barcode"))
-         items.add(Item(R.drawable.ic_content_copy_24dp, "Quantity"))
-         items.add(Item(R.drawable.ic_content_copy_24dp, "Others"))
-         return items
-     }
-
-     override fun onItemClick(item: Item?) {
-         Toast.makeText(context!!, "" + item?.mTitle, Toast.LENGTH_LONG)
-             .show()
-     }
-
-     @SuppressLint("InflateParams")
-     private fun showBottomSheetDialog() {
-         if (mBehavior!!.state == BottomSheetBehavior.STATE_EXPANDED) {
-             mBehavior!!.state = BottomSheetBehavior.STATE_COLLAPSED
-         }
-         val view: View = layoutInflater.inflate(R.layout.sheet, null)
-         view.findViewById<View>(R.id.fakeShadow).visibility = View.GONE
-         val recyclerView = view.findViewById<View>(R.id.recyclerView) as RecyclerView
-         recyclerView.setHasFixedSize(true)
-         recyclerView.layoutManager = LinearLayoutManager(context!!)
-         recyclerView.adapter = ItemAdapter(createItems(), object : ItemAdapter.ItemListener {
-             override fun onItemClick(item: Item?) {
-                 mDialogBehavior!!.state = BottomSheetBehavior.STATE_HIDDEN
-             }
-         })
-         mBottomSheetDialog = BottomSheetDialog(context!!)
-         mBottomSheetDialog!!.setContentView(view)
-         mDialogBehavior = BottomSheetBehavior.from(view.parent as View)
-         mBottomSheetDialog!!.show()
-         mBottomSheetDialog!!.setOnDismissListener(DialogInterface.OnDismissListener {
-             mBottomSheetDialog = null
-         })
-     }*/
 
     private fun startImageUploadService(collectionId: String) {
         try {
@@ -397,9 +273,18 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
         addViewModel.clickdeleteview.observe(this, Observer {
             prodAdapter.deleteview(it)
         })
-        addViewModel.getData.observe(this, Observer {
-            //addViewModel.getProductData.value = prodAdapter.getProductFormData()
+        addViewModel.saveMetaData.observe(this, Observer {
+            //save our local values here
+            CoroutineScope(Dispatchers.IO).launch {
+                for (i in 0 until  addViewModel.fragmentMapObj.size){
+                    viewModel.saveMetaData(addViewModel.fragmentMapObj.get(i)!!)
+                }
+            }
         })
+        CoroutineScope(Dispatchers.IO).launch {
+            val items = viewModel.getMetaData()
+
+        }
         //setRecyclerView(productList)
     }
     override fun onClickItemDelete(position: Int?) {
