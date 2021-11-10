@@ -410,7 +410,10 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
                  .show()*/
         })
         addViewModel.clickdeleteview.observe(this, Observer {
+            saveCurrentData(previousSelectedPosition)
+            //addViewModel.deleteFragmentObjectItem(previousSelectedPosition, it)
             prodAdapter.deleteview(it)
+            updateRecylerView(prodAdapter.productList)
             saveCurrentData(previousSelectedPosition)
         })
         addViewModel.saveMetaData.observe(this, Observer {

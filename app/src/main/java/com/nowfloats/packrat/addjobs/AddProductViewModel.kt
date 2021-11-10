@@ -97,4 +97,14 @@ class AddProductViewModel(application: Application) : AndroidViewModel(applicati
     fun clearFragmentData(){
         fragmentMapObj.clear()
     }
+
+    fun deleteFragmentObjectItem(selcetedPosition: Int, itemDeletPosition: Int){
+        try {
+            if(fragmentMapObj.size>0){
+                fragmentMapObj.get(selcetedPosition)?.removeAt(itemDeletPosition)
+            }
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
+    }
 }
