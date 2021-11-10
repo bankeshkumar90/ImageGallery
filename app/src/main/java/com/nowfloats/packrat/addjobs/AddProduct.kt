@@ -176,7 +176,7 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
                         Log.e("Upload error:", it)
                     }
                     loading?.dismiss()
-                    Toast.makeText(context!!, "" + "Something Went Wrong", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context!!, "" + "Timeout Occured! Please Re-Try", Toast.LENGTH_SHORT).show()
                 }
             })
 
@@ -420,7 +420,11 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
             //save our local values here
             CoroutineScope(Dispatchers.IO).launch {
                 for (i in 0 until  addViewModel.fragmentMapObj.size){
-                    viewModel.saveMetaData(addViewModel.fragmentMapObj.get(i)!!)
+                    try {
+                       // viewModel.saveMetaData(addViewModel.fragmentMapObj.get(i)!!)
+                    }catch (e:Exception){
+                        e.printStackTrace()
+                    }
                 }
             }
         })
