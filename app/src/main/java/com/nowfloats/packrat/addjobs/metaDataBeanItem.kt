@@ -5,75 +5,23 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 data class metaDataBeanItem(
-    var id: Int =0,
     var productName: String ="",
     var productValue: String ="",
-    var productVisible: Boolean = false,
-
-    var barcode: String ="",
-    var barcodeValue: String ="",
-    var barcodeVisbile: Boolean = false,
-
-    var price: String ="",
-    var priceValue: String ="",
-    var priceVisible: Boolean = false,
-
-    var quantity: String ="",
-    var quantityValue: String ="",
-    var quantityVisible:Boolean = false,
-
-    var othersName: String ="",
-    var othersValue: String ="",
-    var othersVisible: Boolean = false,
-
-    var weigth: String ="",
-    var weigthValue: String ="",
-    var weightVisible: Boolean = false
+    var productRegex: String = "",
 
 ): Parcelable {
     constructor(parcel: Parcel) : this(
-        parcel.readInt()!!,
         parcel.readString()!!,
         parcel.readString()!!,
-        parcel.readByte() != 0.toByte(),
-        parcel.readString()!!,
-        parcel.readString()!!,
-        parcel.readByte() != 0.toByte(),
-        parcel.readString()!!,
-        parcel.readString()!!,
-        parcel.readByte() != 0.toByte(),
-        parcel.readString()!!,
-        parcel.readString()!!,
-        parcel.readByte() != 0.toByte(),
-        parcel.readString()!!,
-        parcel.readString()!!,
-        parcel.readByte() != 0.toByte(),
-        parcel.readString()!!,
-        parcel.readString()!!,
-        parcel.readByte() != 0.toByte()
+        parcel.readString()!!
+
     ) {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeInt(id)
         parcel.writeString(productName)
         parcel.writeString(productValue)
-        parcel.writeByte(if (productVisible) 1 else 0)
-        parcel.writeString(barcode)
-        parcel.writeString(barcodeValue)
-        parcel.writeByte(if (barcodeVisbile) 1 else 0)
-        parcel.writeString(price)
-        parcel.writeString(priceValue)
-        parcel.writeByte(if (priceVisible) 1 else 0)
-        parcel.writeString(quantity)
-        parcel.writeString(quantityValue)
-        parcel.writeByte(if (quantityVisible) 1 else 0)
-        parcel.writeString(othersName)
-        parcel.writeString(othersValue)
-        parcel.writeByte(if (othersVisible) 1 else 0)
-        parcel.writeString(weigth)
-        parcel.writeString(weigthValue)
-        parcel.writeByte(if (weightVisible) 1 else 0)
+        parcel.writeString(productRegex)
     }
 
     override fun describeContents(): Int {

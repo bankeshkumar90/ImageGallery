@@ -5,20 +5,20 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.nowfloats.packrat.bottomsheetdialog.Item
 import com.nowfloats.packrat.clickInterface.ProdClickListener
+import com.nowfloats.packrat.network.RegexApiResponse
 import com.nowfloats.packrat.roomdatabase.ProductFormData
 import java.io.Serializable
 import java.lang.Exception
 
 class AddProductViewModel(application: Application) : AndroidViewModel(application), Serializable {
     var clickadd: MutableLiveData<Int> = MutableLiveData()
-    var addBottomClick: MutableLiveData<Item> = MutableLiveData()
+    var addBottomClick: MutableLiveData<metaDataBeanItem> = MutableLiveData()
     var addBottomClickPosition: MutableLiveData<Int> = MutableLiveData()
     var clickdeleteview: MutableLiveData<Int> = MutableLiveData()
     var deleteFormViews: MutableLiveData<Int> = MutableLiveData()
     var getProductData: MutableLiveData<ProductFormData> = MutableLiveData()
     var saveMetaData: MutableLiveData<Boolean> = MutableLiveData()
     var fragmentMapObj:HashMap<Int, ArrayList<metaDataBeanItem>> = HashMap<Int, ArrayList<metaDataBeanItem>>()
-
     init {
         print("meesaage1212")
     }
@@ -31,7 +31,7 @@ class AddProductViewModel(application: Application) : AndroidViewModel(applicati
         clickadd.value = 1
     }
 
-    fun bottomDialogClick(item: Item, position: Int) {
+    fun bottomDialogClick(item: metaDataBeanItem, position: Int) {
         addBottomClick.value = item
         addBottomClickPosition.value = position
     }
@@ -107,4 +107,5 @@ class AddProductViewModel(application: Application) : AndroidViewModel(applicati
             e.printStackTrace()
         }
     }
+
 }

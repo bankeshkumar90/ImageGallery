@@ -37,6 +37,12 @@ import java.util.ArrayList
 import androidx.core.app.ActivityCompat.startActivityForResult
 import android.R.attr.data
 import android.os.Build
+import android.graphics.BitmapFactory
+
+import android.R.attr.data
+
+
+
 
 
 class CameraFragment : Fragment() {
@@ -86,7 +92,6 @@ class CameraFragment : Fragment() {
     }
 
     private  fun showPreview(image_uri: Uri) {
-        viewModel.addImageToList(""+image_uri)
         val bundle = Bundle()
         bundle.putString("uri", ""+image_uri)
         bundle.putString(AppConstant.IMAGE_URI, ""+image_uri)
@@ -118,22 +123,44 @@ class CameraFragment : Fragment() {
     private fun openGallery(){
         val i = Intent()
         i.type = "image/*"
-        //i.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+        i.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
         i.action = Intent.ACTION_GET_CONTENT
         // pass the constant to compare it
         // with the returned requestCode
-        startActivityForResult(Intent.createChooser(i, "Select Picture"), SELECT_PICTURE_CODE)
+        startActivityForResult(Intent.createChooser(i, "Select Pictures"), SELECT_PICTURE_CODE)
     }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == TAKE_PHOTO_CODE) {
-            image_uri?.let { showPreview(it) }
+            image_uri?.let {
+                viewModel.addImageToList(""+image_uri)
+                showPreview(it)
+            }
         }else if( requestCode == SELECT_PICTURE_CODE){
             //update imageList
-            val selectedImageUri: Uri = data?.data as Uri
-            if (null != selectedImageUri) {
-                // update the preview image in the layout
-                selectedImageUri?.let { showPreview(it) }
+
+            if (data!!.clipData != null){
+                //picked multiple images
+                //get number of picked images
+                val count = data.clipData!!.itemCount
+                for (i in 0 until count){
+                    val imageUri = data.clipData!!.getItemAt(i).uri
+                    //add image to list
+                    viewModel.addImageToList(""+imageUri)
+                }
+                //set first image from list to image switcher
+                showPreview(data.clipData!!.getItemAt(0).uri)
+            }
+            else{
+                //picked single image
+                val selectedImageUri: Uri = data?.data as Uri
+                if (null != selectedImageUri) {
+                    // update the preview image in the layout
+                    selectedImageUri?.let {
+                        viewModel.addImageToList(""+it)
+                        showPreview(it)
+                    }
+                }
             }
         }
     }

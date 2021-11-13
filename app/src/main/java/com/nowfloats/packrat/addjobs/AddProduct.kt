@@ -15,6 +15,7 @@ import android.util.Log
 import android.view.*
 import android.widget.EditText
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
@@ -212,7 +213,7 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
                     var jsonArray = JSONArray()
                     var jsonObjectProperties = JSONObject()
 
-                    if(product.productVisible==true){
+                    /*if(product.productVisible==true){
                         var productObject = JSONObject()
                         productObject.put(product.productName, product.productValue)
                         jsonArray.put(productObject)
@@ -242,7 +243,7 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
                             othersObject.put(product.othersName, product.othersValue)
                             jsonArray.put(othersObject)
                         }
-                    }
+                    }*/
                     if(jsonArray.length()>0) {
                         jsonObjectProperties.put("properies", jsonArray)
                         productJSONArray.put(jsonObjectProperties)
@@ -323,6 +324,7 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
 
         initHeaderItems(view)
     }
+
     private fun initHeaderItems(view: View){
         val linearLayoutManager =
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -334,6 +336,7 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
         imageAdapter.setImageSelected(0)
         setProductRecyclerView(ArrayList<metaDataBeanItem>())
         setObserver()
+        viewModel.getProductProperties(myApplication)
     }
 
 
@@ -394,14 +397,15 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
 
     fun setObserver() {
         addViewModel.clickadd.observe(this, Observer {
-            prodAdapter.updateList(metaDataBeanItem())
+            val viewHolder: ProductDataAdapter.PickerViewHolder? = viewObj.productListItem.findViewHolderForAdapterPosition(addclick_position) as ProductDataAdapter.PickerViewHolder?
+            prodAdapter.updateList(metaDataBeanItem(), viewHolder)
         })
         addViewModel.addBottomClick.observe(this, Observer {
             if (isclickBottomView) {
                 saveCurrentData(previousSelectedPosition)
                 Handler().postDelayed({
                     val viewHolder: ProductDataAdapter.PickerViewHolder? = viewObj.productListItem.findViewHolderForAdapterPosition(addclick_position) as ProductDataAdapter.PickerViewHolder?
-                    prodAdapter.setFormView(it!!.mTitle, viewHolder!!, addclick_position)
+                    it!!?.let { it1 -> prodAdapter.setFormView(it1, viewHolder!!, addclick_position) }
                     isclickBottomView = false
                 }, DELAY)
             }
@@ -444,14 +448,18 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
 
     @SuppressLint("WrongConstant")
     override fun onClickAdd(position: Int) {
-//        bottomViewDialog = BottomViewAddProductData()
-        println("values>>>0>$position")
         addclick_position = position
         isclickBottomView = true
-        bottomViewDialog = FullBottomSheetDialogFragment(position)
-        bottomViewDialog.setStyle(0, R.style.BottomSheetDialog)
-        bottomViewDialog.show(fragmentManager!!, BottomViewDialog.TAG)
-    }
+        if(viewModel.productProperty==null){
+            viewModel.fetchFromAPI()
+        }else if(viewModel.productProperty.isEmpty()){
+            viewModel.fetchFromAPI()
+        } else {
+            bottomViewDialog = FullBottomSheetDialogFragment(position, viewModel.productProperty)
+            bottomViewDialog.setStyle(0, R.style.BottomSheetDialog)
+            bottomViewDialog.show(fragmentManager!!, BottomViewDialog.TAG)
+        }
+     }
 
     private fun setProductRecyclerView(prducts :ArrayList<metaDataBeanItem>) {
         try {
@@ -511,7 +519,7 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
             try {
                 val view = viewObj.productListItem.findViewHolderForLayoutPosition(i)
                 //val productValue: EditText = view.productListItem.getChildAt(i).findViewById(R.id.valueProduct)
-                val productValue: EditText = view?.itemView?.findViewById(R.id.valueProduct)!!
+               /* val productValue: EditText = view?.itemView?.findViewById(R.id.valueProduct)!!
                 prodAdapter.productList[i].productValue = productValue.text.toString()
 
                 //val priceValue: EditText = viewObj.productListItem.getChildAt(i).findViewById(R.id.valuePrice)
@@ -531,7 +539,7 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
                 prodAdapter.productList[i].othersValue = othersValue.text.toString()
 
                 val othersName: EditText = view?.itemView?.findViewById(R.id.labelOthers)
-                prodAdapter.productList[i].othersName = othersName.text.toString()
+                prodAdapter.productList[i].othersName = othersName.text.toString()*/
             }catch (e:Exception){
                 e.printStackTrace()
             }

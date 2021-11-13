@@ -2,8 +2,8 @@ package com.nowfloats.packrat.addjobs
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.res.ColorStateList
-import android.view.Gravity
+import android.text.InputFilter
+import android.text.Spanned
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,12 +11,17 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.nowfloats.packrat.R
+import com.nowfloats.packrat.addjobs.childobjects.PropertyAdapter
 import com.nowfloats.packrat.clickInterface.ProdClickListener
 import com.nowfloats.packrat.roomdatabase.ProductFormData
+import com.nowfloats.packrat.utils.CustomInputFilter
 import kotlinx.android.synthetic.main.product_data.view.*
+import java.util.regex.Matcher
+import java.util.regex.Pattern
+
 
 class ProductDataAdapter(
     var context: Context,
@@ -29,6 +34,10 @@ class ProductDataAdapter(
     //public var viewList = ArrayList<Int>()
     private var pholder: PickerViewHolder? = null
     private var adpterposion: Int = 0
+    lateinit var childAdapter : PropertyAdapter
+    lateinit  var propertyList : ArrayList<metaDataBeanItem>
+    var viewHolderList= ArrayList<PickerViewHolder>()
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PickerViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.product_data, parent, false)
@@ -39,87 +48,9 @@ class ProductDataAdapter(
 //        pholder = holder
         adpterposion = position
         holder.setData(position)
-        if(productList[position].productVisible==false){
-            holder.ll_pname.visibility = View.GONE
-        }else {
-            holder.ll_pname.visibility = View.VISIBLE
-            holder.labelProduct.setText(productList[position].productName)
-            holder.productValue.setText(productList[position].productValue)
-        }
-
-        if(productList[position].priceVisible==false){
-            holder.ll_pprice.visibility = View.GONE
-        }else {
-            holder.ll_pprice.visibility = View.VISIBLE
-            holder.labelPrice.setText(productList[position].price)
-            holder.priceValue.setText(productList[position].priceValue)
-        }
-
-        if(productList[position].barcodeVisbile==false){
-            holder.ll_barcode.visibility = View.GONE
-        }else {
-            holder.ll_barcode.visibility = View.VISIBLE
-            holder.labelBarcode.setText(productList[position].barcode)
-            holder.valueBarcode.setText(productList[position].barcodeValue)
-        }
-
-        if(productList[position].quantityVisible==false){
-            holder.llPquantity.visibility = View.GONE
-        }else {
-            holder.labelQuantity.setText(productList[position].quantity)
-            holder.quantityValue.setText(productList[position].quantityValue)
-            holder.llPquantity.visibility = View.VISIBLE
-        }
-
-        if(productList[position].othersVisible==false){
-            holder.llPOther.visibility = View.GONE
-        }else {
-            holder.llPOther.visibility = View.VISIBLE
-            holder.labelOthers.setText(productList[position].othersName)
-            holder.othersValue.setText(productList[position].othersValue)
-        }
-
-        holder.priceDelete.setOnClickListener(View.OnClickListener {
-            productList[position].priceVisible = false
-            productList[position].price = ""
-            productList[position].priceValue = ""
-            holder.priceValue.setText("")
-            clickListener.onItemDeleteAtPos(position,productList)
-            notifyDataSetChanged()
-        })
-        holder.productDelete.setOnClickListener(View.OnClickListener {
-            productList[position].productVisible = false
-            productList[position].productName = ""
-            productList[position].productValue = ""
-            holder.productValue.setText("")
-            clickListener.onItemDeleteAtPos(position,productList)
-            notifyDataSetChanged()
-        })
-        holder.barcodeDelete.setOnClickListener(View.OnClickListener {
-            productList[position].barcodeVisbile = false
-            productList[position].barcode = ""
-            productList[position].barcodeValue = ""
-            holder.valueBarcode.setText("")
-            clickListener.onItemDeleteAtPos(position,productList)
-            notifyDataSetChanged()
-        })
-        holder.quantityDelete.setOnClickListener(View.OnClickListener {
-            productList[position].quantityVisible = false
-            productList[position].quantity = ""
-            productList[position].quantityValue = ""
-            holder.quantityValue.setText("")
-            clickListener.onItemDeleteAtPos(position,productList)
-            notifyDataSetChanged()
-        })
-        holder.othersDelete.setOnClickListener(View.OnClickListener {
-            productList[position].othersVisible = false
-            productList[position].othersName = ""
-            productList[position].othersValue = ""
-            holder.othersValue.setText("")
-            holder.labelOthers.setText("")
-            clickListener.onItemDeleteAtPos(position,productList)
-            notifyDataSetChanged()
-         })
+        viewHolderList.add(holder)
+        holder.childRv?.layoutManager = LinearLayoutManager(holder.childRv.context, LinearLayout.VERTICAL, false)
+        propertyList = ArrayList<metaDataBeanItem>()
 
     }
 
@@ -132,7 +63,9 @@ class ProductDataAdapter(
     }
 
     //updates the latest data of the database
-    fun updateList(objectMetaData: metaDataBeanItem) {
+    fun updateList(objectMetaData: metaDataBeanItem, holder: PickerViewHolder?) {
+        //save old product value here
+        saveLatestItemData(holder)
         productList?.add(objectMetaData)
         notifyDataSetChanged()
     }
@@ -150,38 +83,37 @@ class ProductDataAdapter(
             e.printStackTrace()
         }
     }
-    fun updateFormView(selectedValue: String, position: Int){
-        if(selectedValue.equals(context.resources.getString(R.string.product))){
-            productList[position].productVisible = true
-            productList[position].productName = selectedValue
-            pholder?.labelProduct?.setText(selectedValue)
+    fun updateFormView(regexApiResponse: metaDataBeanItem, position: Int,holder: PickerViewHolder){
+        saveLatestItemData(holder)
+        if(ifAlreadyAdded(propertyList, regexApiResponse)){
+            return
         }
-        if(selectedValue.equals(context.resources.getString(R.string.price))){
-            productList[position].priceVisible = true
-            productList[position].price = selectedValue
-            pholder?.labelPrice?.setText(selectedValue)
-        }
-        if(selectedValue.equals(context.resources.getString(R.string.barcode))){
-            productList[position].barcodeVisbile = true
-            productList[position].barcode = selectedValue
-            pholder?.labelBarcode?.setText(selectedValue)
-        }
-        if(selectedValue.equals(context.resources.getString(R.string.quantity))){
-            productList[position].quantityVisible = true
-            productList[position].quantity = selectedValue
-            pholder?.labelQuantity?.setText(selectedValue)
-        }
-        if(selectedValue.equals(context.resources.getString(R.string.other))){
-            productList[position].othersVisible = true
-            productList[position].othersName = ""
-            pholder?.labelOthers?.setText("")
-        }
-        notifyDataSetChanged()
+        propertyList.add(regexApiResponse)
+        childAdapter = PropertyAdapter(propertyList)
+        holder.childRv?.adapter = childAdapter
+        childAdapter.updateList(regexApiResponse)
     }
     @SuppressLint("NewApi")
-    fun setFormView(selectedValue: String, holder: PickerViewHolder, position: Int) {
+    fun setFormView(selectedValue: metaDataBeanItem, holder: PickerViewHolder, position: Int) {
         pholder = holder
-        updateFormView(selectedValue, position)
+        updateFormView(selectedValue, position, holder)
+    }
+
+    fun saveLatestItemData(holder: PickerViewHolder?){
+        try {
+            var length = holder?.childRv?.adapter?.itemCount
+            if (length != null) {
+                for (i in 0 until length!!) {
+                    val view = holder?.childRv?.findViewHolderForAdapterPosition(i)
+                    val etLabel: EditText? = view?.itemView?.findViewById(R.id.etLabel)
+                    val etValue: EditText? = view?.itemView?.findViewById(R.id.etValue)
+                    propertyList[i].productValue = etValue?.text.toString()
+                    propertyList[i].productName = etLabel?.text.toString()
+                }
+            }
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
     }
 
 
@@ -191,58 +123,15 @@ class ProductDataAdapter(
         var add_form: LinearLayout
         var add_product_count: TextView
 
-        var ll_pname:LinearLayout
-        var ll_pprice : LinearLayout
-        var ll_barcode:LinearLayout
-        var llPquantity : LinearLayout
-        var llPOther:LinearLayout
-
-        var productDelete: ImageView
-        var priceDelete: ImageView
-        var barcodeDelete: ImageView
-        var quantityDelete: ImageView
-        var othersDelete: ImageView
-
-        var labelProduct: EditText
-        var labelPrice: EditText
-        var labelBarcode: EditText
-        var labelQuantity: EditText
-        var labelOthers: EditText
-
-        var productValue: EditText
-        var priceValue: EditText
-        var valueBarcode: EditText
-        var quantityValue: EditText
-        var othersValue: EditText
+        var childRv:RecyclerView
 
         init {
             add_prop_id = itemView.findViewById(R.id.add_prop_id)
             add_form = itemView.findViewById(R.id.ln_form)
             add_product_count = itemView.findViewById(R.id.add_product_count)
+            childRv = itemView.findViewById(R.id.childList)
 
-            ll_pname = itemView.findViewById(R.id.ll_pname)
-            ll_pprice = itemView.findViewById(R.id.ll_pprice)
-            ll_barcode = itemView.findViewById(R.id.ll_barcode)
-            llPquantity = itemView.findViewById(R.id.llPquantity)
-            llPOther = itemView.findViewById(R.id.llPOther)
 
-            productDelete = itemView.findViewById(R.id.productDelete)
-            priceDelete = itemView.findViewById(R.id.priceDelete)
-            barcodeDelete = itemView.findViewById(R.id.barcodeDelete)
-            quantityDelete = itemView.findViewById(R.id.quantityDelete)
-            othersDelete = itemView.findViewById(R.id.othersDelete)
-
-            labelProduct = itemView.findViewById(R.id.labelProduct)
-            labelPrice = itemView.findViewById(R.id.labelPrice)
-            labelBarcode = itemView.findViewById(R.id.labelBarcode)
-            labelQuantity = itemView.findViewById(R.id.labelQuantity)
-            labelOthers = itemView.findViewById(R.id.labelOthers)
-
-             productValue =itemView.findViewById(R.id.valueProduct)
-             priceValue = itemView.findViewById(R.id.valuePrice)
-             valueBarcode = itemView.findViewById(R.id.valueBarcode)
-             quantityValue = itemView.findViewById(R.id.valueQuantity)
-             othersValue = itemView.findViewById(R.id.valueOthers)
 
             add_prop_id.setOnClickListener { v ->
 
@@ -275,49 +164,31 @@ class ProductDataAdapter(
 
     }
 
-    fun getProductFormData(): ProductFormData {
-        var productName = ""
-        var productprice = ""
-        var productBarCode = ""
-        var productQuantity = ""
-        var productOthers = ""
-        lateinit var productFormData: ProductFormData
-
-
-        var childcount = pholder?.add_form!!.childCount
-        for (i in 0 until childcount) {
-            var viewparent = pholder?.add_form!!.getChildAt(i)
-            if (viewparent is LinearLayout) {
-                var subchildcount = viewparent.childCount
-                for (i in 0 until subchildcount) {
-                    var viewchildfirst = viewparent.getChildAt(0)
-                    var viewchildsecond = viewparent.getChildAt(1)
-                    if (viewchildfirst is EditText && viewchildfirst.text.toString() contentEquals ("Product")) {
-                        if (viewchildsecond is EditText)
-                            productName = viewchildsecond.text.toString()
-                    } else if (viewchildfirst is EditText && viewchildfirst.text.toString() contentEquals ("Price")) {
-                        if (viewchildsecond is EditText)
-                            productprice = viewchildsecond.text.toString()
-                    } else if (viewchildfirst is EditText && viewchildfirst.text.toString() contentEquals ("Barcode")) {
-                        if (viewchildsecond is EditText)
-                            productBarCode = viewchildsecond.text.toString()
-                    } else if (viewchildfirst is EditText && viewchildfirst.text.toString() contentEquals ("Quantity")) {
-                        if (viewchildsecond is EditText)
-                            productQuantity = viewchildsecond.text.toString()
-                    } else if (viewchildfirst is EditText && viewchildfirst.text.toString() contentEquals ("Others")) {
-                        if (viewchildsecond is EditText)
-                            productOthers = viewchildsecond.text.toString()
-                    }
+    inner class ValidateFilter : InputFilter {
+        override fun filter(source: CharSequence, start: Int, end: Int, dest: Spanned?, dstart: Int, dend: Int): CharSequence? {
+            for (i in start until end) {
+                //val string = editText.text.toString().trim()
+                val checkMe = source[i].toString()
+                val pattern: Pattern = Pattern.compile("   [ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz123456789_]*")
+                val matcher: Matcher = pattern.matcher(checkMe)
+                val valid: Boolean = matcher.matches()
+                if (!valid) {
+                    //textView.text = string
                 }
-                productFormData = ProductFormData(
-                    productName,
-                    productprice,
-                    productBarCode,
-                    productQuantity,
-                    productOthers
-                )
+            }
+            return null
+        }
+    }
+
+    fun ifAlreadyAdded(propertyList:ArrayList<metaDataBeanItem>, apiResponse: metaDataBeanItem):Boolean{
+        var alreadyAdded = false
+        for (item in propertyList){
+            if(item.productName.equals(apiResponse.productName,true)){
+                alreadyAdded = true
+                return alreadyAdded
             }
         }
-        return productFormData
+        return alreadyAdded
     }
+
 }

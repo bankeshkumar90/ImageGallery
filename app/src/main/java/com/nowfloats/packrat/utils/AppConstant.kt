@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.admin.DevicePolicyManager
 import android.content.ContentUris
 import android.content.Context
+import android.content.Context.CONNECTIVITY_SERVICE
 import android.database.Cursor
 import android.net.Uri
 import android.os.Build
@@ -11,6 +12,13 @@ import android.os.Environment
 import android.provider.DocumentsContract
 import android.provider.MediaStore
 import android.provider.Settings
+import androidx.core.content.ContextCompat.getSystemService
+
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities.NET_CAPABILITY_INTERNET
+import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
+
 
 class AppConstant {
     companion object{
@@ -25,7 +33,7 @@ class AppConstant {
         const val CREATED_BY = "bankesh@zibal.com"
         const val CREATED_BY_NAME = "bankesh"
         const val IN_PROGRESS = "Uploading...."
-
+        const val INTERNET_CONNECTION_MESSAGE = "Please check you internet connection"
         @JvmStatic
         @SuppressLint("NewApi")
         fun getPath(context: Context, uri: Uri): String? {
@@ -122,5 +130,12 @@ class AppConstant {
         val androidId = Settings.Secure.getString(context.getContentResolver(),
             Settings.Secure.ANDROID_ID);
         return androidId+"_"+System.currentTimeMillis()+"_" +( 0 until 1000).random()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    fun isOnline(context: Context): Boolean {
+        val cm = context.getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+        val capabilities = cm.getNetworkCapabilities(cm.activeNetwork)
+        return capabilities?.hasCapability(NET_CAPABILITY_INTERNET) == true
     }
 }

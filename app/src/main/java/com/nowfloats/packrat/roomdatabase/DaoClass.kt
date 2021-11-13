@@ -5,6 +5,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import com.nowfloats.packrat.addjobs.metaDataBeanItem
+import com.nowfloats.packrat.roomdatabase.modal.ProductProperty
 
 //Data Access Object
 @Dao
@@ -38,4 +39,10 @@ interface DaoClass {
 
     @Query("select * from productInfo")
     fun getAllMetaData(): LiveData<List<productDataInfo>>
+/*
+    @Insert
+    fun addProductProperties(properties: ProductProperty)
+
+    @Query("select * from ProductProperty")
+    fun getProductProperty(): ProductProperty*/
 }

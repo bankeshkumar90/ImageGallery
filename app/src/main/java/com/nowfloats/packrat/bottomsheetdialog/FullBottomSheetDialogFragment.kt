@@ -12,12 +12,16 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.nowfloats.packrat.R
 import com.nowfloats.packrat.addjobs.AddProductViewModel
+import com.nowfloats.packrat.addjobs.metaDataBeanItem
+import com.nowfloats.packrat.network.RegexApiResponse
 import java.text.FieldPosition
 import java.util.*
+import kotlin.collections.ArrayList
 
-class FullBottomSheetDialogFragment(var recyclerViewPosition:Int) : BottomSheetDialogFragment(), ItemAdapter.ItemListener {
+class FullBottomSheetDialogFragment(var recyclerViewPosition:Int, var propertyList: ArrayList<RegexApiResponse>) : BottomSheetDialogFragment(), ItemAdapter.ItemListener {
     private var mBehavior: BottomSheetBehavior<View>? = null
     private lateinit var dataDialogModel: AddProductViewModel
+    var metDataItemList: ArrayList<metaDataBeanItem> =  ArrayList<metaDataBeanItem>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,7 +38,8 @@ class FullBottomSheetDialogFragment(var recyclerViewPosition:Int) : BottomSheetD
         val recyclerView: RecyclerView = view.findViewById<View>(R.id.recyclerView) as RecyclerView
         recyclerView.setHasFixedSize(true)
         recyclerView.setLayoutManager(LinearLayoutManager(getContext()))
-        val itemAdapter = ItemAdapter(createItems(), this, recyclerViewPosition)
+        metDataItemList = processDataToPass(propertyList)
+        val itemAdapter = ItemAdapter(metDataItemList, this, recyclerViewPosition)
         recyclerView.setAdapter(itemAdapter)
         dialog.setContentView(view)
         mBehavior = BottomSheetBehavior.from(view.parent as View)
@@ -46,18 +51,21 @@ class FullBottomSheetDialogFragment(var recyclerViewPosition:Int) : BottomSheetD
         mBehavior?.setState(BottomSheetBehavior.STATE_EXPANDED)
     }
 
-    fun createItems(): List<Item> {
-        val items = ArrayList<Item>()
-        items.add(Item(R.drawable.ic_preview_24dp, context!!.getString(R.string.product)))
-        items.add(Item(R.drawable.ic_share_24dp, context!!.getString(R.string.price)))
-        items.add(Item(R.drawable.ic_link_24dp, context!!.getString(R.string.barcode)))
-        items.add(Item(R.drawable.ic_content_copy_24dp, context!!.getString(R.string.quantity)))
-        items.add(Item(R.drawable.ic_content_copy_24dp, context!!.getString(R.string.other)))
-        return items
-    }
 
-    override fun onItemClick(item: Item?, position: Int) {
+    override fun onItemClick(item: metaDataBeanItem?, position: Int) {
         mBehavior?.setState(BottomSheetBehavior.STATE_HIDDEN)
         dataDialogModel.bottomDialogClick(item!!, position)
     }
+
+    private fun processDataToPass(propertyList: ArrayList<RegexApiResponse>): ArrayList<metaDataBeanItem> {
+        for(i in 0 until propertyList.size){
+            var metaDataBeanItem = metaDataBeanItem()
+            metaDataBeanItem.productName = ""+propertyList[i].name
+            metaDataBeanItem.productValue = ""+propertyList[i].value
+            metaDataBeanItem.productRegex = ""+propertyList[i].regEx
+            metDataItemList.add(metaDataBeanItem)
+        }
+        return metDataItemList
+    }
+
 }

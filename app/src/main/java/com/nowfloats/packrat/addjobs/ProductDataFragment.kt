@@ -92,12 +92,13 @@ class ProductDataFragment : Fragment(), ProdClickListener {
 
     fun setObserver() {
         dataModel.clickadd.observe(this, Observer {
-            prodAdapter.updateList(metaDataBeanItem())
+            val viewHolder: ProductDataAdapter.PickerViewHolder? = add_recyclerview.findViewHolderForAdapterPosition(addclick_position) as ProductDataAdapter.PickerViewHolder?
+            prodAdapter.updateList(metaDataBeanItem(), viewHolder)
         })
         dataModel.addBottomClick.observe(this, Observer {
             if (isclickBottomView) {
                 val viewHolder: ProductDataAdapter.PickerViewHolder? = add_recyclerview.findViewHolderForAdapterPosition(addclick_position) as ProductDataAdapter.PickerViewHolder?
-                prodAdapter.setFormView(it!!.mTitle, viewHolder!!, addclick_position)
+                it!!?.let { it1 -> prodAdapter.setFormView(it1, viewHolder!!, addclick_position) }
                 isclickBottomView = false
             }
 
@@ -169,12 +170,12 @@ class ProductDataFragment : Fragment(), ProdClickListener {
     @SuppressLint("WrongConstant")
     override fun onClickAdd(position: Int) {
 //        bottomViewDialog = BottomViewAddProductData()
-        println("values>>>0>$position")
+       /* println("values>>>0>$position")
         addclick_position = position
         isclickBottomView = true
         bottomViewDialog = FullBottomSheetDialogFragment(position)
         bottomViewDialog.setStyle(0, R.style.BottomSheetDialog)
-        bottomViewDialog.show(fragmentManager!!, BottomViewDialog.TAG)
+        bottomViewDialog.show(fragmentManager!!, BottomViewDialog.TAG)*/
     }
 
 

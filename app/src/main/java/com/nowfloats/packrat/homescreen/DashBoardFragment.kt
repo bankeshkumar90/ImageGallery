@@ -11,8 +11,10 @@ import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.ImageCapture
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import com.nowfloats.packrat.R
 import com.nowfloats.packrat.bottomsheetdialog.BottomViewDialog
+import com.nowfloats.packrat.clickInterface.OnImageDialogSelector
 import com.nowfloats.packrat.databaserepository.MyRepository
 import com.nowfloats.packrat.imageViewModel.MyViewModel
 import com.nowfloats.packrat.imageViewModel.ViewModelFactory
@@ -71,7 +73,20 @@ class DashBoardFragment:Fragment() {
             }
 
         }*/
-        bottomViewDialog = BottomViewDialog()
+        var objClick = object : OnImageDialogSelector {
+            override fun onDialogTypeSelected(requestCode: Int) {
+                val bundle = Bundle()
+                bundle.putInt(AppConstant.REQUEST_TYPE, requestCode)
+                var imagePreview = ImagePreview()
+                imagePreview.arguments = bundle
+                val ft: FragmentTransaction = fragmentManager!!.beginTransaction()
+                ft.replace(R.id.fram_dashboard, imagePreview)
+                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                ft.addToBackStack(null)
+                ft.commit()
+            }
+        } 
+        bottomViewDialog = BottomViewDialog(objClick)
         bottomViewDialog.setStyle( 0, R.style.BottomSheetDialog)
         bottomViewDialog.show(fragmentManager!!, BottomViewDialog.TAG)
 
@@ -129,7 +144,6 @@ class DashBoardFragment:Fragment() {
         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri)
         try {
             startActivityForResult(cameraObjIntent, TAKE_PHOTO_CODE)
-
             //startActivityForResult(cameraIntent, TAKE_PHOTO_CODE)
         }catch (e:Exception){
             e.printStackTrace()

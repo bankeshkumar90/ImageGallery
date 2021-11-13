@@ -2,9 +2,11 @@ package com.nowfloats.packrat.databaserepository
 
 import androidx.lifecycle.LiveData
 import com.nowfloats.packrat.addjobs.metaDataBeanItem
+import com.nowfloats.packrat.network.RegexApiResponse
 import com.nowfloats.packrat.roomdatabase.DaoClass
 import com.nowfloats.packrat.roomdatabase.EntityClass
 import com.nowfloats.packrat.roomdatabase.ProductFormData
+import com.nowfloats.packrat.roomdatabase.modal.ProductProperty
 import com.nowfloats.packrat.roomdatabase.productDataInfo
 
 class MyRepository(private val daoClass: DaoClass) {
@@ -40,4 +42,8 @@ class MyRepository(private val daoClass: DaoClass) {
     suspend fun getAllMetaData():LiveData<List<productDataInfo>>{
         return daoClass.getAllMetaData()
     }
+
+    /*suspend fun getProductProperties(): ProductProperty{
+        return daoClass.getProductProperty()
+    }*/
 }
