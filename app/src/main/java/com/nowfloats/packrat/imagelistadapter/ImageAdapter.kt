@@ -67,4 +67,19 @@ class ImageAdapter(
         }
         return itemDeleted
     }
+
+    fun deleteImageFromPreview(position: Int): Boolean{
+        var itemDeleted = true
+        try {
+            imagePathList.removeAt(position)
+            notifyDataSetChanged()
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
+        return itemDeleted
+    }
+
+    fun getFirstImageURl():String{
+        return imagePathList[0]
+    }
 }

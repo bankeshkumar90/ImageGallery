@@ -68,6 +68,7 @@ class ImagePreview : Fragment(), ClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setHasOptionsMenu(false)
         btnSaveImage.setOnClickListener {
             val currentTime = Calendar.getInstance().time
             val entityClass = EntityClass( uri!!, currentTime.toString(), uri!!, AppConstant().getRandomCollectionId(context!!))
@@ -135,7 +136,11 @@ class ImagePreview : Fragment(), ClickListener {
     }
 
     override fun onClickDelete(position: Int?) {
-        position?.let { imageAdapter.deleteImage(it) }
+        position?.let {
+            imageAdapter.deleteImageFromPreview(it)
+            if(imageAdapter.itemCount>0)
+                imgPreview.setImageURI(Uri.parse(imageAdapter.getFirstImageURl()))
+        }
         CoroutineScope(Dispatchers.IO).launch {
             viewModel.deleteImageById(position!!)
         }
