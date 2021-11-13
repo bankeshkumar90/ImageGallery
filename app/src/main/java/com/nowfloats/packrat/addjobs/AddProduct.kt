@@ -334,7 +334,11 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
             adapter = imageAdapter
         }
         imageAdapter.setImageSelected(0)
-        setProductRecyclerView(ArrayList<metaDataBeanItem>())
+        var itemList = ArrayList<ArrayList<metaDataBeanItem>>()
+        var arrayItem = ArrayList<metaDataBeanItem>()
+        arrayItem.add(metaDataBeanItem())
+        itemList.add(arrayItem)
+        setProductRecyclerView(itemList)
         setObserver()
         viewModel.getProductProperties(myApplication)
     }
@@ -387,7 +391,7 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
 
             try {
                 imageAdapter.setImageSelected(previousSelectedPosition)
-                setProductRecyclerView(addViewModel.fragmentMapObj.get(previousSelectedPosition)!!)
+                //setProductRecyclerView(addViewModel.fragmentMapObj.get(previousSelectedPosition)!!)
             }catch (e:Exception){
                 e.printStackTrace()
             }
@@ -397,8 +401,21 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
 
     fun setObserver() {
         addViewModel.clickadd.observe(this, Observer {
+            prodAdapter.saveLatestItemData()
+            prodAdapter.updateChild()
+            var lastItem = prodAdapter.parentProductList[prodAdapter.parentProductList.size-1]
+            if(prodAdapter.parentProductList[prodAdapter.parentProductList.size-1][0].productName.equals("",true)){
+                Toast.makeText(myApplication, myApplication.resources.getString(R.string.blankProduct), Toast.LENGTH_SHORT).show()
+                return@Observer
+            }
+            if(lastItem[lastItem.size-1].productValue.isNullOrEmpty()){
+                Toast.makeText(myApplication, myApplication.resources.getString(R.string.blankProduct), Toast.LENGTH_SHORT).show()
+                return@Observer
+            }
             val viewHolder: ProductDataAdapter.PickerViewHolder? = viewObj.productListItem.findViewHolderForAdapterPosition(addclick_position) as ProductDataAdapter.PickerViewHolder?
-            prodAdapter.updateList(metaDataBeanItem(), viewHolder)
+            var itemList = ArrayList<metaDataBeanItem>()
+            itemList.add(metaDataBeanItem())
+            prodAdapter.updateList(itemList, viewHolder)
         })
         addViewModel.addBottomClick.observe(this, Observer {
             if (isclickBottomView) {
@@ -417,7 +434,7 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
             saveCurrentData(previousSelectedPosition)
             //addViewModel.deleteFragmentObjectItem(previousSelectedPosition, it)
             prodAdapter.deleteview(it)
-            updateRecylerView(prodAdapter.productList)
+            updateRecylerView(prodAdapter.parentProductList)
             saveCurrentData(previousSelectedPosition)
         })
         addViewModel.saveMetaData.observe(this, Observer {
@@ -461,7 +478,7 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
         }
      }
 
-    private fun setProductRecyclerView(prducts :ArrayList<metaDataBeanItem>) {
+    private fun setProductRecyclerView(prducts :ArrayList<ArrayList<metaDataBeanItem>>) {
         try {
             val linearLayoutManager =
                 LinearLayoutManager(context!!, LinearLayoutManager.VERTICAL, false)
@@ -475,7 +492,7 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
             e.printStackTrace()
         }
     }
-    private fun updateRecylerView(prducts :ArrayList<metaDataBeanItem>){
+    private fun updateRecylerView(prducts :ArrayList<ArrayList<metaDataBeanItem>>){
         prodAdapter = ProductDataAdapter(context!!, this, prducts)
         viewObj.productListItem.adapter = prodAdapter
         prodAdapter.setData(prducts!!)
@@ -488,9 +505,9 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
         Handler().postDelayed({
             previousSelectedPosition = position!!
             if(addViewModel.fragmentMapObj.get(position)==null)
-                setProductRecyclerView(ArrayList<metaDataBeanItem>())
+                setProductRecyclerView(ArrayList<ArrayList<metaDataBeanItem>>())
             else {
-                updateRecylerView(addViewModel.fragmentMapObj.get(position)!!)
+                //updateRecylerView(addViewModel.fragmentMapObj.get(position)!!)
             }
         }, DELAY)
 
@@ -515,7 +532,7 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
         viewModel?.clearViewModelData()
     }
     fun saveCurrentData(position: Int){
-        for (i in 0 until prodAdapter.productList.size){
+        for (i in 0 until prodAdapter.parentProductList.size){
             try {
                 val view = viewObj.productListItem.findViewHolderForLayoutPosition(i)
                 //val productValue: EditText = view.productListItem.getChildAt(i).findViewById(R.id.valueProduct)
@@ -544,7 +561,7 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
                 e.printStackTrace()
             }
         }
-        addViewModel.updateFragmentIndex(position, prodAdapter.productList)
+        //addViewModel.updateFragmentIndex(position, prodAdapter.parentProductList)
     }
 
 }

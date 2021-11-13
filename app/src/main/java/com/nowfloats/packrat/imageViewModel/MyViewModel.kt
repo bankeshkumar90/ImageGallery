@@ -128,7 +128,9 @@ class MyViewModel(private val repository: MyRepository) : ViewModel() {
                                         response?.body() as ArrayList<RegexApiResponse>
                                 }
 
-                             }
+                             }else if(response.code() ==403){
+                                 createMockData()
+                            }
                         }
                         override fun onFailure(call: Call<List<RegexApiResponse>?>, t: Throwable) {
                              t.message?.let {
@@ -143,6 +145,33 @@ class MyViewModel(private val repository: MyRepository) : ViewModel() {
          return productProperty
     }
 
+    private fun createMockData(){
+        if(productProperty.size>0)
+            return
+            var regexApiResponse = RegexApiResponse()
+            regexApiResponse.name = "Product"
+            regexApiResponse.value = ""
+            productProperty.add(regexApiResponse)
 
+        var regexApiResponse1 = RegexApiResponse()
+         regexApiResponse1.value = ""
+            regexApiResponse1.name = "Quantity"
+            productProperty.add(regexApiResponse1)
+
+        var regexApiResponse2 = RegexApiResponse()
+        regexApiResponse2.value = ""
+            regexApiResponse2.name = "Barcode"
+            productProperty.add(regexApiResponse2)
+
+        var regexApiResponse3 = RegexApiResponse()
+        regexApiResponse3.value = ""
+            regexApiResponse3.name = "Price"
+            productProperty.add(regexApiResponse3)
+
+        var regexApiResponse4 = RegexApiResponse()
+        regexApiResponse4.value = ""
+            regexApiResponse4.name = "Others"
+            productProperty.add(regexApiResponse4)
+    }
 
 }

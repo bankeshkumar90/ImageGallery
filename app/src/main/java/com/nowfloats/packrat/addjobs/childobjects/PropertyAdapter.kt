@@ -14,7 +14,7 @@ import com.nowfloats.packrat.addjobs.metaDataBeanItem
 import com.nowfloats.packrat.utils.CustomInputFilter
 
 class PropertyAdapter(
-    val propertyList: ArrayList<metaDataBeanItem>,
+    var propertyList: ArrayList<metaDataBeanItem>,
 ): RecyclerView.Adapter<PropertyAdapter.ViewHolder>() {
     lateinit var vHolder :ViewHolder
     override fun onBindViewHolder(holder: PropertyAdapter.ViewHolder, position: Int) {
@@ -55,10 +55,9 @@ class PropertyAdapter(
         var llItemView = itemView.findViewById<LinearLayout>(R.id.llProductItem)
     }
 
-    fun updateList(propertyItem: metaDataBeanItem){
-        ///propertyList.add(propertyItem)
-        notifyDataSetChanged()
-    }
+    fun updateList(propertyListItem: ArrayList<metaDataBeanItem>){
+        propertyList = propertyListItem
+     }
 
     fun getAllItemDetails(pos:Int){
         val propertyListValue = ArrayList<metaDataBeanItem>()

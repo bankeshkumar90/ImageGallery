@@ -19,6 +19,7 @@ import com.nowfloats.packrat.clickInterface.ProdClickListener
 import com.nowfloats.packrat.roomdatabase.ProductFormData
 import com.nowfloats.packrat.utils.CustomInputFilter
 import kotlinx.android.synthetic.main.product_data.view.*
+import java.util.logging.Handler
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -26,7 +27,7 @@ import java.util.regex.Pattern
 class ProductDataAdapter(
     var context: Context,
     private val clickListener: ProdClickListener,
-    var productList: ArrayList<metaDataBeanItem>
+    var parentProductList: ArrayList<ArrayList<metaDataBeanItem>>
 ) :
     RecyclerView.Adapter<ProductDataAdapter.PickerViewHolder>() {
     private lateinit var ln: LinearLayout
@@ -35,27 +36,25 @@ class ProductDataAdapter(
     private var pholder: PickerViewHolder? = null
     private var adpterposion: Int = 0
     lateinit var childAdapter : PropertyAdapter
-    lateinit  var propertyList : ArrayList<metaDataBeanItem>
     var viewHolderList= ArrayList<PickerViewHolder>()
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PickerViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.product_data, parent, false)
-        return PickerViewHolder(view, clickListener)
+        val holder = PickerViewHolder(view, clickListener)
+        viewHolderList.add(holder)
+        return holder
     }
 
     override fun onBindViewHolder(holder: PickerViewHolder, @SuppressLint("RecyclerView") position: Int) {
 //        pholder = holder
         adpterposion = position
         holder.setData(position)
-        viewHolderList.add(holder)
         holder.childRv?.layoutManager = LinearLayoutManager(holder.childRv.context, LinearLayout.VERTICAL, false)
-        propertyList = ArrayList<metaDataBeanItem>()
-
+        //saveLatestItemData(holder)
     }
 
     override fun getItemCount(): Int {
-        return productList!!.size
+        return parentProductList!!.size
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -63,35 +62,48 @@ class ProductDataAdapter(
     }
 
     //updates the latest data of the database
-    fun updateList(objectMetaData: metaDataBeanItem, holder: PickerViewHolder?) {
+    fun updateList(objectMetaData: ArrayList<metaDataBeanItem>, holder: PickerViewHolder?) {
         //save old product value here
-        saveLatestItemData(holder)
-        productList?.add(objectMetaData)
+        saveLatestItemData()
+
+        /*childAdapter = PropertyAdapter(parentProductList[viewHolderList.size-1])
+        holder?.childRv?.adapter = childAdapter
+        childAdapter.notifyDataSetChanged()*/
+
+        parentProductList?.add(objectMetaData)
         notifyDataSetChanged()
+
     }
 
-    fun setData(listview: ArrayList<metaDataBeanItem>) {
-        productList = listview
+    fun setData(listview: ArrayList<ArrayList<metaDataBeanItem>>) {
+        parentProductList = listview
         notifyDataSetChanged()
     }
 
     fun deleteview(position: Int) {
         try{
-            productList!!.removeAt(position)
+            viewHolderList.removeAt(position)
+            parentProductList!!.removeAt(position)
+            //have to delete from child object too
+            removeFromChild()
             notifyDataSetChanged()
         }catch (e:Exception){
             e.printStackTrace()
         }
     }
-    fun updateFormView(regexApiResponse: metaDataBeanItem, position: Int,holder: PickerViewHolder){
-        saveLatestItemData(holder)
-        if(ifAlreadyAdded(propertyList, regexApiResponse)){
+    fun updateFormView(regexApiResponse: metaDataBeanItem, parentPosition: Int,holder: PickerViewHolder){
+        saveLatestItemData()
+        if(ifAlreadyAdded(parentProductList[parentPosition], regexApiResponse)){
             return
         }
-        propertyList.add(regexApiResponse)
-        childAdapter = PropertyAdapter(propertyList)
+        ifEmptyDataSet(parentPosition, regexApiResponse)
+        if(!ifAlreadyAdded(parentProductList[parentPosition], regexApiResponse)){
+            parentProductList[parentPosition].add(regexApiResponse)
+        }
+
+        childAdapter = PropertyAdapter(parentProductList[parentPosition])
         holder.childRv?.adapter = childAdapter
-        childAdapter.updateList(regexApiResponse)
+        childAdapter.notifyDataSetChanged()
     }
     @SuppressLint("NewApi")
     fun setFormView(selectedValue: metaDataBeanItem, holder: PickerViewHolder, position: Int) {
@@ -99,23 +111,35 @@ class ProductDataAdapter(
         updateFormView(selectedValue, position, holder)
     }
 
-    fun saveLatestItemData(holder: PickerViewHolder?){
+    fun saveLatestItemData(){
         try {
-            var length = holder?.childRv?.adapter?.itemCount
-            if (length != null) {
-                for (i in 0 until length!!) {
-                    val view = holder?.childRv?.findViewHolderForAdapterPosition(i)
-                    val etLabel: EditText? = view?.itemView?.findViewById(R.id.etLabel)
-                    val etValue: EditText? = view?.itemView?.findViewById(R.id.etValue)
-                    propertyList[i].productValue = etValue?.text.toString()
-                    propertyList[i].productName = etLabel?.text.toString()
+            for (index in 0 until parentProductList.size) {
+                //val view = parentItemHolder.childRv.findViewHolderForLayoutPosition(i)//locationDatesList
+                var viewHolder = viewHolderList.get(index)
+                var length = viewHolder.childRv.adapter?.itemCount
+                if(length!=null){
+                    var savedPropertyList = ArrayList<metaDataBeanItem>()
+                    for (j in 0 until length!!) {
+                        var metaDataBeanItem = metaDataBeanItem()
+                        val view = viewHolder.childRv.findViewHolderForAdapterPosition(j)
+                        val etLabel: EditText? = view?.itemView?.findViewById(R.id.etLabel)
+                        val etValue: EditText? = view?.itemView?.findViewById(R.id.etValue)
+                        //stringList.add(etLabel?.text.toString())
+                        metaDataBeanItem.productValue = etValue?.text.toString()
+                        metaDataBeanItem.productName = etLabel?.text.toString()
+                        if(!ifAlreadyAdded(savedPropertyList,metaDataBeanItem))
+                            savedPropertyList.add(metaDataBeanItem)
+
+                    }
+                    if(savedPropertyList.size!=0) {
+                        parentProductList[index] = savedPropertyList
+                    }
                 }
             }
-        }catch (e:Exception){
+        }catch (e: Exception){
             e.printStackTrace()
         }
     }
-
 
     class PickerViewHolder(itemView: View, private val clickListener: ProdClickListener) :
         RecyclerView.ViewHolder(itemView) {
@@ -130,8 +154,6 @@ class ProductDataAdapter(
             add_form = itemView.findViewById(R.id.ln_form)
             add_product_count = itemView.findViewById(R.id.add_product_count)
             childRv = itemView.findViewById(R.id.childList)
-
-
 
             add_prop_id.setOnClickListener { v ->
 
@@ -180,9 +202,9 @@ class ProductDataAdapter(
         }
     }
 
-    fun ifAlreadyAdded(propertyList:ArrayList<metaDataBeanItem>, apiResponse: metaDataBeanItem):Boolean{
+    fun ifAlreadyAdded(addedProperty:ArrayList<metaDataBeanItem>, apiResponse: metaDataBeanItem):Boolean{
         var alreadyAdded = false
-        for (item in propertyList){
+        for (item in addedProperty){
             if(item.productName.equals(apiResponse.productName,true)){
                 alreadyAdded = true
                 return alreadyAdded
@@ -191,4 +213,29 @@ class ProductDataAdapter(
         return alreadyAdded
     }
 
+    fun removeFromChild(){
+        try {
+            //savedPropertyList.removeAt(position)
+            childAdapter.notifyDataSetChanged()
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
+    }
+
+    fun ifEmptyDataSet(parentPosition: Int, regexApiResponse: metaDataBeanItem){
+        try {
+            if (parentProductList[parentPosition][0].productName.equals("", true))
+                parentProductList[parentPosition][0]= regexApiResponse
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
+    }
+
+    fun updateChild(){
+        var position = viewHolderList.size-1
+        val holder =viewHolderList[position]
+        childAdapter = PropertyAdapter(parentProductList[position])
+        holder.childRv?.adapter = childAdapter
+        childAdapter.notifyDataSetChanged()
+    }
 }

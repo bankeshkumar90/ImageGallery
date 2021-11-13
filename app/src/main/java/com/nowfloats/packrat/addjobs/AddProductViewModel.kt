@@ -49,7 +49,7 @@ class AddProductViewModel(application: Application) : AndroidViewModel(applicati
     }
 
     fun updateFragmentIndex(tabPosition: Int, fragmentObj: ArrayList<metaDataBeanItem>){
-        fragmentMapObj.put(tabPosition, fragmentObj)
+        //fragmentMapObj.put(tabPosition, fragmentObj)
     }
 
     fun deletFragmentData(deletedTabPos:Int, totalRemaining:Int): Int{

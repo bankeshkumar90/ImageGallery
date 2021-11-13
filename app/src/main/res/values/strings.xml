@@ -17,5 +17,6 @@
     <string name="other">Other</string>
     <string name="upload">Upload</string>
     <string name="title">Select Details</string>
+    <string name="blankProduct">Please add your last product information!</string>
     <string name="regex_input">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890</string>
 </resources>
