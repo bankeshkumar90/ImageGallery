@@ -214,19 +214,19 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
         //val propertyList = ArrayList<properies>()
         val productList = ArrayList<products>()
         try {
-            for (i in 0 until addViewModel.fragmentMapObj.size){
-                val products = addViewModel?.fragmentMapObj?.get(i)
+            for (i in 0 until prodAdapter.parentProductList.size){
+                val products = prodAdapter?.parentProductList?.get(i)
                 for (product in products!!){
                     var jsonArray = JSONArray()
                     var jsonObjectProperties = JSONObject()
 
-                    /*if(product.productVisible==true){
+                    if(!product.productValue.equals("")){
                         var productObject = JSONObject()
                         productObject.put(product.productName, product.productValue)
                         jsonArray.put(productObject)
                     }
 
-                    if(product.priceVisible==true){
+                    /*if(product.priceVisible==true){
                         var priceObject = JSONObject()
                         priceObject.put(product.price, product.priceValue)
                         jsonArray.put(priceObject)
@@ -296,20 +296,36 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
             R.id.upload -> {
                 //Upload image file function goes here - startImageUploadService(getRandomCollectionId())
                 //    uploadAllImages(imageList)
+                prodAdapter.saveLatestItemData()
                 saveCurrentData(previousSelectedPosition)
                 saveProductDatainDb()
+                try{
+                    var lastItem = prodAdapter.parentProductList[prodAdapter.parentProductList.size-1]
+                    if(prodAdapter.parentProductList[prodAdapter.parentProductList.size-1][0].productName.equals("",true) ||
+                        prodAdapter.parentProductList[prodAdapter.parentProductList.size-1][0].productValue.equals("",true)){
+                        Toast.makeText(myApplication, myApplication.resources.getString(R.string.blankProduct), Toast.LENGTH_SHORT).show()
+                        return false
+                    }
+                    if(lastItem[lastItem.size-1].productValue.isNullOrEmpty() || lastItem[lastItem.size-1].productName.isNullOrEmpty()){
+                        Toast.makeText(myApplication, myApplication.resources.getString(R.string.blankProduct), Toast.LENGTH_SHORT).show()
+                        return false
+                    }
+                }catch (e:Exception){
+                    e.printStackTrace()
+                }
                 Handler().postDelayed({
+                    prodAdapter.saveLatestItemData()
                     loading = ProgressDialog(viewObj.context!!)
                     loading!!.setCancelable(true);
                     loading!!.setMessage(AppConstant.IN_PROGRESS);
                     loading!!.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                     loading!!.show()
                     generatedCollectionId = AppConstant().getRandomCollectionId(context!!)
-                    uploadAllImages()
-                    /*val apiService = Network.instance.create(
+                    //uploadAllImages()
+                    val apiService = Network.instance.create(
                     ApiService::class.java
                      )
-                    saveMetaDataToServer(apiService)*/
+                    saveMetaDataToServer(apiService)
 
                 },DELAY)
             }
