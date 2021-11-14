@@ -45,8 +45,7 @@ class ImagePreview : Fragment(), ClickListener {
     private lateinit var imageAdapter: ImageAdapter
     //private var imageList = emptyList<EntityClass>()
 
-    private val TAKE_PHOTO_CODE = 101
-    private val SELECT_PICTURE_CODE = 102
+
     var imageName = ""
     var path = ""
     var image_uri : Uri? = null
@@ -164,7 +163,7 @@ class ImagePreview : Fragment(), ClickListener {
             cameraIntent.putExtra("android.intent.extras.CAMERA_FACING", 0);
         }*/
         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, image_uri)
-        startActivityForResult(cameraIntent, TAKE_PHOTO_CODE)
+        startActivityForResult(cameraIntent, AppConstant.REQ_CAMERA_CODE)
     }
 
     private fun openGallery(){
@@ -174,7 +173,7 @@ class ImagePreview : Fragment(), ClickListener {
         i.action = Intent.ACTION_GET_CONTENT
         // pass the constant to compare it
         // with the returned requestCode
-        startActivityForResult(Intent.createChooser(i, "Select Pictures"), SELECT_PICTURE_CODE)
+        startActivityForResult(Intent.createChooser(i, "Select Pictures"), AppConstant.REQ_GALLERY_CODE)
     }
     private fun showPreview(imagePath:String){
         uri = imagePath
@@ -184,12 +183,12 @@ class ImagePreview : Fragment(), ClickListener {
     }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == TAKE_PHOTO_CODE) {
+        if (requestCode == AppConstant.REQ_CAMERA_CODE) {
             image_uri?.let {
                 viewModel.addImageToList(""+image_uri)
                 showPreview(""+it)
             }
-        }else if( requestCode == SELECT_PICTURE_CODE){
+        }else if( requestCode == AppConstant.REQ_GALLERY_CODE){
             //update imageList
 
             if (data!!.clipData != null){

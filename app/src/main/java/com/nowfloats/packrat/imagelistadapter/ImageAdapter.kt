@@ -53,6 +53,9 @@ class ImageAdapter(
         notifyDataSetChanged()
     }
 
+    /****
+     * this function will be used for multiple image tabulation
+     */
     fun deleteImage(position: Int): Boolean{
         var itemDeleted = true
         try {

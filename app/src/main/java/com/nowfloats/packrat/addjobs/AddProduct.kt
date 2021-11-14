@@ -3,7 +3,9 @@ package com.nowfloats.packrat.addjobs
 import android.annotation.SuppressLint
 import android.app.ProgressDialog
 import android.content.ContentUris
+import android.content.ContentValues
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -57,7 +59,9 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.io.File
 import com.google.gson.JsonParser
+import com.nowfloats.packrat.clickInterface.OnImageDialogSelector
 import com.nowfloats.packrat.homescreen.DashBoardFragment
+import kotlinx.android.synthetic.main.fragment_image_preview.*
 
 
 class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickListener {
@@ -67,11 +71,9 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
     lateinit var myApplication: MyApplication
     lateinit var myRepository: MyRepository
 
-    private var imageList = emptyList<EntityClass>()
     var tabLayout: TabLayout? = null
     var viewPager: ViewPager? = null
     var pagerAdapter: AddPagerAdapter? = null
-    private var imagePathList = ArrayList<String>()
     private lateinit var imageAdapter: ImageAdapter
     private lateinit var bottomViewDialog: FullBottomSheetDialogFragment
     private var isclickBottomView = false
@@ -83,6 +85,8 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
     private var uploadCycleCount = 0
     private var generatedCollectionId = ""
     var loading: ProgressDialog? = null
+    var image_uri : Uri? = null
+    private lateinit var imagePicker: BottomViewDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -106,7 +110,6 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewObj = view
-        imagePathList = arguments?.getStringArrayList(AppConstant.IMAGE_LIST) as ArrayList<String>
         initViews(view)
 //        bindBottomView(view)
         btn_add_product.setOnClickListener {
@@ -122,6 +125,10 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
                 viewModel.addProductData(it)
             }
         })
+        btnAddShelfImages.setOnClickListener(View.OnClickListener {
+            //open bottomsheet dialog and override image calback
+            dispatchTakePictureIntent()
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -130,7 +137,7 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
     }
 
     fun uploadAllImages() {
-        for (imagepath in imagePathList) {
+        for (imagepath in viewModel.imageList) {
             Handler().postDelayed({
                 GlobalScope.launch(Dispatchers.Main) {
                     var actualFilePath = AppConstant.getPath(context!!, Uri.parse(imagepath))
@@ -165,7 +172,7 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
                 ) {
                     Log.v("Upload", "success")
                     uploadCycleCount++
-                    if(uploadCycleCount>=imagePathList.size){
+                    if(uploadCycleCount>=viewModel.imageList.size){
                         Toast.makeText(context!!, "" + "File uploaded successfully", Toast.LENGTH_SHORT)
                             .show()
                         initMetaDataUpload(apiService)
@@ -317,10 +324,10 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
     private fun initViews(view: View) {
         myApplication = activity?.application as MyApplication
         myRepository = myApplication.myRepository
-        imageList = arrayListOf<EntityClass>()
         viewModelFactory = ViewModelFactory(myRepository)
         viewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(MyViewModel::class.java)
+        viewModel.imageList = arguments?.getStringArrayList(AppConstant.IMAGE_LIST) as ArrayList<String>
 
         initHeaderItems(view)
     }
@@ -328,7 +335,7 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
     private fun initHeaderItems(view: View){
         val linearLayoutManager =
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        imageAdapter = ImageAdapter( this, imagePathList)
+        imageAdapter = ImageAdapter( this, viewModel.imageList)
         view.tab_recycler.apply {
             layoutManager = linearLayoutManager
             adapter = imageAdapter
@@ -360,20 +367,23 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
         }
     }
 
+    /***
+     * is used to select image for tabulation header
+     */
     override fun onClick(position: Int) {
         //will add prod fragment instance here -  saveCurrentWithOldPosition(oldPosition:Int)
 
-        shelfSelected(position)
+        /*shelfSelected(position)
         Handler().postDelayed({
             imageAdapter.setImageSelected(position)
-        },DELAY)
+        },DELAY)*/
     }
 
     override fun onClickDelete(position: Int?) {
         //will delete prd frag instance
         var imageDelted = false
         if (position != null) {
-            imageDelted = imageAdapter.deleteImage(position)
+            imageDelted = imageAdapter.deleteImageFromPreview(position)
         }
         if(imageDelted==false){
             return
@@ -382,7 +392,7 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
 
         if(imageAdapter.itemCount<1){
             landToDashBoard()
-        }else{
+        }/*else{
             addViewModel.deletFragmentData(position!!, imageAdapter.itemCount)
 
             if(previousSelectedPosition>= imageAdapter.itemCount){
@@ -395,7 +405,7 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
             }catch (e:Exception){
                 e.printStackTrace()
             }
-        }
+        }*/
         //now cal
     }
 
@@ -434,7 +444,10 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
             saveCurrentData(previousSelectedPosition)
             //addViewModel.deleteFragmentObjectItem(previousSelectedPosition, it)
             prodAdapter.deleteview(it)
-            updateRecylerView(prodAdapter.parentProductList)
+            prodAdapter.notifyItemRemoved(it)
+            prodAdapter.notifyItemRangeChanged(it, prodAdapter.parentProductList.size);
+            //updateRecylerView(prodAdapter.parentProductList)
+            //prodAdapter.setChildElementsAfterRoot()
             saveCurrentData(previousSelectedPosition)
         })
         addViewModel.saveMetaData.observe(this, Observer {
@@ -492,10 +505,12 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
             e.printStackTrace()
         }
     }
+
+    //This function will delete product of recyler item
     private fun updateRecylerView(prducts :ArrayList<ArrayList<metaDataBeanItem>>){
         prodAdapter = ProductDataAdapter(context!!, this, prducts)
         viewObj.productListItem.adapter = prodAdapter
-        prodAdapter.setData(prducts!!)
+        //prodAdapter.setData(prducts!!)
         prodAdapter.notifyDataSetChanged()
     }
     fun shelfSelected(position: Int?){
@@ -564,7 +579,99 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
         //addViewModel.updateFragmentIndex(position, prodAdapter.parentProductList)
     }
 
+
+
+    fun openCamera()
+    {
+        var imageName = "image${System.currentTimeMillis()}.jpg"
+        val values = ContentValues()
+        values.put(MediaStore.Images.Media.TITLE, imageName)
+        image_uri = context?.contentResolver?.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+
+        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+            cameraIntent.putExtra("android.intent.extras.LENS_FACING_FRONT", 0);
+        } else {
+            cameraIntent.putExtra("android.intent.extras.CAMERA_FACING", 0);
+        }*/
+        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, image_uri)
+        startActivityForResult(cameraIntent, AppConstant.REQ_CAMERA_CODE)
+    }
+
+    private fun openGallery(){
+        val i = Intent()
+        i.type = "image/*"
+        i.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+        i.action = Intent.ACTION_GET_CONTENT
+        // pass the constant to compare it
+        // with the returned requestCode
+        startActivityForResult(Intent.createChooser(i, "Select Pictures"), AppConstant.REQ_GALLERY_CODE)
+    }
+    private fun showPreview(imagePath:String){
+        val linearLayoutManager =
+            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        imageAdapter = ImageAdapter( this, viewModel.imageList)
+        viewObj?.tab_recycler.apply {
+            layoutManager = linearLayoutManager
+            adapter = imageAdapter
+        }
+        imageAdapter.notifyDataSetChanged()
+    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == AppConstant.REQ_CAMERA_CODE) {
+            image_uri?.let {
+                viewModel.addImageToList(""+image_uri)
+                showPreview(""+it)
+            }
+        }else if( requestCode == AppConstant.REQ_GALLERY_CODE){
+            //update imageList
+
+            if (data!!.clipData != null){
+                //picked multiple images
+                //get number of picked images
+                val count = data.clipData!!.itemCount
+                for (i in 0 until count){
+                    val imageUri = data.clipData!!.getItemAt(i).uri
+                    //add image to list
+                    viewModel.addImageToList(""+imageUri)
+                }
+                //set first image from list to image switcher
+                showPreview(""+data.clipData!!.getItemAt(0).uri)
+            }
+            else{
+                //picked single image
+                val selectedImageUri: Uri = data?.data as Uri
+                if (null != selectedImageUri) {
+                    // update the preview image in the layout
+                    selectedImageUri?.let {
+                        viewModel.addImageToList(""+it)
+                        showPreview(""+it)
+                    }
+                }
+            }
+        }
+    }
+
+
+
+    @SuppressLint("WrongConstant")
+    private fun dispatchTakePictureIntent() {
+        var objClick = object : OnImageDialogSelector {
+            override fun onDialogTypeSelected(requestCode: Int) {
+                if(requestCode==AppConstant.REQ_GALLERY_CODE)
+                    openGallery()
+                else
+                    openCamera()
+            }
+        }
+        imagePicker = BottomViewDialog(objClick)
+        imagePicker.setStyle( 0, R.style.BottomSheetDialog)
+        imagePicker.show(fragmentManager!!, BottomViewDialog.TAG)
+    }
+
 }
+
 
 fun Bundle.putParcelable(requestType: String, get: ArrayList<metaDataBeanItem>?) {
 

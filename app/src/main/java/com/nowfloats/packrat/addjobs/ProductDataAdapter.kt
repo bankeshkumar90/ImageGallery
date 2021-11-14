@@ -42,6 +42,7 @@ class ProductDataAdapter(
         val view = LayoutInflater.from(parent.context).inflate(R.layout.product_data, parent, false)
         val holder = PickerViewHolder(view, clickListener)
         viewHolderList.add(holder)
+        //setChildElementsAfterRoot(holder)
         return holder
     }
 
@@ -82,15 +83,30 @@ class ProductDataAdapter(
 
     fun deleteview(position: Int) {
         try{
+            saveLatestItemData()
             viewHolderList.removeAt(position)
             parentProductList!!.removeAt(position)
+
             //have to delete from child object too
-            removeFromChild()
-            notifyDataSetChanged()
+            //removeFromChild()
+
         }catch (e:Exception){
             e.printStackTrace()
         }
     }
+    fun setChildElementsAfterRoot(holder: PickerViewHolder){
+        try {
+            for(i in 0 until viewHolderList.size) {
+                val holder = viewHolderList.get(i)
+                childAdapter = PropertyAdapter(parentProductList[i])
+                holder.childRv?.adapter = childAdapter
+                childAdapter.notifyDataSetChanged()
+            }
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
+    }
+
     fun updateFormView(regexApiResponse: metaDataBeanItem, parentPosition: Int,holder: PickerViewHolder){
         saveLatestItemData()
         if(ifAlreadyAdded(parentProductList[parentPosition], regexApiResponse)){
@@ -232,10 +248,14 @@ class ProductDataAdapter(
     }
 
     fun updateChild(){
-        var position = viewHolderList.size-1
-        val holder =viewHolderList[position]
-        childAdapter = PropertyAdapter(parentProductList[position])
-        holder.childRv?.adapter = childAdapter
-        childAdapter.notifyDataSetChanged()
+        try {
+            var position = viewHolderList.size - 1
+            val holder = viewHolderList[position]
+            childAdapter = PropertyAdapter(parentProductList[position])
+            holder.childRv?.adapter = childAdapter
+            childAdapter.notifyDataSetChanged()
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
     }
 }
