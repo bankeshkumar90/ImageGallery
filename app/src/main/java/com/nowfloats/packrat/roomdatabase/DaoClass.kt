@@ -3,6 +3,7 @@ package com.nowfloats.packrat.roomdatabase
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.nowfloats.packrat.addjobs.metaDataBeanItem
 import com.nowfloats.packrat.roomdatabase.modal.ProductProperty
@@ -12,7 +13,7 @@ import com.nowfloats.packrat.roomdatabase.modal.ProductProperty
 interface DaoClass {
 
     //adds the image into database
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addImage(entityClass: EntityClass)
 
     /*
@@ -22,6 +23,23 @@ interface DaoClass {
     @Query("select * from image_table")
     fun getAllImages(): LiveData<List<EntityClass>>
 
+    @Query("select * from image_table where fileUploaded = 0")
+    fun getAllSavedImages():List<EntityClass>
+
+    @Query("select * from prod_table")
+    fun fetchAllMetaDataInfo(): List<ProductEntityClass>
+
+    @Query("select * from image_table WHERE  CollectionId IN (:CollectionId) AND fileUploaded in (:fileUploaded)")
+    fun getJobDoneCollectionIdList( CollectionId:String, fileUploaded : Boolean):  List<EntityClass>
+
+    @Query("select * from image_table WHERE  CollectionId IN (:CollectionId)")
+    fun getCollectionIdList( CollectionId:String): List<EntityClass>
+
+    @Query("select * from prod_table WHERE  CollectionId IN (:CollectionId) AND DataUploaded in (:DataUploaded)")
+    fun getMetaDataToUpload(CollectionId:String, DataUploaded : Boolean): List<ProductEntityClass>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun saveMetaDataInfoToRoomDb(productEntityClass: ProductEntityClass)
 
     //delete previous data present in database
     @Query("DELETE FROM image_table")

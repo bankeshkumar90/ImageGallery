@@ -37,6 +37,8 @@ class AppConstant {
         const val IMAGE_PREIVEW_TAG = "IMAGE_PREVIEW"
         const val DASHBOARD_TAG = "DASHBOARD"
         const val ADD_PRODUCT_TAG = "ADD_PRODUCT"
+        const val COLLECTION_ID = "COLLECTION_ID"
+        const val NETWORK_CALL_DELAY: Long = 2000L
 
         @JvmStatic
         @SuppressLint("NewApi")

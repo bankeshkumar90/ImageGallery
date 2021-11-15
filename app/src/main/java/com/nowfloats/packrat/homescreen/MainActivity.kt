@@ -16,6 +16,7 @@ import com.nowfloats.packrat.databaserepository.MyRepository
 import com.nowfloats.packrat.imageViewModel.MyViewModel
 import com.nowfloats.packrat.imageViewModel.ViewModelFactory
 import androidx.lifecycle.ViewModelProvider
+import com.nowfloats.packrat.addjobs.AddProductViewModel
 import com.nowfloats.packrat.utils.AppConstant
 
 
@@ -29,13 +30,13 @@ class MainActivity : AppCompatActivity() {
 //    private lateinit var imageAdapter: ImageAdapter
     private val CAMERA_REQESUT_CODE = 1
 //    private lateinit var bottomViewDialog: BottomViewDialog
+    private lateinit var mainViewModel:MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.dashboard_activity)
         supportActionBar?.elevation = 0F
         checkPermissions()
-
         initViewsAndListeners()
         setDashBoard()
 
@@ -75,6 +76,7 @@ class MainActivity : AppCompatActivity() {
         viewModelFactory = ViewModelFactory(myRepository)
 
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(MyViewModel::class.java)
+        mainViewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java)
 
         /* ll_shelfView.setOnClickListener {
             dispatchTakePictureIntent()

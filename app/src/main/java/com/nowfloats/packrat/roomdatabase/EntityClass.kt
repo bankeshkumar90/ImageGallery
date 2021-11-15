@@ -7,11 +7,11 @@ import androidx.room.PrimaryKey
 //Entity which represents the database in form of table
 @Entity(tableName = "image_table")
 data class EntityClass(
-    @ColumnInfo(name = "image_name") var name: String,
+    @ColumnInfo(name = "image_name") var image_name: String,
     @ColumnInfo(name = "time_stamp") var time: String,
-//    @ColumnInfo(name = "album_name") var album: String,
     @ColumnInfo(name = "path") var path: String,
-    @ColumnInfo(name = "CollectionId") var collectionId: String
+    @ColumnInfo(name = "CollectionId") var CollectionId: String,
+    @ColumnInfo(name = "fileUploaded") var fileUploaded: Boolean
 
 ) {
     @PrimaryKey(autoGenerate = true)

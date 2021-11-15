@@ -17,6 +17,7 @@ import com.nowfloats.packrat.network.ApiService
 import com.nowfloats.packrat.network.Network
 import com.nowfloats.packrat.network.RegexApiResponse
 import com.nowfloats.packrat.roomdatabase.EntityClass
+import com.nowfloats.packrat.roomdatabase.ProductEntityClass
 import com.nowfloats.packrat.roomdatabase.ProductFormData
 import com.nowfloats.packrat.roomdatabase.modal.ProductProperty
 import com.nowfloats.packrat.roomdatabase.productDataInfo
@@ -38,8 +39,16 @@ class MyViewModel(private val repository: MyRepository) : ViewModel() {
     var  productProperty: ArrayList<RegexApiResponse> = ArrayList<RegexApiResponse>()
 
     //addImage
-    suspend fun addImage(entityClass: EntityClass) {
+    suspend fun saveImageInformationToRoomDb(entityClass: EntityClass) {
         repository.addImage(entityClass)
+    }
+
+    suspend fun saveMetaDataInformationToRoomDb(metaDataInfo: ProductEntityClass) {
+        repository.addMetaDataInfo(metaDataInfo)
+    }
+
+    suspend fun fetchMetaDataInformationToRoomDb() :List<ProductEntityClass>{
+        return repository.fetchMetaDataInfo()
     }
     init {
         System.out.println("message")

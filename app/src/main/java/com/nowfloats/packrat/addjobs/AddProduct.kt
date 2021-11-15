@@ -62,7 +62,10 @@ import java.io.File
 import com.google.gson.JsonParser
 import com.nowfloats.packrat.clickInterface.OnImageDialogSelector
 import com.nowfloats.packrat.homescreen.DashBoardFragment
+import com.nowfloats.packrat.roomdatabase.ProductEntityClass
 import kotlinx.android.synthetic.main.fragment_image_preview.*
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickListener {
@@ -227,40 +230,11 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
                         productObject.put(product.productName, product.productValue)
                         jsonArray.put(productObject)
                     }
-
-                    /*if(product.priceVisible==true){
-                        var priceObject = JSONObject()
-                        priceObject.put(product.price, product.priceValue)
-                        jsonArray.put(priceObject)
-                    }
-
-                    if(product.barcodeVisbile==true){
-                        var barCodeObject = JSONObject()
-                        barCodeObject.put(product.barcode, product.barcodeValue)
-                        jsonArray.put(barCodeObject)
-                    }
-
-                    if(product.quantityVisible==true){
-                        var quantityObject = JSONObject()
-                        quantityObject.put(product.quantity, product.quantityValue)
-                        jsonArray.put(quantityObject)
-                    }
-
-                    if(product.othersVisible==true){
-                        var othersObject= JSONObject()
-                        if(!product.othersName.equals("",true)){
-                            othersObject.put(product.othersName, product.othersValue)
-                            jsonArray.put(othersObject)
-                        }
-                    }*/
-
                 }
                 if(jsonArray.length()>0) {
                     jsonObjectProperties.put("properies", jsonArray)
                     productJSONArray.put(jsonObjectProperties)
                 }
-               /* propery = properies(jsonArray)
-                propertyList.add(propery)*/
             }
         }catch (e:Exception){
             e.printStackTrace()
@@ -301,7 +275,6 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
                 //    uploadAllImages(imageList)
                 prodAdapter.saveLatestItemData()
                 saveCurrentData(previousSelectedPosition)
-                saveProductDatainDb()
                 try{
                     var lastItem = prodAdapter.parentProductList[prodAdapter.parentProductList.size-1]
                     if(prodAdapter.parentProductList[prodAdapter.parentProductList.size-1][0].productName.equals("",true) ||
@@ -316,6 +289,9 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
                 }catch (e:Exception){
                     e.printStackTrace()
                 }
+                generatedCollectionId = AppConstant().getRandomCollectionId(context!!)
+                saveProductDatainDb()
+
                 Handler().postDelayed({
                     prodAdapter.saveLatestItemData()
                     loading = ProgressDialog(viewObj.context!!)
@@ -323,7 +299,6 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
                     loading!!.setMessage(AppConstant.IN_PROGRESS);
                     loading!!.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                     loading!!.show()
-                    generatedCollectionId = AppConstant().getRandomCollectionId(context!!)
                     //uploadAllImages()
                     val apiService = Network.instance.create(
                     ApiService::class.java
@@ -336,8 +311,71 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
         return super.onOptionsItemSelected(item)
     }
 
+    /****
+     * This function will save all information of metaData including image information
+     */
     private fun saveProductDatainDb() {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                for (image in viewModel.imageList) {
+                    val currentTime = Calendar.getInstance().time
+                    val entityClass = EntityClass(
+                        image,
+                        currentTime.toString(),
+                        image,
+                        AppConstant().getRandomCollectionId(context!!),
+                        false
+                    )
+                    viewModel.saveImageInformationToRoomDb(entityClass)
+                }
+                var processedMetaData = processMetaDataToSave()
+                val productEntityClass = ProductEntityClass(generatedCollectionId, false, processedMetaData)
+                viewModel.saveMetaDataInformationToRoomDb(productEntityClass)
+                val list = viewModel.fetchMetaDataInformationToRoomDb()
+            }catch (e:Exception){
+                e.printStackTrace()
+            }
+        }
         addViewModel.saveFormMetaData()
+    }
+
+    /****
+     * preparing form data to save into local db
+     */
+    private fun processMetaDataToSave(): String{
+        var productJSONArray = JSONArray()
+        var requestJSONObject = JSONObject()
+        //val propertyList = ArrayList<properies>()
+        val productList = ArrayList<products>()
+        try {
+            for (i in 0 until prodAdapter.parentProductList.size){
+                val products = prodAdapter?.parentProductList?.get(i)
+                var jsonObjectProperties = JSONObject()
+                var jsonArray = JSONArray()
+                for (product in products!!){
+                    if(!product.productValue.equals("")){
+                        var productObject = JSONObject()
+                        productObject.put(product.productName, product.productValue)
+                        jsonArray.put(productObject)
+                    }
+                }
+                if(jsonArray.length()>0) {
+                    jsonObjectProperties.put("properies", jsonArray)
+                    productJSONArray.put(jsonObjectProperties)
+                }
+            }
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
+        requestJSONObject.put( "CreatedBy",AppConstant.CREATED_BY)
+        requestJSONObject.put( "CreatedByName",AppConstant.CREATED_BY_NAME)
+        requestJSONObject.put( "CollectionId",generatedCollectionId)
+        requestJSONObject.put( "products",productJSONArray)
+        //val jsonParser = JsonParser()
+        //var gsonObject = JsonObject()
+        //gsonObject = jsonParser.parse(requestJSONObject.toString()) as JsonObject
+
+        return  requestJSONObject.toString()
     }
 
     private fun initViews(view: View) {

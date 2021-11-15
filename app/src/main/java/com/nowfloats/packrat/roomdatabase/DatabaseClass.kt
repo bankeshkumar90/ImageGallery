@@ -9,7 +9,7 @@ import com.nowfloats.packrat.roomdatabase.modal.ProductPropertiesConverter
 import com.nowfloats.packrat.roomdatabase.modal.ProductProperty
 
 //database class which returns the instance of our database
-@Database(entities = [EntityClass::class,ProductFormData::class, productDataInfo::class], version = 1)
+@Database(entities = [EntityClass::class, ProductEntityClass::class, ProductFormData::class, productDataInfo::class], version = 1)
 @TypeConverters(ProductTypeConverter::class)
 abstract class DatabaseClass : RoomDatabase() {
 

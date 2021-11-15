@@ -69,13 +69,9 @@ class ImagePreview : Fragment(), ClickListener {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(false)
         btnSaveImage.setOnClickListener {
-            val currentTime = Calendar.getInstance().time
-            val entityClass = EntityClass( uri!!, currentTime.toString(), uri!!, AppConstant().getRandomCollectionId(context!!))
             CoroutineScope(Dispatchers.IO).launch {
-                viewModel.addImage(entityClass)
-                sendAddproductScreen()
+                 sendAddproductScreen()
             }
-
         }
         btn_open_camera.setOnClickListener {
             //Will save the imagelist in viewmodel and after uploading then push it to local database
