@@ -84,9 +84,8 @@ class ProductDataAdapter(
     fun deleteview(position: Int) {
         try{
             saveLatestItemData()
-            viewHolderList.removeAt(position)
             parentProductList!!.removeAt(position)
-
+            viewHolderList.clear()
             //have to delete from child object too
             //removeFromChild()
 
@@ -94,7 +93,7 @@ class ProductDataAdapter(
             e.printStackTrace()
         }
     }
-    fun setChildElementsAfterRoot(holder: PickerViewHolder){
+    fun setChildElementsAfterRoot(){
         try {
             for(i in 0 until viewHolderList.size) {
                 val holder = viewHolderList.get(i)

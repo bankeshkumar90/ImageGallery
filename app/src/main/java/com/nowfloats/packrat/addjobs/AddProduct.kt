@@ -216,9 +216,10 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
         try {
             for (i in 0 until prodAdapter.parentProductList.size){
                 val products = prodAdapter?.parentProductList?.get(i)
+                var jsonObjectProperties = JSONObject()
+                var jsonArray = JSONArray()
+
                 for (product in products!!){
-                    var jsonArray = JSONArray()
-                    var jsonObjectProperties = JSONObject()
 
                     if(!product.productValue.equals("")){
                         var productObject = JSONObject()
@@ -251,10 +252,11 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
                             jsonArray.put(othersObject)
                         }
                     }*/
-                    if(jsonArray.length()>0) {
-                        jsonObjectProperties.put("properies", jsonArray)
-                        productJSONArray.put(jsonObjectProperties)
-                    }
+
+                }
+                if(jsonArray.length()>0) {
+                    jsonObjectProperties.put("properies", jsonArray)
+                    productJSONArray.put(jsonObjectProperties)
                 }
                /* propery = properies(jsonArray)
                 propertyList.add(propery)*/
@@ -429,6 +431,7 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
         addViewModel.clickadd.observe(this, Observer {
             prodAdapter.saveLatestItemData()
             prodAdapter.updateChild()
+            if(prodAdapter.parentProductList.size>0){
             var lastItem = prodAdapter.parentProductList[prodAdapter.parentProductList.size-1]
             if(prodAdapter.parentProductList[prodAdapter.parentProductList.size-1][0].productName.equals("",true)){
                 Toast.makeText(myApplication, myApplication.resources.getString(R.string.blankProduct), Toast.LENGTH_SHORT).show()
@@ -437,7 +440,7 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
             if(lastItem[lastItem.size-1].productValue.isNullOrEmpty()){
                 Toast.makeText(myApplication, myApplication.resources.getString(R.string.blankProduct), Toast.LENGTH_SHORT).show()
                 return@Observer
-            }
+            }}
             val viewHolder: ProductDataAdapter.PickerViewHolder? = viewObj.productListItem.findViewHolderForAdapterPosition(addclick_position) as ProductDataAdapter.PickerViewHolder?
             var itemList = ArrayList<metaDataBeanItem>()
             itemList.add(metaDataBeanItem())
@@ -461,7 +464,7 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
             //addViewModel.deleteFragmentObjectItem(previousSelectedPosition, it)
             prodAdapter.deleteview(it)
             prodAdapter.notifyItemRemoved(it)
-            prodAdapter.notifyItemRangeChanged(it, prodAdapter.parentProductList.size);
+            //prodAdapter.notifyItemRangeChanged(it, prodAdapter.parentProductList.size);
             //updateRecylerView(prodAdapter.parentProductList)
             //prodAdapter.setChildElementsAfterRoot()
             saveCurrentData(previousSelectedPosition)
