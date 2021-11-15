@@ -463,10 +463,12 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
             saveCurrentData(previousSelectedPosition)
             //addViewModel.deleteFragmentObjectItem(previousSelectedPosition, it)
             prodAdapter.deleteview(it)
-            prodAdapter.notifyItemRemoved(it)
+            //prodAdapter.notifyItemRemoved(it)
             //prodAdapter.notifyItemRangeChanged(it, prodAdapter.parentProductList.size);
-            //updateRecylerView(prodAdapter.parentProductList)
-            //prodAdapter.setChildElementsAfterRoot()
+            updateRecylerView(prodAdapter.parentProductList)
+            Handler().postDelayed({
+                prodAdapter.setChildElementsAfterRoot()
+            },500)
             saveCurrentData(previousSelectedPosition)
         })
         addViewModel.saveMetaData.observe(this, Observer {

@@ -4,17 +4,19 @@ package com.nowfloats.packrat.addjobs.childobjects
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.nowfloats.packrat.R
 import com.nowfloats.packrat.addjobs.metaDataBeanItem
+import com.nowfloats.packrat.clickInterface.ChildItemActionListener
 import com.nowfloats.packrat.utils.CustomInputFilter
 
 class PropertyAdapter(
     var propertyList: ArrayList<metaDataBeanItem>,
+    var childItemActionListener: ChildItemActionListener
 ): RecyclerView.Adapter<PropertyAdapter.ViewHolder>() {
     lateinit var vHolder :ViewHolder
     override fun onBindViewHolder(holder: PropertyAdapter.ViewHolder, position: Int) {
@@ -29,12 +31,13 @@ class PropertyAdapter(
                 holder.etLabel.isEnabled = true
         }
         holder.delteIcon.setOnClickListener(View.OnClickListener {
-            //remove layout
+            //remove layout - before removing update Parent Data by listner
+            childItemActionListener.onClickCross(position, holder, propertyList)
             holder.etValue.setText("")
             holder.etLabel.setText("")
-            propertyList[position].productName = ""
-            propertyList[position].productValue = ""
-            holder.llItemView.removeAllViews()
+            //propertyList.removeAt(position)
+            var n = propertyList
+            System.out.println("propertyList->$n")
             notifyDataSetChanged()
         })
     }

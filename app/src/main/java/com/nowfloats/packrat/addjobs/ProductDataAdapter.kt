@@ -8,18 +8,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.nowfloats.packrat.R
 import com.nowfloats.packrat.addjobs.childobjects.PropertyAdapter
+import com.nowfloats.packrat.clickInterface.ChildItemActionListener
 import com.nowfloats.packrat.clickInterface.ProdClickListener
-import com.nowfloats.packrat.roomdatabase.ProductFormData
-import com.nowfloats.packrat.utils.CustomInputFilter
 import kotlinx.android.synthetic.main.product_data.view.*
-import java.util.logging.Handler
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -37,11 +35,26 @@ class ProductDataAdapter(
     private var adpterposion: Int = 0
     lateinit var childAdapter : PropertyAdapter
     var viewHolderList= ArrayList<PickerViewHolder>()
-
+    lateinit var onDeleteClick : ChildItemActionListener
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PickerViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.product_data, parent, false)
         val holder = PickerViewHolder(view, clickListener)
         viewHolderList.add(holder)
+        onDeleteClick = object :ChildItemActionListener{
+            override fun onClickCross(position: Int?, holder: PropertyAdapter.ViewHolder, propertyList: ArrayList<metaDataBeanItem>) {
+                try{
+                //saveLatestItemData()
+                if (position != null) {
+                    var parentPosition = getParentPosByComparision(propertyList)
+                    if(parentPosition==-1)
+                        return
+                    parentProductList[parentPosition].removeAt(position)
+                    childAdapter.notifyItemRemoved(position)
+                }}catch (e:Exception){
+                    e.printStackTrace()
+                }
+            }
+        }
         //setChildElementsAfterRoot(holder)
         return holder
     }
@@ -95,9 +108,10 @@ class ProductDataAdapter(
     }
     fun setChildElementsAfterRoot(){
         try {
+
             for(i in 0 until viewHolderList.size) {
                 val holder = viewHolderList.get(i)
-                childAdapter = PropertyAdapter(parentProductList[i])
+                childAdapter = PropertyAdapter(parentProductList[i], onDeleteClick)
                 holder.childRv?.adapter = childAdapter
                 childAdapter.notifyDataSetChanged()
             }
@@ -116,7 +130,7 @@ class ProductDataAdapter(
             parentProductList[parentPosition].add(regexApiResponse)
         }
 
-        childAdapter = PropertyAdapter(parentProductList[parentPosition])
+        childAdapter = PropertyAdapter(parentProductList[parentPosition], onDeleteClick)
         holder.childRv?.adapter = childAdapter
         childAdapter.notifyDataSetChanged()
     }
@@ -250,11 +264,32 @@ class ProductDataAdapter(
         try {
             var position = viewHolderList.size - 1
             val holder = viewHolderList[position]
-            childAdapter = PropertyAdapter(parentProductList[position])
+            childAdapter = PropertyAdapter(parentProductList[position], onDeleteClick)
             holder.childRv?.adapter = childAdapter
             childAdapter.notifyDataSetChanged()
         }catch (e:Exception){
             e.printStackTrace()
         }
+    }
+
+    fun getParentPosByComparision(propertyList: ArrayList<metaDataBeanItem>): Int{
+        var pos = -1
+        try{
+            for(list in parentProductList){
+                pos += 1
+                if (list.equals(propertyList)){
+                    return pos
+                }
+            }
+            if(pos == parentProductList.size-1){
+                if(!propertyList.equals(parentProductList[pos])){
+                    pos = -1
+                }
+            }
+        }catch (e:Exception){
+            pos = -1
+            e.printStackTrace()
+        }
+        return pos
     }
 }
