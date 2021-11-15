@@ -93,7 +93,7 @@ class ImagePreview : Fragment(), ClickListener {
         val ft: FragmentTransaction = fragmentManager!!.beginTransaction()
         ft.replace(R.id.fram_dashboard, addProduct)
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-        ft.addToBackStack(null)
+        ft.addToBackStack(AppConstant.ADD_PRODUCT_TAG)
         ft.commit()
 
     }

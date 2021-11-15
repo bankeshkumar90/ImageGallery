@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import android.view.*
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.ImageCapture
 import androidx.fragment.app.Fragment
@@ -37,6 +38,8 @@ class DashBoardFragment:Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        onBackPressed()
     }
 
     override fun onCreateView(
@@ -82,7 +85,7 @@ class DashBoardFragment:Fragment() {
                 val ft: FragmentTransaction = fragmentManager!!.beginTransaction()
                 ft.replace(R.id.fram_dashboard, imagePreview)
                 ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                ft.addToBackStack(null)
+                ft.addToBackStack(AppConstant.IMAGE_PREIVEW_TAG)
                 ft.commit()
             }
         } 
@@ -158,6 +161,7 @@ class DashBoardFragment:Fragment() {
         }
     }
 
+
     private fun showPreview() {
         val bundle = Bundle()
         bundle.putString("uri", path)
@@ -167,4 +171,17 @@ class DashBoardFragment:Fragment() {
         val fragmentTransaction = fragmentManager!!.beginTransaction()
         fragmentTransaction.add(R.id.fram_dashboard, imagePreview, "ImagePreview").commit()
     }
+
+    fun onBackPressed(){
+        requireActivity()
+            .onBackPressedDispatcher
+            .addCallback(this, object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    // Do custom work here
+                    requireActivity().finish()
+                }
+            }
+        )
+    }
+
 }

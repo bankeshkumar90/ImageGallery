@@ -20,6 +20,7 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -548,24 +549,19 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
         }, DELAY)
 
     }
+
     fun landToDashBoard(){
         /*for (fragment in fragmentManager?.getFragments()!!) {
             fragmentManager?.beginTransaction()?.remove(fragment)?.commit()
         }*/
-
-        for (fragment in requireActivity().supportFragmentManager.getFragments()) {
-            requireActivity().supportFragmentManager.beginTransaction().remove(fragment).commit()
-        }
-        (activity as AppCompatActivity?)!!.supportActionBar!!.show()
-        (activity as AppCompatActivity?)!!.supportActionBar!!.setTitle(R.string.app_name)
-        (activity as AppCompatActivity?)!!.supportActionBar!!.setDisplayHomeAsUpEnabled(false)
-        val ft: FragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
-        ft.replace(R.id.fram_dashboard, DashBoardFragment())
-        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-        ft.addToBackStack(null)
-        ft.commit()
         addViewModel?.clearFragmentData()
         viewModel?.clearViewModelData()
+        (activity as AppCompatActivity?)!!.supportActionBar!!.setTitle(R.string.app_name)
+        (activity as AppCompatActivity?)!!.supportActionBar!!.setDisplayHomeAsUpEnabled(false)
+
+        requireActivity().supportFragmentManager?.popBackStack(AppConstant.ADD_PRODUCT_TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+        requireActivity().supportFragmentManager?.popBackStack(AppConstant.IMAGE_PREIVEW_TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+
     }
     fun saveCurrentData(position: Int){
         for (i in 0 until prodAdapter.parentProductList.size){

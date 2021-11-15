@@ -34,6 +34,10 @@ class AppConstant {
         const val CREATED_BY_NAME = "bankesh"
         const val IN_PROGRESS = "Uploading...."
         const val INTERNET_CONNECTION_MESSAGE = "Please check you internet connection"
+        const val IMAGE_PREIVEW_TAG = "IMAGE_PREVIEW"
+        const val DASHBOARD_TAG = "DASHBOARD"
+        const val ADD_PRODUCT_TAG = "ADD_PRODUCT"
+
         @JvmStatic
         @SuppressLint("NewApi")
         fun getPath(context: Context, uri: Uri): String? {

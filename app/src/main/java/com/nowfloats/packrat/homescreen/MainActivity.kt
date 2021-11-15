@@ -16,9 +16,7 @@ import com.nowfloats.packrat.databaserepository.MyRepository
 import com.nowfloats.packrat.imageViewModel.MyViewModel
 import com.nowfloats.packrat.imageViewModel.ViewModelFactory
 import androidx.lifecycle.ViewModelProvider
-
-
-
+import com.nowfloats.packrat.utils.AppConstant
 
 
 class MainActivity : AppCompatActivity() {

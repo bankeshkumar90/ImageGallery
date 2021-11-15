@@ -59,7 +59,6 @@ class BottomViewDialog(selectListner: OnImageDialogSelector) : BottomSheetDialog
         val ft: FragmentTransaction = fragmentManager!!.beginTransaction()
         ft.replace(R.id.fram_dashboard, imagePreview)
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-        ft.addToBackStack(null)
         ft.commit()
     }
 
