@@ -187,6 +187,8 @@ class ImagePreview : Fragment(), ClickListener {
         }else if( requestCode == AppConstant.REQ_GALLERY_CODE){
             //update imageList
             if(data==null){
+                if(viewModel.imageList.size>0)
+                showPreview(""+viewModel.imageList[0])
                 return
             }
             if (data!!.clipData != null){
