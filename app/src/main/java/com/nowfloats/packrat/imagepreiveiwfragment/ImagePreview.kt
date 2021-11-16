@@ -186,7 +186,9 @@ class ImagePreview : Fragment(), ClickListener {
             }
         }else if( requestCode == AppConstant.REQ_GALLERY_CODE){
             //update imageList
-
+            if(data==null){
+                return
+            }
             if (data!!.clipData != null){
                 //picked multiple images
                 //get number of picked images

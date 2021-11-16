@@ -76,7 +76,7 @@ class MainActivity : AppCompatActivity() {
         viewModelFactory = ViewModelFactory(myRepository)
 
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(MyViewModel::class.java)
-        mainViewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java)
+        //mainViewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
 
         /* ll_shelfView.setOnClickListener {
             dispatchTakePictureIntent()

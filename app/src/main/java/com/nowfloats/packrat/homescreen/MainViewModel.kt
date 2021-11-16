@@ -15,6 +15,9 @@ import java.util.logging.Handler
 
 class MainViewModel  (application: Application, private val repository: MyRepository) : AndroidViewModel(application){
 
+    init{
+        println("main")
+    }
     fun initiateBackGroundProcess(){
         val imageListDetails = getImageProperty()
         val constraints : Constraints = Constraints.Builder()
