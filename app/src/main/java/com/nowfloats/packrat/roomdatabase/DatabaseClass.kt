@@ -4,9 +4,13 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
+import com.nowfloats.packrat.roomdatabase.modal.ProductPropertiesConverter
+import com.nowfloats.packrat.roomdatabase.modal.ProductProperty
 
 //database class which returns the instance of our database
-@Database(entities = [EntityClass::class,ProductFormData::class], version = 1)
+@Database(entities = [EntityClass::class, ProductEntityClass::class, ProductFormData::class, productDataInfo::class, ProductProperty::class], version = 1)
+@TypeConverters(ProductTypeConverter::class, ProductPropertiesConverter::class)
 abstract class DatabaseClass : RoomDatabase() {
 
     abstract fun getImageDao(): DaoClass

@@ -7,8 +7,6 @@
     android:background="@android:color/white"
     tools:context=".homescreen.MainActivity">
 
-
-
     <FrameLayout
         android:id="@+id/fram_dashboard"
         android:layout_width="match_parent"

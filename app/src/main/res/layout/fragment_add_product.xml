@@ -1,101 +1,175 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_color">
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
     <LinearLayout
-        android:id="@+id/top_lin"
+        android:id="@+id/llHeaderBack"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_50"
-        android:layout_gravity="bottom"
-        android:background="@color/white"
+        android:layout_height="@dimen/dp_60"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        >
+        <ImageView
+            android:id="@+id/backButtonAddProduct"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:background="@drawable/arrow_back_black_24dp"/>
 
         <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_medium"
+            android:layout_gravity="end|center_vertical"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:textSize="@dimen/sp_16"
+            android:text="@string/add_product" />
+        <LinearLayout
+            android:id="@+id/llUpload"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginLeft="@dimen/dp_10"
-            android:layout_weight="1"
-            android:gravity="left|center"
-            android:text="@string/shelf_images" />
+            android:layout_gravity="center_vertical"
+            android:gravity="right|center_vertical">
 
-        <ImageView
-            android:id="@+id/btn_open_camera"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center|right"
-            android:layout_marginRight="@dimen/dp_10"
-            android:src="@drawable/add_image" />
+            <TextView
+                android:layout_marginLeft="@dimen/dp_24"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_medium"
+                android:layout_gravity="center_vertical"
+                android:gravity="right|center_vertical"
+                android:layout_marginRight="@dimen/dp_24"
+                android:text="Upload"
+                android:textSize="@dimen/sp_16"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:textColor="@color/dashboard_green"
+                android:drawableRight="@drawable/upload_dot"/>
+        </LinearLayout>
+
     </LinearLayout>
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/sliding_tabs"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/white"
-        app:tabGravity="fill"
-        app:tabMode="scrollable"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/top_lin"/>
-  <!--  app:tabIndicatorColor="@color/colorAccent"
-    app:tabMode="fixed"
-    app:tabSelectedTextColor="@color/colorPrimary"
-    app:tabTextColor="@color/colorAccent"-->
-    <!--<androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/tab_recycler"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/top_lin" />-->
     <LinearLayout
-        android:id="@+id/add_lin"
+        android:id="@+id/llbody"
+
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_50"
-        android:layout_gravity="bottom"
-        android:background="@color/white"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/add_fragment"
-        app:layout_constraintTop_toBottomOf="@+id/sliding_tabs" >
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="@dimen/dp_10"
-            android:gravity="center"
-            android:text="@string/add_product" />
+        <LinearLayout
+            android:id="@+id/top_lin"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_50"
+            android:layout_gravity="bottom"
+            android:background="@color/white"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:id="@+id/btn_add_product"
-            android:layout_width="wrap_content"
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:layout_weight="1"
+                android:gravity="left|center"
+                android:fontFamily="@font/roboto_medium"
+                android:textSize="@dimen/sp_16"
+                android:text="@string/shelf_images" />
+
+            <ImageView
+                android:id="@+id/btnAddShelfImages"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|right"
+                android:layout_marginRight="@dimen/dp_10"
+                android:src="@drawable/add_image" />
+        </LinearLayout>
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/sliding_tabs"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center|left"
-            android:layout_marginLeft="@dimen/dp_20"
-            android:src="@drawable/add_circle" />
-    </LinearLayout>
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/add_fragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/add_lin" />
+            android:background="@android:color/white"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/top_lin"
+            app:tabGravity="fill"
+            app:tabMode="scrollable"
+            android:visibility="gone"/>
+        <!--  app:tabIndicatorColor="@color/colorAccent"
+          app:tabMode="fixed"
+          app:tabSelectedTextColor="@color/colorPrimary"
+          app:tabTextColor="@color/colorAccent"-->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/tab_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/top_lin" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <LinearLayout
+            android:id="@+id/add_lin"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_50"
+            android:layout_gravity="bottom"
+            android:background="@color/white"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toTopOf="@+id/add_fragment"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sliding_tabs">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:gravity="center"
+                android:fontFamily="@font/roboto_medium"
+                android:textSize="@dimen/sp_18"
+                android:text="@string/add_product_info" />
+
+            <ImageView
+                android:id="@+id/btn_add_product"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|left"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:src="@drawable/add_circle" />
+        </LinearLayout>
+
+        <!-- <FrameLayout
+             android:id="@+id/add_fragment"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             app:layout_constraintEnd_toEndOf="parent"
+             app:layout_constraintStart_toStartOf="parent"
+             app:layout_constraintTop_toBottomOf="@+id/add_lin" />-->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/productListItem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/top_lin" />
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/add_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_10"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/add_lin" />
+
+    </LinearLayout>
+
     <include
         android:id="@+id/bottomSheetF"
         layout="@layout/sheet"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
+        android:visibility="gone"
         app:layout_behavior="@string/bottom_sheet_behavior" />
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</LinearLayout>
 

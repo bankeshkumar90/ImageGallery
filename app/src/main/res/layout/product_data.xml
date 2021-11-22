@@ -3,8 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="@dimen/dp_5"
-    android:layout_marginRight="@dimen/dp_5"
     android:layout_marginBottom="@dimen/dp_5">
 <FrameLayout
     android:layout_width="match_parent"
@@ -25,7 +23,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_10"
-            android:layout_marginRight="@dimen/dp_10"
             android:layout_marginTop="@dimen/dp_10"
             android:background="@color/white"
             android:orientation="vertical"
@@ -49,7 +46,8 @@
                         android:layout_marginLeft="@dimen/dp_10"
                         android:gravity="center"
                         android:text="@string/product"
-                        android:textSize="@dimen/dp_12" />
+                        android:fontFamily="@font/roboto_medium"
+                        android:textSize="@dimen/sp_16" />
 
                     <TextView
                         android:id="@+id/add_product_count"
@@ -58,7 +56,8 @@
                         android:layout_gravity="center|left"
                         android:layout_marginLeft="@dimen/dp_5"
                         android:text="1"
-                        android:textSize="@dimen/dp_12" />
+                        android:fontFamily="@font/roboto_medium"
+                        android:textSize="@dimen/sp_16" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -84,231 +83,45 @@
                         android:layout_marginLeft="@dimen/dp_5"
                         android:layout_marginRight="@dimen/dp_20"
                         android:text="@string/add_property"
+                        android:fontFamily="@font/roboto_medium"
                         android:textColor="@color/dashboard_green"
-                        android:textSize="@dimen/dp_12" />
+                        android:textSize="@dimen/sp_16" />
                 </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:orientation="vertical" android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/childList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scrollbars="vertical"
+                    android:layout_marginEnd="4dp"
+                    android:layout_marginStart="5dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                </androidx.recyclerview.widget.RecyclerView>
             </LinearLayout>
             <LinearLayout
                 android:id="@+id/ln_form"
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"/>
-
-            <LinearLayout
-                android:id="@+id/pname_ln"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="3"
-                android:orientation="horizontal"
-                android:visibility="gone">
-
-                <EditText
-                    android:id="@+id/product_name"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
-                    android:backgroundTint="@color/grey"
-                    android:drawableEnd="@drawable/ic_arrow_down"
-                    android:drawablePadding="@dimen/dp_10"
-                    android:fontFamily="@font/roboto_medium"
-                    android:lines="1"
-                    android:paddingTop="@dimen/dp_10"
-                    android:paddingBottom="@dimen/dp_10"
-                    android:text=""
-                    android:textColor="@color/primary_color"
-                    android:textColorHint="@color/inventory_hint"
-                    android:textSize="@dimen/sp_14" />
-
-                <EditText
-                    android:id="@+id/variant_edittext"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_22"
-                    android:layout_weight="1"
-                    android:backgroundTint="@color/grey"
-                    android:enabled="false"
-                    android:focusableInTouchMode="true"
-                    android:fontFamily="@font/roboto_medium"
-                    android:inputType="none"
-                    android:text=""
-                    android:textColor="@color/primary_color"
-                    android:textColorHint="@color/inventory_hint"
-                    android:textSize="@dimen/sp_14" />
-
-                <TextView
-                    android:id="@+id/product_dlt"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginRight="@dimen/dp_10"
-                    android:gravity="center"
-                    android:text="X"
-                    android:textColor="@color/grey" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/pprice_ln"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="3"
-                android:orientation="horizontal"
-                android:visibility="gone">
-
-                <EditText
-                    android:id="@+id/price_name"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
-                    android:backgroundTint="@color/grey"
-                    android:drawableEnd="@drawable/ic_arrow_down"
-                    android:drawablePadding="@dimen/dp_10"
-                    android:fontFamily="@font/roboto_medium"
-                    android:lines="1"
-                    android:paddingTop="@dimen/dp_10"
-                    android:paddingBottom="@dimen/dp_10"
-                    android:text=""
-                    android:textColor="@color/primary_color"
-                    android:textColorHint="@color/inventory_hint"
-                    android:textSize="@dimen/sp_14" />
-
-                <EditText
-                    android:id="@+id/edt_price"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_22"
-                    android:layout_weight="1"
-                    android:backgroundTint="@color/grey"
-                    android:enabled="false"
-                    android:focusableInTouchMode="true"
-                    android:fontFamily="@font/roboto_medium"
-                    android:inputType="none"
-                    android:text=""
-                    android:textColor="@color/primary_color"
-                    android:textColorHint="@color/inventory_hint"
-                    android:textSize="@dimen/sp_14" />
-
-                <TextView
-                    android:id="@+id/price_dlt"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginRight="@dimen/dp_10"
-                    android:gravity="center"
-                    android:text="X"
-                    android:textColor="@color/grey" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/pbarcode_ln"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="3"
-                android:orientation="horizontal"
-                android:visibility="gone">
-
-                <EditText
-                    android:id="@+id/barcode_name"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
-                    android:backgroundTint="@color/grey"
-                    android:drawableEnd="@drawable/ic_arrow_down"
-                    android:drawablePadding="@dimen/dp_10"
-                    android:fontFamily="@font/roboto_medium"
-                    android:lines="1"
-                    android:paddingTop="@dimen/dp_10"
-                    android:paddingBottom="@dimen/dp_10"
-                    android:text=""
-                    android:textColor="@color/primary_color"
-                    android:textColorHint="@color/inventory_hint"
-                    android:textSize="@dimen/sp_14" />
-
-                <EditText
-                    android:id="@+id/edt_barcode"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_22"
-                    android:layout_weight="1"
-                    android:backgroundTint="@color/grey"
-                    android:enabled="false"
-                    android:focusableInTouchMode="true"
-                    android:fontFamily="@font/roboto_medium"
-                    android:inputType="none"
-                    android:text=""
-                    android:textColor="@color/primary_color"
-                    android:textColorHint="@color/inventory_hint"
-                    android:textSize="@dimen/sp_14" />
-
-                <TextView
-                    android:id="@+id/barcode_dlt"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginRight="@dimen/dp_10"
-                    android:gravity="center"
-                    android:text="X"
-                    android:textColor="@color/grey" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/pquantity_ln"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="3"
-                android:orientation="horizontal"
-                android:visibility="gone">
-
-                <EditText
-                    android:id="@+id/product_quantity"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
-                    android:backgroundTint="@color/grey"
-                    android:drawableEnd="@drawable/ic_arrow_down"
-                    android:drawablePadding="@dimen/dp_10"
-                    android:fontFamily="@font/roboto_medium"
-                    android:lines="1"
-                    android:paddingTop="@dimen/dp_10"
-                    android:paddingBottom="@dimen/dp_10"
-                    android:text=""
-                    android:textColor="@color/primary_color"
-                    android:textColorHint="@color/inventory_hint"
-                    android:textSize="@dimen/sp_14" />
-
-                <EditText
-                    android:id="@+id/edt_quantity"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_22"
-                    android:layout_weight="1"
-                    android:backgroundTint="@color/grey"
-                    android:enabled="false"
-                    android:focusableInTouchMode="true"
-                    android:fontFamily="@font/roboto_medium"
-                    android:inputType="none"
-                    android:text=""
-                    android:textColor="@color/primary_color"
-                    android:textColorHint="@color/inventory_hint"
-                    android:textSize="@dimen/sp_14" />
-
-                <TextView
-                    android:id="@+id/quatity_dlt"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginRight="@dimen/dp_10"
-                    android:gravity="center"
-                    android:text="X"
-                    android:textColor="@color/grey" />
-            </LinearLayout>
-
         </LinearLayout>
-<!--    </androidx.cardview.widget.CardView>-->
+<!--
+    </androidx.cardview.widget.CardView>
+-->
       <ImageView
           android:id="@+id/dlt_cross"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-          android:layout_gravity="right"
-        android:src="@drawable/ic_remove_selected"/>
+        android:layout_gravity="right"
+        android:src="@drawable/ic_remove_selected_delete"/>
 </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

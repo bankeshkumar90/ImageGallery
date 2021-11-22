@@ -25,4 +25,5 @@
 
     <color name="colorSheetText">#DE000000</color>
     <color name="colorSheetTitle">#8A000000</color>
+    <color name="light_gray">#777777</color>
 </resources>

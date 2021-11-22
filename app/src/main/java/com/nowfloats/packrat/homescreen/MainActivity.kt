@@ -10,11 +10,21 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.nowfloats.packrat.R
 import com.nowfloats.packrat.databaserepository.MyRepository
 import com.nowfloats.packrat.imageViewModel.MyViewModel
 import com.nowfloats.packrat.imageViewModel.ViewModelFactory
+import androidx.lifecycle.ViewModelProvider
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
+import com.nowfloats.packrat.addjobs.AddProductViewModel
+import com.nowfloats.packrat.roomdatabase.EntityClass
+import com.nowfloats.packrat.utils.AppConstant
+import java.util.*
+import android.content.Intent
+import android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION
 
 
 class MainActivity : AppCompatActivity() {
@@ -23,17 +33,20 @@ class MainActivity : AppCompatActivity() {
     private lateinit var myRepository: MyRepository
     private lateinit var viewModel: MyViewModel
     private lateinit var viewModelFactory: ViewModelFactory
-//    private var imageList = emptyList<EntityClass>()
+    private lateinit var mainViewModelFactory: MainViewModelFactory
+
+    //    private var imageList = emptyList<EntityClass>()
 //    private lateinit var imageAdapter: ImageAdapter
     private val CAMERA_REQESUT_CODE = 1
 //    private lateinit var bottomViewDialog: BottomViewDialog
+    private lateinit var mainViewModel:MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.dashboard_activity)
         supportActionBar?.elevation = 0F
+        supportActionBar?.hide()
         checkPermissions()
-
         initViewsAndListeners()
         setDashBoard()
 
@@ -51,14 +64,29 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+       mainViewModel.getUnSyncedSavedImageProperty().observe(this,{
+           if(it.size<1)
+               return@observe
+           //mainViewModel.initiateBackGroundProcess(it)
+           //observeWorkStatus(it)
+       })
 
-       /* viewModel.displayImage().observe(this, Observer {
-            progressBar.visibility = View.GONE
-            imageAdapter.updateList(it)
-        })*/
 
     }
 
+    private fun observeWorkStatus(imageList: List<EntityClass>){
+        if(imageList.size<1)
+            return
+        var TAG = AppConstant().getLastStringAfter("%", imageList[0].path)
+        //var uuid = UUID.fromString(uuidString.substring(uuidString.lastIndexOf("%") + 1))
+        WorkManager.getInstance(getApplication()).getWorkInfosByTagLiveData(TAG)
+            .observe(this, Observer { workInfo ->
+                if (workInfo != null) {
+                        println("status->"+workInfo.size)
+                }
+            }
+            )
+    }
     /*
     below function initialize the variables
      */
@@ -71,17 +99,21 @@ class MainActivity : AppCompatActivity() {
 //        imageAdapter = ImageAdapter(imageList, this)
 
         viewModelFactory = ViewModelFactory(myRepository)
+        mainViewModelFactory = MainViewModelFactory(myApplication, myRepository)
 
-        viewModel = ViewModelProviders.of(this, viewModelFactory)
-            .get(MyViewModel::class.java)
-
-       /* ll_shelfView.setOnClickListener {
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(MyViewModel::class.java)
+        mainViewModel = ViewModelProviders.of(this,mainViewModelFactory ).get(MainViewModel::class.java)
+         /* ll_shelfView.setOnClickListener {
             dispatchTakePictureIntent()
         }
         ll_ProductView.setOnClickListener {
             dispatchTakePictureIntent()
         }*/
-
+        /*for (workInfo in workInfoList) {
+            val state = workInfo.state
+            running = state == WorkInfo.State.RUNNING ||
+                    state == WorkInfo.State.ENQUEUED
+        }*/
     }
 
     fun setDashBoard(){
@@ -173,24 +205,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
-    /*override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        val inflater = menuInflater
-        inflater.inflate(R.menu.home_menu, menu)
-        return true
-    }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.status -> {
-                true
-            }
-            R.id.setting -> {
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-*/
     /*@SuppressLint("WrongConstant")
     private fun dispatchTakePictureIntent() {
         *//*val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
@@ -207,4 +222,6 @@ class MainActivity : AppCompatActivity() {
         bottomViewDialog.show(supportFragmentManager, BottomViewDialog.TAG)
 
     }*/
+
+
 }

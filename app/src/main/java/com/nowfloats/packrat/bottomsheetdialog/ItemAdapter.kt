@@ -8,8 +8,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.nowfloats.packrat.R
+import com.nowfloats.packrat.addjobs.metaDataBeanItem
 
-class ItemAdapter(private val mItems: List<Item>, private var mListener: ItemListener?) :
+class ItemAdapter(private val mItems: ArrayList<metaDataBeanItem>, private var mListener: ItemListener?,var recylerPosition: Int) :
     RecyclerView.Adapter<ItemAdapter.ViewHolder?>() {
     fun setListener(listener: ItemListener?) {
         mListener = listener
@@ -34,16 +35,16 @@ class ItemAdapter(private val mItems: List<Item>, private var mListener: ItemLis
         View.OnClickListener {
         var imageView: ImageView
         var textView: TextView
-        var item: Item? = null
-        fun setData(item: Item) {
+        var item: metaDataBeanItem? = null
+        fun setData(item: metaDataBeanItem) {
             this.item = item
-            imageView.setImageResource(item.icPreview24dp)
-            textView.setText(item.mTitle)
+           // imageView.setImageResource(item.icPreview24dp)
+            textView.setText(item.productName)
         }
 
         override fun onClick(v: View) {
             if (mListener != null) {
-                mListener!!.onItemClick(item)
+                mListener!!.onItemClick(item, recylerPosition)
             }
         }
 
@@ -55,6 +56,6 @@ class ItemAdapter(private val mItems: List<Item>, private var mListener: ItemLis
     }
 
     interface ItemListener {
-        fun onItemClick(item: Item?)
+        fun onItemClick(item: metaDataBeanItem?, position: Int)
     }
 }
