@@ -7,9 +7,9 @@
     <string name="ok">OK</string>
     <string name="camera">Camera</string>
     <string name="add_product">Add Product</string>
-    <string name="add_product_info">Add Product Information</string>
+    <string name="add_product_info">Add Products</string>
     <string name="product">Product</string>
-    <string name="add_property">Add Property</string>
+    <string name="add_property">Add Product Details</string>
     <string name="shelf_images">Shelf Images</string>
     <string name="product_name">Product Name</string>
     <string name="price">Price</string>
@@ -26,7 +26,7 @@
     <string name="none">None</string>
     <string name="medium">Medium</string>
     <string name="save">Save</string>
-    <string name="prefs_saved">Your email have been updated</string>
+    <string name="prefs_saved">Your information have been updated</string>
     <string name="jobSaved">Your job have been queued successfully.</string>
     <string name="retry_on_error">Some error occured Please Re-try!</string>
 

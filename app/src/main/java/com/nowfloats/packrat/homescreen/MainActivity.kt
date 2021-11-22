@@ -46,7 +46,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.dashboard_activity)
         supportActionBar?.elevation = 0F
         supportActionBar?.hide()
-        checkPermissions()
         initViewsAndListeners()
         setDashBoard()
 
@@ -125,63 +124,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    /*
-         below function checks the required permissions and asks the same
-         to user if not granted yet
-   */
-    private fun checkPermissions() {
-        if (ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.CAMERA
-            ) == PERMISSION_GRANTED
-            && ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            ) == PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.READ_EXTERNAL_STORAGE
-            ) == PERMISSION_GRANTED
-        ) {
 
-        } else {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(
-                    Manifest.permission.CAMERA,
-                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-                ),
-                CAMERA_REQESUT_CODE
-            )
-        }
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.CAMERA
-            ) == PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.READ_EXTERNAL_STORAGE
-            ) == PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            ) == PERMISSION_GRANTED
-        ) {
-
-        } else {
-            Toast.makeText(
-                this,
-                "Permissions are denied, please allow camera permission from settings",
-                Toast.LENGTH_SHORT
-            ).show()
-        }
-    }
 
     /*
        below function is called everytime any view is clicked in the recyclerview

@@ -44,6 +44,7 @@ import androidx.work.WorkInfo
 
 import androidx.work.WorkManager
 import com.google.common.util.concurrent.ListenableFuture
+import kotlinx.android.synthetic.main.gallery_image_picker.*
 import kotlinx.coroutines.*
 import java.util.concurrent.ExecutionException
 
@@ -78,6 +79,7 @@ class JobStatus : Fragment()  {
         clearBtn.setOnClickListener {
         var listToDelete = getListItem()
             if(listToDelete.isNullOrEmpty()) {
+                clearBtn.isEnabled = false
                 Toast.makeText(
                     context!!,
                     "Yey your task bucket have synced and cleared successfully",
@@ -93,14 +95,21 @@ class JobStatus : Fragment()  {
                             listToDelete.remove(job)
                         }
                     }
+                    updateList()
                 }
-                if(listToDelete.size==0){
-
-                    imageAdapter.clearAll()
+                /*if(listToDelete.size==0){
+                    if(jobModelList.size>0){
+                        jobListView.recycledViewPool.clear()
+                        imageAdapter.notifyDataSetChanged()
+                    }else{
+                        clearBtn.isEnabled = false
+                    }
+                } else if(listToDelete.equals(jobModelList)){
+                    clearBtn.isEnabled = true
                     imageAdapter.notifyDataSetChanged()
                 }else{
                     setRecyclerView(listToDelete)
-                }
+                }*/
              }catch (e:Exception){
                 e.printStackTrace()
             }
@@ -114,15 +123,43 @@ class JobStatus : Fragment()  {
                     setRecyclerView(getJobModelList(list))
                     if(loading!=null)
                         loading!!.dismiss()
-                }else
-                    if(loading!=null)
+                }else {
+                    if (loading != null)
                         loading!!.dismiss()
+                }
             }
         }catch (e:Exception){
             e.printStackTrace()
         }
-     }
+        clearBtn.isEnabled = false
+    }
 
+    private fun updateList(){
+        GlobalScope.launch {
+
+            withContext(Dispatchers.Main) {
+                try {
+                    if(listToDelete.size==0){
+                        if(jobModelList.size>0){
+                            imageAdapter.clearAll()
+                            jobListView.recycledViewPool.clear()
+                            imageAdapter.notifyDataSetChanged()
+                        }
+                        clearBtn.isEnabled = false
+                    } else if(listToDelete.equals(jobModelList)){
+                        clearBtn.isEnabled = true
+                        imageAdapter.notifyDataSetChanged()
+                    }else{
+                        setRecyclerView(listToDelete)
+                    }
+                }catch (e:Exception){
+                    e.printStackTrace()
+                }
+                //imageAdapter = JobStatusAdapter(context!!, listToDelete)
+                imageAdapter.notifyDataSetChanged()
+            }
+        }
+    }
     fun getListItem(): ArrayList<JobModel> {
         var list = ArrayList<JobModel>()
         list = listToDelete
@@ -133,6 +170,7 @@ class JobStatus : Fragment()  {
         GlobalScope.launch {
             imageAdapter = JobStatusAdapter(context!!, jobList)
             withContext(Dispatchers.Main) {
+                clearBtn.isEnabled = !jobList.isNullOrEmpty()
                 val linearLayoutManager =
                     LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
                 jobListView.apply {

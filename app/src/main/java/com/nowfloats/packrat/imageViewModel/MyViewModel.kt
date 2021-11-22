@@ -71,6 +71,11 @@ class MyViewModel(private val repository: MyRepository) : ViewModel() {
         } }*/
         return  repository.getSavedImagesInfo() as ArrayList<EntityClass>
     }
+
+    fun haveEmptyJobQueued(): Boolean{
+        val list = repository.getSavedImagesInfo() as ArrayList<EntityClass>
+           return list.isNullOrEmpty()
+    }
     fun getSavedImages(): List<EntityClass>{
         viewModelScope.launch() {
              repository.getSavedImages()

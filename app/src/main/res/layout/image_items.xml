@@ -6,8 +6,8 @@
 
     <ImageView
         android:id="@+id/close_imageview"
-        android:layout_width="@dimen/dp_18"
-        android:layout_height="@dimen/dp_18"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:elevation="@dimen/dp_8"
         android:src="@drawable/ic_remove_selected_delete"
         app:layout_constraintBottom_toTopOf="@+id/frame_layout"
@@ -18,8 +18,7 @@
         android:id="@+id/frame_layout"
         android:layout_width="@dimen/dp_64"
         android:layout_height="72dp"
-        android:layout_marginTop="@dimen/dp_10"
-        android:layout_marginLeft="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_15"
         app:cardCornerRadius="@dimen/dp_5"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"

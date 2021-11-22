@@ -1,10 +1,13 @@
 package com.nowfloats.packrat.homescreen
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.provider.MediaStore
 import android.provider.Settings
 import android.util.Log
@@ -30,7 +33,18 @@ import kotlinx.android.synthetic.main.dashboard_fragment.*
 import java.io.File
 import com.nowfloats.packrat.clickInterface.ImageCaptureListner as ImageCaptureListner
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import com.nowfloats.packrat.addjobs.ProductDataAdapter
 import com.nowfloats.packrat.settings.AppSettings
+import kotlinx.android.synthetic.main.fragment_add_product.view.*
+import kotlinx.android.synthetic.main.fragment_settings.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 class DashBoardFragment:Fragment() {
@@ -60,20 +74,33 @@ class DashBoardFragment:Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        myApplication = activity?.application as MyApplication
+        myRepository = myApplication.myRepository
+        viewModelFactory = ViewModelFactory(myRepository)
+        viewModel = ViewModelProviders.of(activity!!, viewModelFactory)
+            .get(MyViewModel::class.java)
         initViewsAndListeners()
+        checkPermissions()
     }
     private fun initViewsAndListeners() {
         ll_shelfView.setOnClickListener {
             dispatchTakePictureIntent()
         }
         ll_ProductView.setOnClickListener {
-            dispatchTakePictureIntent()
+            //dispatchTakePictureIntent()
         }
         btnJobStatus.setOnClickListener(){
             showJobStatus()
         }
         btnSettings.setOnClickListener(){
             showSettings()
+        }
+        try{
+            CoroutineScope(Dispatchers.IO).launch {
+                updateBtnICON(viewModel.haveEmptyJobQueued())
+            }
+        }catch (e:Exception){
+            e.printStackTrace()
         }
     }
     @SuppressLint("WrongConstant")
@@ -220,4 +247,88 @@ class DashBoardFragment:Fragment() {
         super.onDestroyView()
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        var emailExists = AppConstant().getValuesByTagFromLocalPrefs(context!!, AppConstant.CREATED_BY, AppConstant.CREATED_BY)
+        if(emailExists.isNullOrEmpty()){
+            showSettings()
+        }
+
+    }
+
+    private fun updateBtnICON(emptyJobBucket: Boolean){
+        try {
+            CoroutineScope(Dispatchers.Main).launch {
+                if (emptyJobBucket) {
+                    if(btnJobStatus!=null)
+                    btnJobStatus.setBackgroundResource(R.drawable.uplaod)
+                } else {
+                    if(btnJobStatus!=null)
+                    btnJobStatus.setBackgroundResource(R.drawable.upload_dot)
+                }
+            }
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
+
+    }
+
+    /*
+         below function checks the required permissions and asks the same
+         to user if not granted yet
+   */
+    private fun checkPermissions() {
+        if (ContextCompat.checkSelfPermission(
+                context!!,
+                Manifest.permission.CAMERA
+            ) == PackageManager.PERMISSION_GRANTED
+            && ContextCompat.checkSelfPermission(
+                context!!,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
+                context!!,
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+
+        } else {
+            requestPermissions(
+                 arrayOf(
+                    Manifest.permission.CAMERA,
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                ),
+                AppConstant.CAMERA_PERMISSION_REQUIRED
+            )
+
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (ContextCompat.checkSelfPermission(
+                context!!,
+                Manifest.permission.CAMERA
+            ) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
+                context!!,
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            ) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
+                context!!,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+
+        } else {
+            Toast.makeText(
+                context!!,
+                AppConstant.PERMISSION_DENIED_MESSAGE,
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
 }

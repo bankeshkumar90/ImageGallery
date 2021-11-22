@@ -99,7 +99,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/roboto_medium"
-                    android:checked="true"
                     android:buttonTint="@color/dashboard_green"
                     android:text="@string/none"/>
 
@@ -110,6 +109,7 @@
                     android:layout_marginLeft="@dimen/dp_20"
                     android:buttonTint="@color/dashboard_green"
                     android:fontFamily="@font/roboto_medium"
+                    android:checked="true"
                     android:text="@string/medium"/>
             </RadioGroup>
         </LinearLayout>
@@ -123,7 +123,7 @@
             android:layout_gravity="right"
             android:layout_marginTop="@dimen/dp_10"
             android:layout_marginRight="@dimen/dp_20"
-
+            android:visibility="gone"
             android:backgroundTint="@color/dashboard_green"
             android:text="@string/save"/>
      </LinearLayout>

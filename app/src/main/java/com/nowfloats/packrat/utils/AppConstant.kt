@@ -39,7 +39,7 @@ class AppConstant {
         const val REQ_CAMERA_CODE = 100
         const val REQ_GALLERY_CODE = 101
         const val REQUEST_TYPE = "request_type"
-        const val CREATED_BY = "system@gmail.com"
+        const val CREATED_BY = ""
         const val CREATED_BY_NAME = "system"
         const val IN_PROGRESS = "Uploading...."
         const val INTERNET_CONNECTION_MESSAGE = "Please check you internet connection"
@@ -62,7 +62,7 @@ class AppConstant {
         const val STATUS_SUCCESS = "SUCCEEDED"//JobModel(imagePath=/storage/emulated/0/Pictures/1636717183877.jpg, jobStatus=SUCCEEDED, savedImagePath=content://com.android.providers.media.documents/document/image%3A40775, uri=/storage/emulated/0/Pictures/1636717183877.jpg, imageId=3A40775)
         const val CAMERA_PERMISSION_REQUIRED = 104
         const val MEMORY_PERMISSION = "Memory Permission Required"
-        const val PERMISSION_DENIED_MESSAGE = "Permissions are denied, please allow camera permission from settings"
+        const val PERMISSION_DENIED_MESSAGE = "Permissions are denied, please allow all required permission from settings"
         @JvmStatic
         @SuppressLint("NewApi")
         fun getPath(context: Context, uri: Uri): String? {

@@ -12,6 +12,7 @@ import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.camera.core.ImageCapture
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -63,7 +64,7 @@ class AppSettings : Fragment()  {
         super.onViewCreated(view, savedInstanceState)
 
         initViews()
-
+        onBackPressed()
     }
 
     private fun initViews(){
@@ -83,13 +84,13 @@ class AppSettings : Fragment()  {
             }
         }
         backButtonSettings.setOnClickListener {
-            requireActivity().supportFragmentManager?.popBackStack(AppConstant.SETTINGS_TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+            onBackPress()
         }
         var emailExists = AppConstant().getValuesByTagFromLocalPrefs(context!!, AppConstant.CREATED_BY, AppConstant.CREATED_BY)
         if(!emailExists.isNullOrEmpty()){
             etEmail.setText(emailExists)
         }
-        var compressionType = AppConstant().getValuesByTagFromLocalPrefs(context!!, AppConstant.COMPRESSION_TYPE, AppConstant.NONE)
+        var compressionType = AppConstant().getValuesByTagFromLocalPrefs(context!!, AppConstant.COMPRESSION_TYPE, AppConstant.MEDIUM)
         if(!compressionType.isNullOrEmpty()){
            if(compressionType.equals(AppConstant.NONE)){
                noneRadioBtn.isChecked = true
@@ -98,5 +99,34 @@ class AppSettings : Fragment()  {
         }
     }
 
+    fun onBackPressed(){
+        requireActivity()
+            .onBackPressedDispatcher
+            .addCallback(this, object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    // Do custom work here
+                    onBackPress()
+                 }
+            }
+            )
+    }
+
+    fun onBackPress(){
+        if(AppConstant().isValidEmail(etEmail.text.toString())){
+            //save email
+            AppConstant().saveKeysByTagINLocalPrefs(context!!, AppConstant.CREATED_BY, etEmail.text.toString())
+            var compressionType = AppConstant.NONE
+            if(noneRadioBtn.isChecked != true){
+                compressionType = AppConstant.MEDIUM
+            }
+            AppConstant().saveKeysByTagINLocalPrefs(context!!, AppConstant.COMPRESSION_TYPE, compressionType)
+
+            Toast.makeText(context!!, context!!.resources.getString(R.string.prefs_saved), Toast.LENGTH_SHORT).show()
+            requireActivity().supportFragmentManager?.popBackStack(AppConstant.SETTINGS_TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+
+        }else{
+            etEmail.setError(resources.getString(R.string.enter_email))
+        }
+    }
 
 }

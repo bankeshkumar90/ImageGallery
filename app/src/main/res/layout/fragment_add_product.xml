@@ -47,7 +47,7 @@
                 android:textSize="@dimen/sp_16"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:textColor="@color/dashboard_green"
-                android:drawableRight="@drawable/upload_dot"/>
+                android:drawableRight="@drawable/uplaod"/>
         </LinearLayout>
 
     </LinearLayout>
@@ -85,7 +85,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center|right"
                 android:layout_marginRight="@dimen/dp_10"
-                android:src="@drawable/add_image" />
+                android:src="@drawable/open_camera" />
         </LinearLayout>
 
         <com.google.android.material.tabs.TabLayout
