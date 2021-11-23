@@ -51,7 +51,8 @@ import java.util.concurrent.ExecutionException
 
 
 class AppSettings : Fragment()  {
-
+    private var previousEmail = ""
+    private var previousCompression = ""
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -89,8 +90,10 @@ class AppSettings : Fragment()  {
         var emailExists = AppConstant().getValuesByTagFromLocalPrefs(context!!, AppConstant.CREATED_BY, AppConstant.CREATED_BY)
         if(!emailExists.isNullOrEmpty()){
             etEmail.setText(emailExists)
+            previousEmail = emailExists
         }
         var compressionType = AppConstant().getValuesByTagFromLocalPrefs(context!!, AppConstant.COMPRESSION_TYPE, AppConstant.MEDIUM)
+        previousCompression = ""+compressionType
         if(!compressionType.isNullOrEmpty()){
            if(compressionType.equals(AppConstant.NONE)){
                noneRadioBtn.isChecked = true
@@ -116,14 +119,14 @@ class AppSettings : Fragment()  {
             //save email
             AppConstant().saveKeysByTagINLocalPrefs(context!!, AppConstant.CREATED_BY, etEmail.text.toString())
             var compressionType = AppConstant.NONE
-            if(noneRadioBtn.isChecked != true){
+            if(!noneRadioBtn.isChecked){
                 compressionType = AppConstant.MEDIUM
             }
             AppConstant().saveKeysByTagINLocalPrefs(context!!, AppConstant.COMPRESSION_TYPE, compressionType)
+            if(!previousEmail.equals(etEmail.text.toString(), true) || !previousCompression.equals(compressionType, true))
+                Toast.makeText(context!!, context!!.resources.getString(R.string.prefs_saved), Toast.LENGTH_SHORT).show()
 
-            Toast.makeText(context!!, context!!.resources.getString(R.string.prefs_saved), Toast.LENGTH_SHORT).show()
             requireActivity().supportFragmentManager?.popBackStack(AppConstant.SETTINGS_TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-
         }else{
             etEmail.setError(resources.getString(R.string.enter_email))
         }

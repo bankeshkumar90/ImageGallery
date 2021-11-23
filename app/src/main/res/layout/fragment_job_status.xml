@@ -55,7 +55,7 @@
             android:id="@+id/jobListView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:stackFromEnd="true"
+            app:stackFromEnd="false"
             app:reverseLayout="true"/>
      </LinearLayout>
 </LinearLayout>

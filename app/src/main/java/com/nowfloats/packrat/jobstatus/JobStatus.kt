@@ -172,11 +172,12 @@ class JobStatus : Fragment()  {
             withContext(Dispatchers.Main) {
                 clearBtn.isEnabled = !jobList.isNullOrEmpty()
                 val linearLayoutManager =
-                    LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+                    LinearLayoutManager(context, LinearLayoutManager.VERTICAL, true)
                 jobListView.apply {
                     layoutManager = linearLayoutManager
                     adapter = imageAdapter
                     loading?.dismiss()
+                    scrollToPosition(jobList.size-1)
                 }
             }
          }

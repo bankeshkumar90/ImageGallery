@@ -26,6 +26,7 @@ import android.content.pm.ResolveInfo
 
 import android.content.pm.PackageManager
 import android.database.Cursor
+import android.os.Build
 
 import android.provider.MediaStore
 
@@ -57,12 +58,19 @@ class JobStatusAdapter(
                     .load( jobItem.imagePath)
                     .override(100, 100)
                     .centerCrop() // scale to fill the ImageView and crop any extra
-                    .into( holder.imageView);
+                    .into( holder.imageView)
                 //holder.imageView.setImageURI(jobItem.uri)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
             //holder.imageView.setImageBitmap(bitmap);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if(jobItem.jobStatus.equals(AppConstant.STATUS_SUCCESS)){
+                    holder.jobStausView.setTextColor(context!!.getColor(R.color.green_success))
+                }else {
+                    holder.jobStausView.setTextColor(context!!.getColor(R.color.blue_enqued))
+                }
+            }
             holder.jobStausView.setText(jobItem.jobStatus)
             holder.tvEnquedOn.setText(jobItem.savedTimeStamp)
         }catch (e:Exception){

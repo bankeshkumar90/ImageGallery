@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.nowfloats.packrat.R
 import com.nowfloats.packrat.clickInterface.ClickListener
 import com.nowfloats.packrat.roomdatabase.EntityClass
@@ -21,7 +22,12 @@ class ViewHolder(private val view: View, private val clickListener: ClickListene
         view.apply {
 //            tvAlbumName.text = entityClass.album
 //            tvImageName.text = entityClass.name
-            product_imageview.setImageURI(Uri.parse(imagePath))  // sets the image using the uri present in database
+            Glide.with(context)
+                .load( Uri.parse(imagePath))
+                .override(100, 100)
+                .centerCrop() // scale to fill the ImageView and crop any extra
+                .into( product_imageview);
+            //product_imageview.setImageURI(Uri.parse(imagePath))  // sets the image using the uri present in database
             close_imageview.setOnClickListener {
                 clickListener.onClickDelete(adapterPosition)
             }

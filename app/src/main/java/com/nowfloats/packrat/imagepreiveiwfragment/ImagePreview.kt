@@ -21,6 +21,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.nowfloats.packrat.R
 import com.nowfloats.packrat.addjobs.AddProduct
 import com.nowfloats.packrat.bottomsheetdialog.BottomViewDialog
@@ -196,8 +197,17 @@ class ImagePreview : Fragment(), ClickListener {
         uri = imagePath
         imageName = imagePath
         setRecyclerView()
-        imgPreview.setImageURI(Uri.parse(imagePath))
-    }
+                try {
+                    Glide.with(context!!)
+                        .load(Uri.parse(imagePath))
+                        .override(480, 960)
+                        .centerCrop() // scale to fill the ImageView and crop any extra
+                        .into( imgPreview)
+                    //holder.imageView.setImageURI(jobItem.uri)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+     }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == AppConstant.REQ_CAMERA_CODE) {

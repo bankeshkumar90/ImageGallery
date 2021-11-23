@@ -543,7 +543,6 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
     fun setObserver() {
         addViewModel.clickadd.observe(this, Observer {
             prodAdapter.saveLatestItemData()
-            prodAdapter.updateChild()
             if(prodAdapter.parentProductList.size>0){
                 try {
                     var lastItem =
@@ -567,6 +566,7 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
                             ).show()
                             return@Observer
                         }
+                        prodAdapter.updateChild()
                     }
                 }catch (e:Exception){
                     e.printStackTrace()

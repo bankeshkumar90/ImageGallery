@@ -2,6 +2,7 @@ package com.nowfloats.packrat.addjobs.childobjects
 
 
 import android.text.InputType
+import android.text.method.DigitsKeyListener
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,20 +21,22 @@ class PropertyAdapter(
     var childItemActionListener: ChildItemActionListener
 ): RecyclerView.Adapter<PropertyAdapter.ViewHolder>() {
     lateinit var vHolder :ViewHolder
+    //var filter =   "^[0-9]*\\.?[0-2]*"
+    var filter = "^[0-9]*(\\.[0-9][0-9]?)?"//"([1-9][0-9]*|[0-9])(.[0-9])?"//"[0-9]+(\\.[0-9])?"//"^([1-9]\\d*|0)(\\.\\d)?$"
     override fun onBindViewHolder(holder: PropertyAdapter.ViewHolder, position: Int) {
         vHolder = holder
         val propertyItem = propertyList[position]
-        holder.etLabel?.text = propertyItem.productName
-        holder.etValue?.text = propertyItem.productValue
         if(!propertyItem.productRegex.isNullOrEmpty()){
-            if(propertyItem.productRegex.equals("^\\d{0,8}(\\.\\d{1,2})?\$")||("^([0-9]){1,10}\$").equals(propertyItem.productRegex)){
+            if(propertyItem.productRegex.equals("^\\d{0,8}(\\.\\d{1,2})?\$")||("^([0-9]){1,10}\$").equals(propertyItem.productRegex)|| filter.equals(propertyItem.productRegex)){
                 holder.etValue.inputType = InputType.TYPE_NUMBER_FLAG_DECIMAL
+                holder.etValue.keyListener = DigitsKeyListener.getInstance(".0123456789")
+                //^\\d{0,9}\\.\\d{1,2}$
+                //holder.etValue .filters += propertyItem.productRegex?.let { CustomInputFilter(filter) }
             }else
                 holder.etValue.inputType = InputType.TYPE_CLASS_TEXT
-
             holder.etValue .filters += propertyItem.productRegex?.let { CustomInputFilter(it) }
         }else{
-            if(propertyItem.productName.equals("Others", true))
+            if(propertyItem.productName.equals("Others", true) || propertyItem.productName.equals("", true))
                 holder.etLabel.isEnabled = true
         }
         holder.delteIcon.setOnClickListener(View.OnClickListener {
@@ -48,7 +51,15 @@ class PropertyAdapter(
             var n = propertyList
             notifyItemChanged(position)
           })
-     }
+        if(propertyItem.productName.equals("Others")) {
+            propertyItem.productName =""
+            holder.etLabel?.text = propertyItem.productName
+        }
+        else
+            holder.etLabel?.text = propertyItem.productName
+        holder.etValue?.text = propertyItem.productValue
+
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PropertyAdapter.ViewHolder {
         val v = LayoutInflater.from(parent.context).inflate(R.layout.recyclerview_item_locations, parent, false)
