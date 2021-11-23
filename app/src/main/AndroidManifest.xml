@@ -23,6 +23,8 @@
         android:requestLegacyExternalStorage="true"
         android:supportsRtl="true"
         android:usesCleartextTraffic="true"
+        android:largeHeap="true"
+
         android:theme="@style/Theme.PackRat">
         <activity android:name=".homescreen.MainActivity"
             android:screenOrientation="portrait">

@@ -32,6 +32,7 @@ import android.provider.MediaStore
 import com.nowfloats.packrat.BuildConfig
 
 import androidx.core.content.FileProvider
+import com.bumptech.glide.Glide
 import com.nowfloats.packrat.utils.AppConstant
 import java.io.File
 
@@ -52,7 +53,12 @@ class JobStatusAdapter(
         try {
             var jobItem = imagePathList[position]
             try {
-                holder.imageView.setImageURI(jobItem.uri)
+                Glide.with(context)
+                    .load( jobItem.imagePath)
+                    .override(100, 100)
+                    .centerCrop() // scale to fill the ImageView and crop any extra
+                    .into( holder.imageView);
+                //holder.imageView.setImageURI(jobItem.uri)
             } catch (e: Exception) {
                 e.printStackTrace()
             }

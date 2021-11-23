@@ -147,6 +147,10 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
             prodAdapter.saveLatestItemData()
             saveCurrentData(previousSelectedPosition)
             try{
+                if(imageAdapter.itemCount<1 || viewModel.imageList.size==0){
+                    Toast.makeText(myApplication, AppConstant.IMAGE_MANDATORY, Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
                 if(prodAdapter.parentProductList.size<1){
                     Toast.makeText(myApplication, myApplication.resources.getString(R.string.blankProduct), Toast.LENGTH_SHORT).show()
                     return@setOnClickListener
@@ -517,7 +521,8 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
         //first remove from savedfragment then reduce position by 1 if position >0 then set recy pos otherise landdashboard
 
         if(imageAdapter.itemCount<1){
-            landToDashBoard()
+            //landToDashBoard()
+            Toast.makeText(context!!, AppConstant.IMAGE_MANDATORY, Toast.LENGTH_SHORT).show()
         }/*else{
             addViewModel.deletFragmentData(position!!, imageAdapter.itemCount)
 

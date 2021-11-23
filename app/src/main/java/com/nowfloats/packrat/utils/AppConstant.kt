@@ -63,6 +63,7 @@ class AppConstant {
         const val CAMERA_PERMISSION_REQUIRED = 104
         const val MEMORY_PERMISSION = "Memory Permission Required"
         const val PERMISSION_DENIED_MESSAGE = "Permissions are denied, please allow all required permission from settings"
+        const val IMAGE_MANDATORY = "Please add product image"
         @JvmStatic
         @SuppressLint("NewApi")
         fun getPath(context: Context, uri: Uri): String? {
@@ -158,7 +159,7 @@ class AppConstant {
     fun getRandomCollectionId(context: Context):String{
         val androidId = Settings.Secure.getString(context.getContentResolver(),
             Settings.Secure.ANDROID_ID);
-        return androidId+"_"+System.currentTimeMillis()+"_" +( 0 until 1000).random()
+        return androidId+"_"+System.currentTimeMillis()+"_" +( 0 until 10000).random()
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
