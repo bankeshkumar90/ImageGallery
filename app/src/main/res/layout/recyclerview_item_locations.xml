@@ -34,7 +34,7 @@
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
-                    android:text="sfdknkdfnkdfndfkndfndnfknkdf"
+                    android:text=""
                     android:lines="1"
                     android:singleLine="true"
                     android:textSize="@dimen/sp_16"

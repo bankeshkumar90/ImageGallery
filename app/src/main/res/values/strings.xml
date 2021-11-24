@@ -29,6 +29,7 @@
     <string name="prefs_saved">Your information have been updated</string>
     <string name="jobSaved">Your job have been queued successfully.</string>
     <string name="retry_on_error">Some error occured Please Re-try!</string>
+    <string name="save_continue">Save &amp; Continue</string>
 
     <string name="blankProduct">Please add product information!</string>
     <string name="regex_input">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890</string>

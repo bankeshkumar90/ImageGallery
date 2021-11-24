@@ -125,6 +125,6 @@
             android:layout_marginRight="@dimen/dp_20"
             android:visibility="gone"
             android:backgroundTint="@color/dashboard_green"
-            android:text="@string/save"/>
+            android:text="@string/save_continue"/>
      </LinearLayout>
 </LinearLayout>
