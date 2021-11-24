@@ -70,7 +70,8 @@ class AppSettings : Fragment()  {
 
     private fun initViews(){
         btnSaveSettings.setOnClickListener(){
-            if(AppConstant().isValidEmail(etEmail.text.toString())){
+            onBackPress()
+            /*if(AppConstant().isValidEmail(etEmail.text.toString())){
                 //save email
                     AppConstant().saveKeysByTagINLocalPrefs(context!!, AppConstant.CREATED_BY, etEmail.text.toString())
                     var compressionType = AppConstant.NONE
@@ -82,15 +83,18 @@ class AppSettings : Fragment()  {
                 Toast.makeText(context!!, context!!.resources.getString(R.string.prefs_saved), Toast.LENGTH_SHORT).show()
             }else{
                 etEmail.setError(resources.getString(R.string.enter_email))
-            }
+            }*/
         }
         backButtonSettings.setOnClickListener {
             onBackPress()
         }
         var emailExists = AppConstant().getValuesByTagFromLocalPrefs(context!!, AppConstant.CREATED_BY, AppConstant.CREATED_BY)
         if(!emailExists.isNullOrEmpty()){
+            btnSaveSettings.visibility = View.GONE
             etEmail.setText(emailExists)
             previousEmail = emailExists
+        }else{
+            btnSaveSettings.visibility = View.VISIBLE
         }
         var compressionType = AppConstant().getValuesByTagFromLocalPrefs(context!!, AppConstant.COMPRESSION_TYPE, AppConstant.MEDIUM)
         previousCompression = ""+compressionType

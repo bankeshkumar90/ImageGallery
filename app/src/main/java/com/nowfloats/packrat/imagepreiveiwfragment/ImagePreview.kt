@@ -189,6 +189,7 @@ class ImagePreview : Fragment(), ClickListener {
         i.type = "image/*"
         i.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
         i.action = Intent.ACTION_GET_CONTENT
+        //i.addCategory(Intent.CATEGORY_OPENABLE)
         // pass the constant to compare it
         // with the returned requestCode
         startActivityForResult(Intent.createChooser(i, "Select Pictures"), AppConstant.REQ_GALLERY_CODE)

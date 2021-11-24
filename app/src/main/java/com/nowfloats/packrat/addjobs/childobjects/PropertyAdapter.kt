@@ -54,6 +54,7 @@ class PropertyAdapter(
         if(propertyItem.productName.equals("Others")) {
             propertyItem.productName =""
             holder.etLabel?.text = propertyItem.productName
+            holder.etLabel.requestFocus()
         }
         else
             holder.etLabel?.text = propertyItem.productName

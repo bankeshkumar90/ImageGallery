@@ -582,6 +582,7 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
             var itemList = ArrayList<metaDataBeanItem>()
             itemList.add(metaDataBeanItem())
             prodAdapter.updateList(itemList, viewHolder)
+            productListItem.scrollToPosition(prodAdapter.parentProductList.size-1)
         })
         addViewModel.addBottomClick.observe(this, Observer {
             if (isclickBottomView) {

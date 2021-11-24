@@ -165,7 +165,6 @@ class MyViewModel(private val repository: MyRepository) : ViewModel() {
                                         productProperty =
                                             response?.body() as ArrayList<RegexApiResponse>
                                         var properties = ProductProperty( response?.body() as List<RegexApiResponse>)
-
                                         saveProperties(properties)
                                     }catch (e:Exception){
                                         e.printStackTrace()
@@ -195,7 +194,7 @@ class MyViewModel(private val repository: MyRepository) : ViewModel() {
         if(productProperty.size>0)
             return
             var regexApiResponse = RegexApiResponse()
-            regexApiResponse.name = "Product"
+            regexApiResponse.name = "Product Name"
             regexApiResponse.value = ""
             productProperty.add(regexApiResponse)
 

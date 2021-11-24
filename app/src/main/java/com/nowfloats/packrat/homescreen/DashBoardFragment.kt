@@ -60,8 +60,18 @@ class DashBoardFragment:Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         onBackPressed()
+
+        myApplication = activity?.application as MyApplication
+        myRepository = myApplication.myRepository
+        viewModelFactory = ViewModelFactory(myRepository)
+        viewModel = ViewModelProviders.of(activity!!, viewModelFactory)
+            .get(MyViewModel::class.java)
+        try{
+            viewModel.fetchFromAPI()
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
     }
 
     override fun onCreateView(
@@ -74,13 +84,10 @@ class DashBoardFragment:Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        myApplication = activity?.application as MyApplication
-        myRepository = myApplication.myRepository
-        viewModelFactory = ViewModelFactory(myRepository)
-        viewModel = ViewModelProviders.of(activity!!, viewModelFactory)
-            .get(MyViewModel::class.java)
+
         initViewsAndListeners()
         checkPermissions()
+
     }
     private fun initViewsAndListeners() {
         ll_shelfView.setOnClickListener {
