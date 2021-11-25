@@ -47,7 +47,7 @@
                 android:textSize="@dimen/sp_16"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:textColor="@color/dashboard_green"
-                android:drawableRight="@drawable/uplaod"/>
+                android:drawableRight="@drawable/ic_uplaod"/>
         </LinearLayout>
 
     </LinearLayout>
@@ -70,6 +70,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <TextView
+                android:id="@+id/tvUploadType"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="@dimen/dp_10"

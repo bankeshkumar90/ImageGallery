@@ -101,12 +101,15 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
     var loading: ProgressDialog? = null
     var image_uri : Uri? = null
     private lateinit var imagePicker: BottomViewDialog
+    private var shelf = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        shelf = arguments?.getBoolean(AppConstant.SHELF,false)!!
 
-        setHasOptionsMenu(true)
+       // setHasOptionsMenu(true)
     }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -122,6 +125,7 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
         super.onViewCreated(view, savedInstanceState)
         viewObj = view
         initViews(view)
+
 //        bindBottomView(view)
         btn_add_product.setOnClickListener {
             saveCurrentData(previousSelectedPosition)
@@ -458,6 +462,13 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
             .get(MyViewModel::class.java)
         viewModel.imageList = arguments?.getStringArrayList(AppConstant.IMAGE_LIST) as ArrayList<String>
 
+        if(shelf){
+            tvUploadType.text = context!!.resources.getString(R.string.shelf_images)
+        }else{
+            tvUploadType.text = context!!.resources.getString(R.string.shelf_images)
+            add_lin.visibility = View.GONE
+            addViewModel.addViewOnClick()
+        }
         initHeaderItems(view)
     }
 
@@ -656,7 +667,7 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
                 LinearLayoutManager(context!!, LinearLayoutManager.VERTICAL, false)
             linearLayoutManager.setReverseLayout(true)
             viewObj.productListItem.layoutManager = linearLayoutManager
-            prodAdapter = ProductDataAdapter(context!!, this, prducts)
+            prodAdapter = ProductDataAdapter(context!!, this, prducts, shelf)
             viewObj.productListItem.adapter = prodAdapter
             prodAdapter.setData(prducts!!)
             prodAdapter.notifyDataSetChanged()
@@ -667,7 +678,7 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
 
     //This function will delete product of recyler item
     private fun updateRecylerView(prducts :ArrayList<ArrayList<metaDataBeanItem>>){
-        prodAdapter = ProductDataAdapter(context!!, this, prducts)
+        prodAdapter = ProductDataAdapter(context!!, this, prducts, shelf)
         viewObj.productListItem.adapter = prodAdapter
         //prodAdapter.setData(prducts!!)
         prodAdapter.notifyDataSetChanged()

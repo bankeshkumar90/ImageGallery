@@ -41,6 +41,7 @@
                     android:layout_weight="1.7">
 
                     <TextView
+                        android:id="@+id/tvLabelProduct"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_marginLeft="@dimen/dp_10"
@@ -74,7 +75,7 @@
                         android:layout_marginLeft="@dimen/dp_10"
                         android:gravity="center"
                         android:text="+"
-                        android:layout_marginBottom="@dimen/dp_2"
+                        android:layout_gravity="center_vertical"
                         android:textColor="@color/dashboard_green" />
 
                     <TextView

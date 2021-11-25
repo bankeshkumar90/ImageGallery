@@ -94,6 +94,7 @@ class AppSettings : Fragment()  {
             etEmail.setText(emailExists)
             previousEmail = emailExists
         }else{
+            backButtonSettings.visibility = View.GONE
             btnSaveSettings.visibility = View.VISIBLE
         }
         var compressionType = AppConstant().getValuesByTagFromLocalPrefs(context!!, AppConstant.COMPRESSION_TYPE, AppConstant.MEDIUM)

@@ -57,9 +57,14 @@ class ImagePreview : Fragment(), ClickListener {
     var path = ""
     var image_uri : Uri? = null
     private lateinit var bottomViewDialog: BottomViewDialog
+    private var shelf = false
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
+        shelf = arguments?.getBoolean(AppConstant.SHELF,false)!!
 
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -67,6 +72,7 @@ class ImagePreview : Fragment(), ClickListener {
         setHasOptionsMenu(false)
         initViews()
         val extras = arguments
+
         if(extras?.getInt(AppConstant.REQUEST_TYPE,0)==AppConstant.REQ_GALLERY_CODE)
             openGallery()
         else{
@@ -99,6 +105,8 @@ class ImagePreview : Fragment(), ClickListener {
     private fun sendAddproductScreen() {
         val bundle = Bundle()
         bundle.putStringArrayList(AppConstant.IMAGE_LIST, viewModel.imageList )
+        bundle.putBoolean(AppConstant.SHELF, shelf)
+
         val addProduct = AddProduct()
         addProduct.arguments = bundle
 

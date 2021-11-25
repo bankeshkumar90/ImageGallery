@@ -25,7 +25,8 @@ import java.util.regex.Pattern
 class ProductDataAdapter(
     var context: Context,
     private val clickListener: ProdClickListener,
-    var parentProductList: ArrayList<ArrayList<metaDataBeanItem>>
+    var parentProductList: ArrayList<ArrayList<metaDataBeanItem>>,
+    var shelf: Boolean
 ) :
     RecyclerView.Adapter<ProductDataAdapter.PickerViewHolder>() {
     private lateinit var ln: LinearLayout
@@ -81,7 +82,7 @@ class ProductDataAdapter(
     override fun onBindViewHolder(holder: PickerViewHolder, @SuppressLint("RecyclerView") position: Int) {
 //        pholder = holder
         adpterposion = position
-        holder.setData(position)
+        holder.setData(position,shelf)
         holder.childRv?.layoutManager = LinearLayoutManager(holder.childRv.context, LinearLayout.VERTICAL, false)
         //saveLatestItemData(holder)
     }
@@ -193,7 +194,7 @@ class ProductDataAdapter(
         var add_prop_id: LinearLayout
         var add_form: LinearLayout
         var add_product_count: TextView
-
+        var tvLabelProduct :TextView
         var childRv:RecyclerView
 
         init {
@@ -201,16 +202,16 @@ class ProductDataAdapter(
             add_form = itemView.findViewById(R.id.ln_form)
             add_product_count = itemView.findViewById(R.id.add_product_count)
             childRv = itemView.findViewById(R.id.childList)
-
+            tvLabelProduct = itemView.findViewById(R.id.tvLabelProduct)
             add_prop_id.setOnClickListener { v ->
 
             }
         }
 
 
-        fun setData(position: Int) {
+        fun setData(position: Int, shelf:Boolean) {
+
             itemView.apply {
-                add_product_count.text = (position + 1).toString()
 //            tvImageName.text = entityClass.name
                 /*product_imageview.setImageURI(Uri.parse(entityClass.path))  // sets the image using the uri present in database
                 close_imageview.setOnClickListener {
@@ -219,7 +220,13 @@ class ProductDataAdapter(
                 add_prop_id.setOnClickListener {
                     clickListener.onClickAdd(adapterPosition)
                 }
-
+                if(!shelf) {
+                    dlt_cross.visibility = View.GONE
+                    add_product_count.visibility = View.GONE
+                    tvLabelProduct.visibility = View.GONE
+                }else{
+                    add_product_count.text = (position + 1).toString()
+                }
                 dlt_cross.setOnClickListener {
                     clickListener.onClickItemDelete(adapterPosition)
                 }

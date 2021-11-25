@@ -38,7 +38,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.nowfloats.packrat.addjobs.ProductDataAdapter
 import com.nowfloats.packrat.settings.AppSettings
 import kotlinx.android.synthetic.main.fragment_add_product.view.*
 import kotlinx.android.synthetic.main.fragment_settings.*
@@ -91,10 +90,10 @@ class DashBoardFragment:Fragment() {
     }
     private fun initViewsAndListeners() {
         ll_shelfView.setOnClickListener {
-            dispatchTakePictureIntent()
+            dispatchTakePictureIntent(true)
         }
         ll_ProductView.setOnClickListener {
-            //dispatchTakePictureIntent()
+            dispatchTakePictureIntent(false)
         }
         btnJobStatus.setOnClickListener(){
             showJobStatus()
@@ -111,7 +110,7 @@ class DashBoardFragment:Fragment() {
         }
     }
     @SuppressLint("WrongConstant")
-    private fun dispatchTakePictureIntent() {
+    private fun dispatchTakePictureIntent(shelf: Boolean) {
 
         /*val imageCaptureListner = object : ImageCaptureListner {
             override fun onCameraClick() {
@@ -127,6 +126,8 @@ class DashBoardFragment:Fragment() {
             override fun onDialogTypeSelected(requestCode: Int) {
                 val bundle = Bundle()
                 bundle.putInt(AppConstant.REQUEST_TYPE, requestCode)
+                bundle.putBoolean(AppConstant.SHELF, shelf)
+
                 var imagePreview = ImagePreview()
                 imagePreview.arguments = bundle
                 val ft: FragmentTransaction = fragmentManager!!.beginTransaction()
@@ -269,10 +270,10 @@ class DashBoardFragment:Fragment() {
             CoroutineScope(Dispatchers.Main).launch {
                 if (emptyJobBucket) {
                     if(btnJobStatus!=null)
-                    btnJobStatus.setBackgroundResource(R.drawable.uplaod)
+                    btnJobStatus.setBackgroundResource(R.drawable.ic_uplaod)
                 } else {
                     if(btnJobStatus!=null)
-                    btnJobStatus.setBackgroundResource(R.drawable.upload_dot)
+                    btnJobStatus.setBackgroundResource(R.drawable.ic_uplaod_dot)
                 }
             }
         }catch (e:Exception){

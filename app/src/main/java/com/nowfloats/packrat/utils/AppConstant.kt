@@ -64,6 +64,8 @@ class AppConstant {
         const val MEMORY_PERMISSION = "Memory Permission Required"
         const val PERMISSION_DENIED_MESSAGE = "Permissions are denied, please allow all required permission from settings"
         const val IMAGE_MANDATORY = "Please add product image"
+        const val SHELF = "Shelf"
+
         @JvmStatic
         @SuppressLint("NewApi")
         fun getPath(context: Context, uri: Uri): String? {
