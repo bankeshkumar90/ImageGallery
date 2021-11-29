@@ -195,27 +195,31 @@ class MyViewModel(private val repository: MyRepository) : ViewModel() {
             return
             var regexApiResponse = RegexApiResponse()
             regexApiResponse.name = "Product Name"
-            regexApiResponse.value = ""
+            regexApiResponse.regEx = "^[a-zA-Z0-9 ]{1,50}\$"
             productProperty.add(regexApiResponse)
 
         var regexApiResponse1 = RegexApiResponse()
-         regexApiResponse1.value = ""
+         regexApiResponse1.regEx = "^[0-9]*(\\.[0-9][0-9]?)?"
             regexApiResponse1.name = "Quantity"
             productProperty.add(regexApiResponse1)
 
         var regexApiResponse2 = RegexApiResponse()
-        regexApiResponse2.value = ""
+        regexApiResponse2.regEx = "^[a-zA-Z0-9 ]{1,50}\$"
             regexApiResponse2.name = "Barcode"
             productProperty.add(regexApiResponse2)
 
         var regexApiResponse3 = RegexApiResponse()
-        regexApiResponse3.value = ""
+        regexApiResponse3.regEx = "^[0-9]*(\\.[0-9][0-9]?)?"
             regexApiResponse3.name = "Price"
-            productProperty.add(regexApiResponse3)
+        regexApiResponse3.value = ""
+
+        productProperty.add(regexApiResponse3)
 
         var regexApiResponse4 = RegexApiResponse()
         regexApiResponse4.value = ""
-            regexApiResponse4.name = "Others"
+        regexApiResponse4.regEx = ""
+
+        regexApiResponse4.name = "Others"
             productProperty.add(regexApiResponse4)
     }
 

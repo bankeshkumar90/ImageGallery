@@ -465,7 +465,7 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
         if(shelf){
             tvUploadType.text = context!!.resources.getString(R.string.shelf_images)
         }else{
-            tvUploadType.text = context!!.resources.getString(R.string.shelf_images)
+            tvUploadType.text = context!!.resources.getString(R.string.product_images)
             add_lin.visibility = View.GONE
             addViewModel.addViewOnClick()
         }

@@ -57,7 +57,7 @@ class JobStatusAdapter(
                 Glide.with(context)
                     .load( jobItem.imagePath)
                     .override(100, 100)
-                    .centerCrop() // scale to fill the ImageView and crop any extra
+                    .centerInside() // scale to fill the ImageView and crop any extra
                     .into( holder.imageView)
                 //holder.imageView.setImageURI(jobItem.uri)
             } catch (e: Exception) {

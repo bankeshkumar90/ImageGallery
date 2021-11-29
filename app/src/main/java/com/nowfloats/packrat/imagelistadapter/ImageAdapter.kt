@@ -25,7 +25,8 @@ class ImageAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         //val dataModel = imageList[position]
-        holder.setImage( imagePathList[position], position)
+
+        holder.setImage(imagePathList[position], position)
         if(positionSeleted==position){
             holder.imageSelected.visibility = View.VISIBLE
         }else

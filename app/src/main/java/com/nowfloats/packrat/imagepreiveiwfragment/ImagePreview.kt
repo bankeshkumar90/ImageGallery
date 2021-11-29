@@ -210,7 +210,7 @@ class ImagePreview : Fragment(), ClickListener {
                     Glide.with(context!!)
                         .load(Uri.parse(imagePath))
                         .override(480, 960)
-                        .centerCrop() // scale to fill the ImageView and crop any extra
+                        .centerInside() // scale to fill the ImageView and crop any extra
                         .into( imgPreview)
                     //holder.imageView.setImageURI(jobItem.uri)
                 } catch (e: Exception) {

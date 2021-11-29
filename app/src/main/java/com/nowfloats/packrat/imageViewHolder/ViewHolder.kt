@@ -24,8 +24,8 @@ class ViewHolder(private val view: View, private val clickListener: ClickListene
 //            tvImageName.text = entityClass.name
             Glide.with(context)
                 .load( Uri.parse(imagePath))
-                .override(100, 100)
-                .centerCrop() // scale to fill the ImageView and crop any extra
+                .override(100, 150)
+                .centerInside() // scale to fill the ImageView and crop any extra
                 .into( product_imageview);
             //product_imageview.setImageURI(Uri.parse(imagePath))  // sets the image using the uri present in database
             close_imageview.setOnClickListener {

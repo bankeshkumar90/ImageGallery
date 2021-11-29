@@ -9,6 +9,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:elevation="@dimen/dp_8"
+        android:scaleType="fitXY"
+        android:layout_gravity="center"
         android:src="@drawable/ic_remove_selected_delete"
         app:layout_constraintBottom_toTopOf="@+id/frame_layout"
         app:layout_constraintEnd_toEndOf="@+id/frame_layout"
