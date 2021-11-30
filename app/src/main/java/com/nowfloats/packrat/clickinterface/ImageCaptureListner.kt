@@ -1,4 +1,4 @@
-package com.nowfloats.packrat.clickInterface
+package com.nowfloats.packrat.clickinterface
 
 
 // gives the adapter position on click

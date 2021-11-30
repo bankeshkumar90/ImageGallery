@@ -1,4 +1,4 @@
-package com.nowfloats.packrat.imageViewModel
+package com.nowfloats.packrat.imageviewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

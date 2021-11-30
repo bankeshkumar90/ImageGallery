@@ -1,53 +1,17 @@
 package com.nowfloats.packrat.settings
 
-import android.annotation.SuppressLint
-import android.app.ProgressDialog
-import android.content.ContentValues
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.LayoutInflater
-import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.camera.core.ImageCapture
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
-import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.nowfloats.packrat.R
-import com.nowfloats.packrat.addjobs.AddProduct
-import com.nowfloats.packrat.bottomsheetdialog.BottomViewDialog
-import com.nowfloats.packrat.camera.CameraFragment
-import com.nowfloats.packrat.clickInterface.ClickListener
-import com.nowfloats.packrat.clickInterface.OnImageDialogSelector
-import com.nowfloats.packrat.databaserepository.MyRepository
-import com.nowfloats.packrat.homescreen.MyApplication
-import com.nowfloats.packrat.imageViewModel.MyViewModel
-import com.nowfloats.packrat.imageViewModel.ViewModelFactory
-import com.nowfloats.packrat.imagelistadapter.ImageAdapter
-import com.nowfloats.packrat.roomdatabase.EntityClass
 import com.nowfloats.packrat.utils.AppConstant
-import kotlinx.android.synthetic.main.fragment_image_preview.*
-import kotlinx.android.synthetic.main.fragment_image_preview.btnSaveImage
-import kotlinx.android.synthetic.main.fragment_job_status.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.util.*
-import kotlin.collections.ArrayList
-import androidx.work.WorkInfo
 
-import androidx.work.WorkManager
-import com.google.common.util.concurrent.ListenableFuture
-import kotlinx.android.synthetic.main.fragment_job_status.backButton
-import kotlinx.android.synthetic.main.fragment_job_status.clearBtn
 import kotlinx.android.synthetic.main.fragment_settings.*
-import java.util.concurrent.ExecutionException
 
 
 class AppSettings : Fragment()  {

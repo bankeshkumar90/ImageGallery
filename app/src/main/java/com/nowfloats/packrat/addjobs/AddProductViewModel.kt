@@ -7,27 +7,22 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.work.*
 import com.google.common.util.concurrent.ListenableFuture
-import com.nowfloats.packrat.bottomsheetdialog.Item
-import com.nowfloats.packrat.clickInterface.ProdClickListener
-import com.nowfloats.packrat.network.RegexApiResponse
-import com.nowfloats.packrat.roomdatabase.EntityClass
 import com.nowfloats.packrat.roomdatabase.ProductFormData
 import com.nowfloats.packrat.utils.AppConstant
 import com.nowfloats.packrat.workmanager.MetaDataWorker
 import com.nowfloats.packrat.workmanager.UploadWorker
 import java.io.Serializable
 import java.lang.Exception
-import java.util.concurrent.TimeUnit
 
 class AddProductViewModel(application: Application) : AndroidViewModel(application), Serializable {
     var clickadd: MutableLiveData<Int> = MutableLiveData()
-    var addBottomClick: MutableLiveData<metaDataBeanItem> = MutableLiveData()
+    var addBottomClick: MutableLiveData<MetaDataBeanItem> = MutableLiveData()
     var addBottomClickPosition: MutableLiveData<Int> = MutableLiveData()
     var clickdeleteview: MutableLiveData<Int> = MutableLiveData()
     var deleteFormViews: MutableLiveData<Int> = MutableLiveData()
     var getProductData: MutableLiveData<ProductFormData> = MutableLiveData()
     var saveMetaData: MutableLiveData<Boolean> = MutableLiveData()
-    var fragmentMapObj:HashMap<Int, ArrayList<metaDataBeanItem>> = HashMap<Int, ArrayList<metaDataBeanItem>>()
+    var fragmentMapObj:HashMap<Int, ArrayList<MetaDataBeanItem>> = HashMap<Int, ArrayList<MetaDataBeanItem>>()
     init {
         print("meesaage1212")
     }
@@ -41,7 +36,7 @@ class AddProductViewModel(application: Application) : AndroidViewModel(applicati
         clickadd.value = 1
     }
 
-    fun bottomDialogClick(item: metaDataBeanItem, position: Int) {
+    fun bottomDialogClick(item: MetaDataBeanItem, position: Int) {
         addBottomClick.value = item
         addBottomClickPosition.value = position
     }
@@ -58,12 +53,12 @@ class AddProductViewModel(application: Application) : AndroidViewModel(applicati
         saveMetaData.value = true
     }
 
-    fun updateFragmentIndex(tabPosition: Int, fragmentObj: ArrayList<metaDataBeanItem>){
+    fun updateFragmentIndex(tabPosition: Int, fragmentObj: ArrayList<MetaDataBeanItem>){
         //fragmentMapObj.put(tabPosition, fragmentObj)
     }
 
     fun deletFragmentData(deletedTabPos:Int, totalRemaining:Int): Int{
-        var calculateHeaderMap:HashMap<Int, ArrayList<metaDataBeanItem>> = HashMap<Int, ArrayList<metaDataBeanItem>>()
+        var calculateHeaderMap:HashMap<Int, ArrayList<MetaDataBeanItem>> = HashMap<Int, ArrayList<MetaDataBeanItem>>()
         try {
             fragmentMapObj.get(deletedTabPos)?.clear()
             if(fragmentMapObj.size>0){

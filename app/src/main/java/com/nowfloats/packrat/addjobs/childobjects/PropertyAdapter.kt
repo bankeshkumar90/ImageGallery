@@ -9,15 +9,14 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.nowfloats.packrat.R
-import com.nowfloats.packrat.addjobs.metaDataBeanItem
-import com.nowfloats.packrat.clickInterface.ChildItemActionListener
+import com.nowfloats.packrat.addjobs.MetaDataBeanItem
+import com.nowfloats.packrat.clickinterface.ChildItemActionListener
 import com.nowfloats.packrat.utils.CustomInputFilter
 
 class PropertyAdapter(
-    var propertyList: ArrayList<metaDataBeanItem>,
+    var propertyList: ArrayList<MetaDataBeanItem>,
     var childItemActionListener: ChildItemActionListener
 ): RecyclerView.Adapter<PropertyAdapter.ViewHolder>() {
     lateinit var vHolder :ViewHolder
@@ -80,14 +79,14 @@ class PropertyAdapter(
         var llItemView = itemView.findViewById<LinearLayout>(R.id.llProductItem)
     }
 
-    fun updateList(propertyListItem: ArrayList<metaDataBeanItem>){
+    fun updateList(propertyListItem: ArrayList<MetaDataBeanItem>){
         propertyList = propertyListItem
      }
 
     fun getAllItemDetails(pos:Int){
-        val propertyListValue = ArrayList<metaDataBeanItem>()
+        val propertyListValue = ArrayList<MetaDataBeanItem>()
         for (i in 0 until propertyList.size){
-            var  propertyDataClass = metaDataBeanItem()
+            var  propertyDataClass = MetaDataBeanItem()
         }
     }
 

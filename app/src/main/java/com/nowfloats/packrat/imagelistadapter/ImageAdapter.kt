@@ -6,10 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.nowfloats.packrat.R
-import com.nowfloats.packrat.addjobs.ProductDataAdapter
-import com.nowfloats.packrat.clickInterface.ClickListener
+import com.nowfloats.packrat.clickinterface.ClickListener
 import com.nowfloats.packrat.roomdatabase.EntityClass
-import com.nowfloats.packrat.imageViewHolder.ViewHolder
+import com.nowfloats.packrat.imageviewholder.ViewHolder
 
 //adapter for our recycler view
 class ImageAdapter(

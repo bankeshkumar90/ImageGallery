@@ -5,8 +5,11 @@ import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.Menu
@@ -14,7 +17,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.camera.core.ImageCapture
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -25,22 +27,26 @@ import com.bumptech.glide.Glide
 import com.nowfloats.packrat.R
 import com.nowfloats.packrat.addjobs.AddProduct
 import com.nowfloats.packrat.bottomsheetdialog.BottomViewDialog
-import com.nowfloats.packrat.camera.CameraFragment
-import com.nowfloats.packrat.clickInterface.ClickListener
-import com.nowfloats.packrat.clickInterface.OnImageDialogSelector
+import com.nowfloats.packrat.clickinterface.ClickListener
+import com.nowfloats.packrat.clickinterface.OnImageDialogSelector
 import com.nowfloats.packrat.databaserepository.MyRepository
 import com.nowfloats.packrat.homescreen.MyApplication
-import com.nowfloats.packrat.imageViewModel.MyViewModel
-import com.nowfloats.packrat.imageViewModel.ViewModelFactory
+import com.nowfloats.packrat.imageviewmodel.MyViewModel
+import com.nowfloats.packrat.imageviewmodel.ViewModelFactory
 import com.nowfloats.packrat.imagelistadapter.ImageAdapter
-import com.nowfloats.packrat.roomdatabase.EntityClass
 import com.nowfloats.packrat.utils.AppConstant
+import com.nowfloats.packrat.utils.ExifUtil
+import com.nowfloats.packrat.utils.MyLowerCaseNameConstraint
+import id.zelory.compressor.Compressor
+import id.zelory.compressor.constraint.format
+import id.zelory.compressor.constraint.quality
 import kotlinx.android.synthetic.main.fragment_image_preview.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import java.util.*
-import kotlin.collections.ArrayList
+import java.io.*
+
 
 class ImagePreview : Fragment(), ClickListener {
 
@@ -197,7 +203,10 @@ class ImagePreview : Fragment(), ClickListener {
         i.type = "image/*"
         i.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
         i.action = Intent.ACTION_GET_CONTENT
-        //i.addCategory(Intent.CATEGORY_OPENABLE)
+        i.addCategory(Intent.CATEGORY_OPENABLE)
+        i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        i.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+
         // pass the constant to compare it
         // with the returned requestCode
         startActivityForResult(Intent.createChooser(i, "Select Pictures"), AppConstant.REQ_GALLERY_CODE)
@@ -267,11 +276,131 @@ class ImagePreview : Fragment(), ClickListener {
                         viewModel.addImageToList(""+it)
                         showPreview(""+it)
                     }
+                    var actualPath = "" + AppConstant.getPath(context!!, selectedImageUri)
+
+                    // calling from global scope
+                   /* GlobalScope.launch {
+                        try {
+                            val file = File(actualPath)
+                            if (file.exists()) {
+                                val compressedImageFile = Compressor.compress(context!!, file)
+                                println("File compressed "+compressedImageFile.isFile)
+                            }
+                        }catch (e:Exception){
+                            e.printStackTrace()
+                        }
+                    }*/
+                    GlobalScope.launch(Dispatchers.Main) {
+                        try {
+                            //var actualPath = "" + AppConstant.getPath(context!!, selectedImageUri)
+                            val file = File(actualPath)
+
+                            val compressedImageFile = Compressor.compress(context!!, file) {
+                                constraint(MyLowerCaseNameConstraint()) // your own constraint
+                                quality(80) // combine with compressor constraint
+                                format(Bitmap.CompressFormat.JPEG)
+                            }
+                            println("File compressed "+compressedImageFile.totalSpace)
+                            //SaveImage(compressedImageFile)
+
+                            //This point and below is responsible for the write operation
+                             var outputStream : FileOutputStream? = null
+                            try {
+                                compressedImageFile.createNewFile();
+                                //second argument of FileOutputStream constructor indicates whether
+                                //to append or create new file if one exists
+                                outputStream =  FileOutputStream(file, true)
+
+                                outputStream.write(compressedImageFile.readBytes())
+                                outputStream.flush();
+                                outputStream.close()
+                            } catch ( e1:Exception) {
+                                e1.printStackTrace();
+                            }
+
+
+                        }catch (e:Exception){
+                            e.printStackTrace()
+                        }
+                    }
+                    //tryImageBitmap(selectedImageUri)
+                    GlobalScope.launch {
+                        var inStream = context!!.getContentResolver().openInputStream(selectedImageUri)
+                        val original = BitmapFactory.decodeStream(inStream)
+                        //storeImage(original)
+                        SaveImage(original,20, actualPath)
+                        //saveBitmap()
+                    }
                 }
             }
         }
     }
 
+
+
+
+
+    private fun SaveImage(finalBitmap: Bitmap, quality:Int, actualPath:String) {
+        /*val root = Environment.getExternalStorageDirectory().toString()
+        val myDir = File("$root/saved_images")
+        if(!myDir.exists())
+        myDir.mkdirs()*/
+
+        val file = createTempImageFile(quality)// File(myDir, fname)
+        //if (file!!.exists())
+            //file?.delete()
+        try {
+            val out = FileOutputStream(file)
+            var fixedRotationBitmap = ExifUtil.rotateBitmap( actualPath, finalBitmap)
+            fixedRotationBitmap.compress(Bitmap.CompressFormat.JPEG, quality, out)
+            out.flush()
+            out.close()
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+     private fun createTempImageFile(quality: Int): File? {
+        // Create an image file name
+        val timeStamp = ""+System.currentTimeMillis()
+        val imageFileName = "" + quality +"SmartCat_" + timeStamp + "_"
+        val storageDir = Environment.getExternalStoragePublicDirectory(
+            Environment.DIRECTORY_PICTURES +File.separator+"SmartCat"
+        )
+         if (!storageDir.exists()){
+             storageDir.mkdirs()
+         }
+        val image = File.createTempFile(
+            imageFileName,  // prefix
+            ".jpg",  // suffix
+            storageDir // directory
+        )
+
+        // Save a file: path for use with ACTION_VIEW intents
+        //mCurrentPhotoPath = "file:" + image.absolutePath
+        return image
+    }
+  /*  private fun saveBitmap(bitmap: Bitmap ) {
+        if (bitmap != null) {
+            try {
+                try {
+                    val bytes = ByteArrayOutputStream()
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
+                    var timeStamp = ""+System.currentTimeMillis()
+                    val f = File((""+Environment.getExternalStorageDirectory() + File.separator).toString() + timeStamp + "Test1.jpg")
+                    f.createNewFile()
+                    val fo = FileOutputStream(f)
+                    fo.write(bytes.toByteArray())
+                    fo.close()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }*/
 
 
     @SuppressLint("WrongConstant")
@@ -358,4 +487,6 @@ class ImagePreview : Fragment(), ClickListener {
             ).show()
         }
     }
+
+
 }

@@ -1,19 +1,12 @@
-package com.nowfloats.packrat.imageViewModel
+package com.nowfloats.packrat.imageviewmodel
 
-import android.annotation.SuppressLint
-import android.app.Application
-import android.os.Build
 import android.util.Log
-import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.gson.Gson
-import com.nowfloats.packrat.addjobs.metaDataBeanItem
+import com.nowfloats.packrat.addjobs.MetaDataBeanItem
 import com.nowfloats.packrat.databaserepository.MyRepository
-import com.nowfloats.packrat.network.ApiResponse
 import com.nowfloats.packrat.network.ApiService
 import com.nowfloats.packrat.network.Network
 import com.nowfloats.packrat.network.RegexApiResponse
@@ -22,9 +15,7 @@ import com.nowfloats.packrat.roomdatabase.ProductEntityClass
 import com.nowfloats.packrat.roomdatabase.ProductFormData
 import com.nowfloats.packrat.roomdatabase.modal.ProductProperty
 import com.nowfloats.packrat.roomdatabase.productDataInfo
-import com.nowfloats.packrat.utils.AppConstant
 import kotlinx.coroutines.*
-import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -105,9 +96,9 @@ class MyViewModel(private val repository: MyRepository) : ViewModel() {
         imageArrayList.value?.add(imagePath)
     }
 
-    suspend fun saveMetaData(metaDataBeanItem: ArrayList<metaDataBeanItem>){
+    suspend fun saveMetaData(MetaDataBeanItem: ArrayList<MetaDataBeanItem>){
         try{
-            val metadata: productDataInfo = productDataInfo("",metaDataBeanItem )
+            val metadata: productDataInfo = productDataInfo("",MetaDataBeanItem )
             repository.saveMetaData(metadata)
         }catch (e:Exception){
             e.printStackTrace()

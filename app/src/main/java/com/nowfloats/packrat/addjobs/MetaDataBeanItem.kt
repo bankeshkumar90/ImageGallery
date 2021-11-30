@@ -2,9 +2,8 @@ package com.nowfloats.packrat.addjobs
 
 import android.os.Parcel
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
 
-data class metaDataBeanItem(
+data class MetaDataBeanItem(
     var productName: String ="",
     var productValue: String ="",
     var productRegex: String = "",
@@ -28,12 +27,12 @@ data class metaDataBeanItem(
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<metaDataBeanItem> {
-        override fun createFromParcel(parcel: Parcel): metaDataBeanItem {
-            return metaDataBeanItem(parcel)
+    companion object CREATOR : Parcelable.Creator<MetaDataBeanItem> {
+        override fun createFromParcel(parcel: Parcel): MetaDataBeanItem {
+            return MetaDataBeanItem(parcel)
         }
 
-        override fun newArray(size: Int): Array<metaDataBeanItem?> {
+        override fun newArray(size: Int): Array<MetaDataBeanItem?> {
             return arrayOfNulls(size)
         }
     }

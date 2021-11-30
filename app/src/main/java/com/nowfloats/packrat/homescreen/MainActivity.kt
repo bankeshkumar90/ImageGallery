@@ -1,30 +1,18 @@
 package com.nowfloats.packrat.homescreen
 
-import android.Manifest
-import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.nowfloats.packrat.R
 import com.nowfloats.packrat.databaserepository.MyRepository
-import com.nowfloats.packrat.imageViewModel.MyViewModel
-import com.nowfloats.packrat.imageViewModel.ViewModelFactory
-import androidx.lifecycle.ViewModelProvider
-import androidx.work.WorkInfo
+import com.nowfloats.packrat.imageviewmodel.MyViewModel
+import com.nowfloats.packrat.imageviewmodel.ViewModelFactory
 import androidx.work.WorkManager
-import com.nowfloats.packrat.addjobs.AddProductViewModel
 import com.nowfloats.packrat.roomdatabase.EntityClass
 import com.nowfloats.packrat.utils.AppConstant
 import java.util.*
-import android.content.Intent
-import android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION
 
 
 class MainActivity : AppCompatActivity() {

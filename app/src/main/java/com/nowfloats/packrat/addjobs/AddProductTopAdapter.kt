@@ -4,8 +4,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.nowfloats.packrat.R
-import com.nowfloats.packrat.clickInterface.ClickListener
-import com.nowfloats.packrat.imageViewHolder.ViewHolder
+import com.nowfloats.packrat.clickinterface.ClickListener
+import com.nowfloats.packrat.imageviewholder.ViewHolder
 import com.nowfloats.packrat.roomdatabase.EntityClass
 
 class AddProductTopAdapter(

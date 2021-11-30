@@ -1,5 +1,5 @@
 package com.nowfloats.packrat.addjobs
 
-data class metaDataTabObj (
+data class MetaDataTabObj (
      var collectionId: Int,
  )

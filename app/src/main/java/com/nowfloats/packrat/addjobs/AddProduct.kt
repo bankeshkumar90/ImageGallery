@@ -3,26 +3,17 @@ package com.nowfloats.packrat.addjobs
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.ProgressDialog
-import android.content.ContentUris
 import android.content.ContentValues
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.os.Environment
 import android.os.Handler
-import android.provider.DocumentsContract
 import android.provider.MediaStore
 import android.util.Log
 import android.view.*
-import android.widget.EditText
 import android.widget.Toast
-import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -32,13 +23,13 @@ import com.google.gson.JsonObject
 import com.nowfloats.packrat.R
 import com.nowfloats.packrat.bottomsheetdialog.BottomViewDialog
 import com.nowfloats.packrat.bottomsheetdialog.FullBottomSheetDialogFragment
-import com.nowfloats.packrat.clickInterface.ClicTabItemListener
-import com.nowfloats.packrat.clickInterface.ClickListener
-import com.nowfloats.packrat.clickInterface.ProdClickListener
+import com.nowfloats.packrat.clickinterface.ClicTabItemListener
+import com.nowfloats.packrat.clickinterface.ClickListener
+import com.nowfloats.packrat.clickinterface.ProdClickListener
 import com.nowfloats.packrat.databaserepository.MyRepository
 import com.nowfloats.packrat.homescreen.MyApplication
-import com.nowfloats.packrat.imageViewModel.MyViewModel
-import com.nowfloats.packrat.imageViewModel.ViewModelFactory
+import com.nowfloats.packrat.imageviewmodel.MyViewModel
+import com.nowfloats.packrat.imageviewmodel.ViewModelFactory
 import com.nowfloats.packrat.imagelistadapter.ImageAdapter
 import com.nowfloats.packrat.network.*
 import com.nowfloats.packrat.roomdatabase.EntityClass
@@ -53,7 +44,6 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.MultipartBody.Part.Companion.createFormData
 import okhttp3.RequestBody
-import okhttp3.ResponseBody
 import org.json.JSONArray
 import org.json.JSONObject
 import retrofit2.Call
@@ -61,21 +51,15 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.io.File
 import com.google.gson.JsonParser
-import com.nowfloats.packrat.clickInterface.OnImageDialogSelector
-import com.nowfloats.packrat.homescreen.DashBoardFragment
+import com.nowfloats.packrat.clickinterface.OnImageDialogSelector
 import com.nowfloats.packrat.roomdatabase.ProductEntityClass
 import kotlinx.android.synthetic.main.fragment_image_preview.*
 import java.util.*
 import kotlin.collections.ArrayList
-import android.app.Activity
 import android.content.pm.PackageManager
-import android.view.inputmethod.InputMethodManager
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.fragment_settings.*
-
-import androidx.core.app.ActivityCompat.requestPermissions
-import java.text.SimpleDateFormat
 
 
 class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickListener {
@@ -481,9 +465,9 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
             adapter = imageAdapter
         }
         imageAdapter.setImageSelected(0)
-        var itemList = ArrayList<ArrayList<metaDataBeanItem>>()
-        var arrayItem = ArrayList<metaDataBeanItem>()
-        arrayItem.add(metaDataBeanItem())
+        var itemList = ArrayList<ArrayList<MetaDataBeanItem>>()
+        var arrayItem = ArrayList<MetaDataBeanItem>()
+        arrayItem.add(MetaDataBeanItem())
         itemList.add(arrayItem)
         setProductRecyclerView(itemList)
         setObserver()
@@ -590,8 +574,8 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
                 }
             }
             val viewHolder: ProductDataAdapter.PickerViewHolder? = viewObj.productListItem.findViewHolderForAdapterPosition(addclick_position) as ProductDataAdapter.PickerViewHolder?
-            var itemList = ArrayList<metaDataBeanItem>()
-            itemList.add(metaDataBeanItem())
+            var itemList = ArrayList<MetaDataBeanItem>()
+            itemList.add(MetaDataBeanItem())
             prodAdapter.updateList(itemList, viewHolder)
             productListItem.scrollToPosition(prodAdapter.parentProductList.size-1)
         })
@@ -642,7 +626,7 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
         addViewModel.deleteViewOnClick(position!!)
     }
 
-    override fun onItemDeleteAtPos(position: Int, productList: ArrayList<metaDataBeanItem>) {
+    override fun onItemDeleteAtPos(position: Int, productList: ArrayList<MetaDataBeanItem>) {
        saveCurrentData(previousSelectedPosition)
     }
 
@@ -661,7 +645,7 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
         }
      }
 
-    private fun setProductRecyclerView(prducts :ArrayList<ArrayList<metaDataBeanItem>>) {
+    private fun setProductRecyclerView(prducts :ArrayList<ArrayList<MetaDataBeanItem>>) {
         try {
             val linearLayoutManager =
                 LinearLayoutManager(context!!, LinearLayoutManager.VERTICAL, false)
@@ -677,7 +661,7 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
     }
 
     //This function will delete product of recyler item
-    private fun updateRecylerView(prducts :ArrayList<ArrayList<metaDataBeanItem>>){
+    private fun updateRecylerView(prducts :ArrayList<ArrayList<MetaDataBeanItem>>){
         prodAdapter = ProductDataAdapter(context!!, this, prducts, shelf)
         viewObj.productListItem.adapter = prodAdapter
         //prodAdapter.setData(prducts!!)
@@ -690,7 +674,7 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
         Handler().postDelayed({
             previousSelectedPosition = position!!
             if(addViewModel.fragmentMapObj.get(position)==null)
-                setProductRecyclerView(ArrayList<ArrayList<metaDataBeanItem>>())
+                setProductRecyclerView(ArrayList<ArrayList<MetaDataBeanItem>>())
             else {
                 //updateRecylerView(addViewModel.fragmentMapObj.get(position)!!)
             }
@@ -924,7 +908,7 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
 }
 
 
-fun Bundle.putParcelable(requestType: String, get: ArrayList<metaDataBeanItem>?) {
+fun Bundle.putParcelable(requestType: String, get: ArrayList<MetaDataBeanItem>?) {
 
 }
 

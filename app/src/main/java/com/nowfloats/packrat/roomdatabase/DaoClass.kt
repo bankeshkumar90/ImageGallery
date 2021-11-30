@@ -5,7 +5,6 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.nowfloats.packrat.addjobs.metaDataBeanItem
 import com.nowfloats.packrat.roomdatabase.modal.ProductProperty
 
 //Data Access Object

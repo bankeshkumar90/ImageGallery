@@ -1,6 +1,5 @@
 package com.nowfloats.packrat.bottomsheetdialog
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,10 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentTransaction
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.nowfloats.packrat.R
-import com.nowfloats.packrat.camera.CameraFragment
-import com.nowfloats.packrat.camera.GalleryActivity
-import com.nowfloats.packrat.clickInterface.ImageCaptureListner
-import com.nowfloats.packrat.clickInterface.OnImageDialogSelector
+import com.nowfloats.packrat.clickinterface.OnImageDialogSelector
 import com.nowfloats.packrat.imagepreiveiwfragment.ImagePreview
 import com.nowfloats.packrat.utils.AppConstant
 import kotlinx.android.synthetic.main.layout_modal_bottom_sheet.*

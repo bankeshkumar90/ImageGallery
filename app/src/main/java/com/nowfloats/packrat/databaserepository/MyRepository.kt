@@ -1,13 +1,8 @@
 package com.nowfloats.packrat.databaserepository
 
 import androidx.lifecycle.LiveData
-import com.nowfloats.packrat.addjobs.metaDataBeanItem
-import com.nowfloats.packrat.network.RegexApiResponse
 import com.nowfloats.packrat.roomdatabase.*
 import com.nowfloats.packrat.roomdatabase.modal.ProductProperty
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class MyRepository(private val daoClass: DaoClass) {
 

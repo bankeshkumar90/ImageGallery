@@ -12,16 +12,14 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.nowfloats.packrat.R
 import com.nowfloats.packrat.addjobs.AddProductViewModel
-import com.nowfloats.packrat.addjobs.metaDataBeanItem
+import com.nowfloats.packrat.addjobs.MetaDataBeanItem
 import com.nowfloats.packrat.network.RegexApiResponse
-import java.text.FieldPosition
-import java.util.*
 import kotlin.collections.ArrayList
 
 class FullBottomSheetDialogFragment(var recyclerViewPosition:Int, var propertyList: ArrayList<RegexApiResponse>) : BottomSheetDialogFragment(), ItemAdapter.ItemListener {
     private var mBehavior: BottomSheetBehavior<View>? = null
     private lateinit var dataDialogModel: AddProductViewModel
-    var metDataItemList: ArrayList<metaDataBeanItem> =  ArrayList<metaDataBeanItem>()
+    var metDataItemList: ArrayList<MetaDataBeanItem> =  ArrayList<MetaDataBeanItem>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,14 +50,14 @@ class FullBottomSheetDialogFragment(var recyclerViewPosition:Int, var propertyLi
     }
 
 
-    override fun onItemClick(item: metaDataBeanItem?, position: Int) {
+    override fun onItemClick(item: MetaDataBeanItem?, position: Int) {
         mBehavior?.setState(BottomSheetBehavior.STATE_HIDDEN)
         dataDialogModel.bottomDialogClick(item!!, position)
     }
 
-    private fun processDataToPass(propertyList: ArrayList<RegexApiResponse>): ArrayList<metaDataBeanItem> {
+    private fun processDataToPass(propertyList: ArrayList<RegexApiResponse>): ArrayList<MetaDataBeanItem> {
         for(i in 0 until propertyList.size){
-            var metaDataBeanItem = metaDataBeanItem()
+            var metaDataBeanItem = MetaDataBeanItem()
             metaDataBeanItem.productName = ""+propertyList[i].name
             metaDataBeanItem.productValue = ""+propertyList[i].value
             metaDataBeanItem.productRegex = ""+propertyList[i].regEx

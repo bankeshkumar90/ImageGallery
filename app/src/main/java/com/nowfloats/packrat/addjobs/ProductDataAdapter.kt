@@ -10,13 +10,12 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.nowfloats.packrat.R
 import com.nowfloats.packrat.addjobs.childobjects.PropertyAdapter
-import com.nowfloats.packrat.clickInterface.ChildItemActionListener
-import com.nowfloats.packrat.clickInterface.ProdClickListener
+import com.nowfloats.packrat.clickinterface.ChildItemActionListener
+import com.nowfloats.packrat.clickinterface.ProdClickListener
 import kotlinx.android.synthetic.main.product_data.view.*
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -25,7 +24,7 @@ import java.util.regex.Pattern
 class ProductDataAdapter(
     var context: Context,
     private val clickListener: ProdClickListener,
-    var parentProductList: ArrayList<ArrayList<metaDataBeanItem>>,
+    var parentProductList: ArrayList<ArrayList<MetaDataBeanItem>>,
     var shelf: Boolean
 ) :
     RecyclerView.Adapter<ProductDataAdapter.PickerViewHolder>() {
@@ -42,7 +41,7 @@ class ProductDataAdapter(
         val holder = PickerViewHolder(view, clickListener)
         viewHolderList.add(holder)
         onDeleteClick = object :ChildItemActionListener{
-            override fun onClickCross(position: Int?, childholder: PropertyAdapter.ViewHolder, propertyList: ArrayList<metaDataBeanItem>) {
+            override fun onClickCross(position: Int?, childholder: PropertyAdapter.ViewHolder, propertyList: ArrayList<MetaDataBeanItem>) {
                 try{
                 if (position != null) {
                     var parentPosition = getParentPosByComparision(propertyList)
@@ -65,7 +64,7 @@ class ProductDataAdapter(
             override fun onBeforeClickCross(
                 position: Int?,
                 holder: PropertyAdapter.ViewHolder,
-                propertyList: ArrayList<metaDataBeanItem>
+                propertyList: ArrayList<MetaDataBeanItem>
             ) {
                 try{
                     if (position != null) {
@@ -96,7 +95,7 @@ class ProductDataAdapter(
     }
 
     //updates the latest data of the database
-    fun updateList(objectMetaData: ArrayList<metaDataBeanItem>, holder: PickerViewHolder?) {
+    fun updateList(objectMetaData: ArrayList<MetaDataBeanItem>, holder: PickerViewHolder?) {
         //save old product value here
         saveLatestItemData()
 
@@ -109,7 +108,7 @@ class ProductDataAdapter(
 
     }
 
-    fun setData(listview: ArrayList<ArrayList<metaDataBeanItem>>) {
+    fun setData(listview: ArrayList<ArrayList<MetaDataBeanItem>>) {
         parentProductList = listview
         notifyDataSetChanged()
     }
@@ -139,7 +138,7 @@ class ProductDataAdapter(
         }
     }
 
-    fun updateFormView(regexApiResponse: metaDataBeanItem, parentPosition: Int,holder: PickerViewHolder){
+    fun updateFormView(regexApiResponse: MetaDataBeanItem, parentPosition: Int, holder: PickerViewHolder){
         saveLatestItemData()
         if(ifAlreadyAdded(parentProductList[parentPosition], regexApiResponse)){
             return
@@ -154,7 +153,7 @@ class ProductDataAdapter(
         childAdapter.notifyDataSetChanged()
     }
     @SuppressLint("NewApi")
-    fun setFormView(selectedValue: metaDataBeanItem, holder: PickerViewHolder, position: Int) {
+    fun setFormView(selectedValue: MetaDataBeanItem, holder: PickerViewHolder, position: Int) {
         pholder = holder
         updateFormView(selectedValue, position, holder)
     }
@@ -166,9 +165,9 @@ class ProductDataAdapter(
                 var viewHolder = viewHolderList.get(index)
                 var length = viewHolder.childRv.adapter?.itemCount
                 if(length!=null){
-                    var savedPropertyList = ArrayList<metaDataBeanItem>()
+                    var savedPropertyList = ArrayList<MetaDataBeanItem>()
                     for (j in 0 until length!!) {
-                        var metaDataBeanItem = metaDataBeanItem()
+                        var metaDataBeanItem = MetaDataBeanItem()
                         val view = viewHolder.childRv.findViewHolderForAdapterPosition(j)
                         val etLabel: EditText? = view?.itemView?.findViewById(R.id.etLabel)
                         val etValue: EditText? = view?.itemView?.findViewById(R.id.etValue)
@@ -256,7 +255,7 @@ class ProductDataAdapter(
         }
     }
 
-    fun ifAlreadyAdded(addedProperty:ArrayList<metaDataBeanItem>, apiResponse: metaDataBeanItem):Boolean{
+    fun ifAlreadyAdded(addedProperty:ArrayList<MetaDataBeanItem>, apiResponse: MetaDataBeanItem):Boolean{
         var alreadyAdded = false
         for (item in addedProperty){
             if(item.productName.equals(apiResponse.productName,true)){
@@ -276,7 +275,7 @@ class ProductDataAdapter(
         }
     }
 
-    fun ifEmptyDataSet(parentPosition: Int, regexApiResponse: metaDataBeanItem){
+    fun ifEmptyDataSet(parentPosition: Int, regexApiResponse: MetaDataBeanItem){
         try {
             if (parentProductList[parentPosition][0].productName.equals("", true))
                 parentProductList[parentPosition][0]= regexApiResponse
@@ -297,10 +296,10 @@ class ProductDataAdapter(
         }
     }
 
-    fun getParentPosByComparision(sharedpropertyList: ArrayList<metaDataBeanItem>): Int{
+    fun getParentPosByComparision(sharedpropertyList: ArrayList<MetaDataBeanItem>): Int{
         var pos = -1
         try{
-            var propertyList = ArrayList<metaDataBeanItem>()
+            var propertyList = ArrayList<MetaDataBeanItem>()
              for (properrty in sharedpropertyList){
                 properrty.productRegex = ""
                  propertyList.add(properrty)
@@ -328,7 +327,7 @@ class ProductDataAdapter(
         return pos
     }
 
-    fun upadateInCaseOfEmpty(propertyList: ArrayList<metaDataBeanItem>){
+    fun upadateInCaseOfEmpty(propertyList: ArrayList<MetaDataBeanItem>){
          try{
             if (parentProductList[0].size==0 && propertyList.size==0){
                 saveLatestItemData()

@@ -1,27 +1,5 @@
 package com.nowfloats.packrat.addjobs
 
-import android.annotation.SuppressLint
-import android.content.Context
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.nowfloats.packrat.R
-import com.nowfloats.packrat.bottomsheetdialog.BottomViewDialog
-import com.nowfloats.packrat.bottomsheetdialog.FullBottomSheetDialogFragment
-import com.nowfloats.packrat.clickInterface.ProdClickListener
-import com.nowfloats.packrat.utils.AppConstant
-import kotlinx.android.synthetic.main.product_item.*
-import kotlinx.android.synthetic.main.product_item.view.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlin.collections.ArrayList
-
 /*
 class ProductDataFragment : Fragment(), ProdClickListener {
     private lateinit var dataModel: AddProductViewModel

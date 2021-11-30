@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import com.nowfloats.packrat.R
-import com.nowfloats.packrat.clickInterface.ClicTabItemListener
+import com.nowfloats.packrat.clickinterface.ClicTabItemListener
 import com.nowfloats.packrat.roomdatabase.EntityClass
 
 class AddPagerAdapter(

@@ -1,14 +1,12 @@
-package com.nowfloats.packrat.imageViewHolder
+package com.nowfloats.packrat.imageviewholder
 
 import android.net.Uri
 import android.view.View
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.nowfloats.packrat.R
-import com.nowfloats.packrat.clickInterface.ClickListener
-import com.nowfloats.packrat.roomdatabase.EntityClass
+import com.nowfloats.packrat.clickinterface.ClickListener
 import kotlinx.android.synthetic.main.image_items.view.*
 
 //ViewHolder class which holds the data in our recycler view

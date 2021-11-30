@@ -1,48 +1,26 @@
 package com.nowfloats.packrat.camera
 
-import android.Manifest.permission.CAMERA
-import android.R.attr
-import android.app.Activity.RESULT_OK
 import android.content.ContentValues
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.*
-import androidx.camera.lifecycle.ProcessCameraProvider
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProviders
 import com.nowfloats.packrat.R
 import com.nowfloats.packrat.databaserepository.MyRepository
 import com.nowfloats.packrat.homescreen.MyApplication
-import com.nowfloats.packrat.imageViewModel.MyViewModel
-import com.nowfloats.packrat.imageViewModel.ViewModelFactory
+import com.nowfloats.packrat.imageviewmodel.MyViewModel
+import com.nowfloats.packrat.imageviewmodel.ViewModelFactory
 import com.nowfloats.packrat.imagepreiveiwfragment.ImagePreview
 import com.nowfloats.packrat.utils.AppConstant
-import kotlinx.android.synthetic.main.activity_camera.*
-import java.io.File
-import androidx.core.app.ActivityCompat.startActivityForResult
 
 import android.provider.MediaStore
 
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
-import java.util.ArrayList
-import androidx.core.app.ActivityCompat.startActivityForResult
-import android.R.attr.data
-import android.os.Build
-import android.graphics.BitmapFactory
-
-import android.R.attr.data
-
-
-
 
 
 class CameraFragment : Fragment() {
