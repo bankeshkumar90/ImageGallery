@@ -11,6 +11,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.provider.Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
@@ -109,6 +110,7 @@ class ImagePreview : Fragment(), ClickListener {
      }
 
     private fun sendAddproductScreen() {
+        //compressImage()
         val bundle = Bundle()
         bundle.putStringArrayList(AppConstant.IMAGE_LIST, viewModel.imageList )
         bundle.putBoolean(AppConstant.SHELF, shelf)
@@ -194,6 +196,7 @@ class ImagePreview : Fragment(), ClickListener {
         } else {
             cameraIntent.putExtra("android.intent.extras.CAMERA_FACING", 0);
         }*/
+        //cameraIntent.action = ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION
         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, image_uri)
         startActivityForResult(cameraIntent, AppConstant.REQ_CAMERA_CODE)
     }
@@ -206,6 +209,7 @@ class ImagePreview : Fragment(), ClickListener {
         i.addCategory(Intent.CATEGORY_OPENABLE)
         i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         i.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+        //i.action = ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION
 
         // pass the constant to compare it
         // with the returned requestCode
@@ -276,7 +280,7 @@ class ImagePreview : Fragment(), ClickListener {
                         viewModel.addImageToList(""+it)
                         showPreview(""+it)
                     }
-                    var actualPath = "" + AppConstant.getPath(context!!, selectedImageUri)
+                     //var actualPath = "" + AppConstant.getPath(context!!, selectedImageUri)
 
                     // calling from global scope
                    /* GlobalScope.launch {
@@ -290,7 +294,7 @@ class ImagePreview : Fragment(), ClickListener {
                             e.printStackTrace()
                         }
                     }*/
-                    GlobalScope.launch(Dispatchers.Main) {
+                    /*GlobalScope.launch(Dispatchers.Main) {
                         try {
                             //var actualPath = "" + AppConstant.getPath(context!!, selectedImageUri)
                             val file = File(actualPath)
@@ -322,15 +326,15 @@ class ImagePreview : Fragment(), ClickListener {
                         }catch (e:Exception){
                             e.printStackTrace()
                         }
-                    }
+                    }*/
                     //tryImageBitmap(selectedImageUri)
-                    GlobalScope.launch {
+                    /*GlobalScope.launch {
                         var inStream = context!!.getContentResolver().openInputStream(selectedImageUri)
                         val original = BitmapFactory.decodeStream(inStream)
                         //storeImage(original)
                         SaveImage(original,20, actualPath)
                         //saveBitmap()
-                    }
+                    }*/
                 }
             }
         }
@@ -340,13 +344,15 @@ class ImagePreview : Fragment(), ClickListener {
 
 
 
-    private fun SaveImage(finalBitmap: Bitmap, quality:Int, actualPath:String) {
+    private fun saveImage(finalBitmap: Bitmap, quality:Int, actualPath:String) {
         /*val root = Environment.getExternalStorageDirectory().toString()
         val myDir = File("$root/saved_images")
         if(!myDir.exists())
         myDir.mkdirs()*/
 
-        val file = createTempImageFile(quality)// File(myDir, fname)
+        val file = AppConstant().createTempImageFile(quality)// File(myDir, fname)
+        //val fileObj = File(actualPath)
+        viewModel.imageListTobeProcessAndUpload.add(file?.absolutePath!!)
         //if (file!!.exists())
             //file?.delete()
         try {
@@ -361,26 +367,7 @@ class ImagePreview : Fragment(), ClickListener {
             e.printStackTrace()
         }
     }
-     private fun createTempImageFile(quality: Int): File? {
-        // Create an image file name
-        val timeStamp = ""+System.currentTimeMillis()
-        val imageFileName = "" + quality +"SmartCat_" + timeStamp + "_"
-        val storageDir = Environment.getExternalStoragePublicDirectory(
-            Environment.DIRECTORY_PICTURES +File.separator+"SmartCat"
-        )
-         if (!storageDir.exists()){
-             storageDir.mkdirs()
-         }
-        val image = File.createTempFile(
-            imageFileName,  // prefix
-            ".jpg",  // suffix
-            storageDir // directory
-        )
 
-        // Save a file: path for use with ACTION_VIEW intents
-        //mCurrentPhotoPath = "file:" + image.absolutePath
-        return image
-    }
   /*  private fun saveBitmap(bitmap: Bitmap ) {
         if (bitmap != null) {
             try {
@@ -402,6 +389,19 @@ class ImagePreview : Fragment(), ClickListener {
         }
     }*/
 
+    private fun compressImage(){
+        if (viewModel.imageListTobeProcessAndUpload?.size>0){
+            viewModel.imageListTobeProcessAndUpload?.clear()
+        }
+        for (image in viewModel.imageList){
+            GlobalScope.launch {
+                var inStream = context!!.getContentResolver().openInputStream(Uri.parse(image))
+                val original = BitmapFactory.decodeStream(inStream)
+                var actualPath = "" + AppConstant.getPath(context!!, Uri.parse(image))
+                saveImage(original,80, actualPath)
+             }
+        }
+    }
 
     @SuppressLint("WrongConstant")
     private fun dispatchTakePictureIntent() {

@@ -28,6 +28,8 @@ import kotlin.Exception
 class MyViewModel(private val repository: MyRepository) : ViewModel() {
     var imageArrayList: LiveData<ArrayList<String>> = MutableLiveData()
     var imageList = ArrayList<String>()
+    var imageListTobeProcessAndUpload = ArrayList<String>()
+
     var  productProperty: ArrayList<RegexApiResponse> = ArrayList<RegexApiResponse>()
     var entityClassList: ArrayList<EntityClass> = ArrayList<EntityClass>()
     var valueUpdated : LiveData<Boolean> = MutableLiveData()

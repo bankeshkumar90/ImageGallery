@@ -185,9 +185,9 @@ class JobStatus : Fragment()  {
             var jobModel = JobModel()
             //collectionID = image.CollectionId
             var tag  = AppConstant().getLastStringAfter("%", image.path)
-            jobModel.imagePath =""+ AppConstant.getPath(context!!, Uri.parse(image.path))
+            jobModel.imagePath =image.path//""+ AppConstant.getPath(context!!, Uri.parse(image.path))
             jobModel.savedImagePath = image.path
-            jobModel.uri = Uri.parse(""+ AppConstant.getPath(context!!, Uri.parse(image.path)))
+            jobModel.uri = Uri.parse( image.path) //Uri.parse(""+ AppConstant.getPath(context!!, Uri.parse(image.path)))
             jobModel.imageId = AppConstant().getLastStringAfter("%", image.path)
             jobModel.jobStatus = getJobStatusByTag(tag, image.path)
             if(!image.time.isNullOrEmpty()){

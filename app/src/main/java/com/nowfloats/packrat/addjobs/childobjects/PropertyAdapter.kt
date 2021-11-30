@@ -58,6 +58,7 @@ class PropertyAdapter(
         else {
             holder.etLabel?.text = propertyItem.productName
             holder.etValue.requestFocus()
+            holder.etLabel.background = null
         }
         holder.etValue?.text = propertyItem.productValue
 

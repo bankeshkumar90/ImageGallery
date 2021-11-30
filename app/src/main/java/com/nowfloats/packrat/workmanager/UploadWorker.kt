@@ -38,11 +38,11 @@ class UploadWorker(private val appContext: Context,private val workerParameters:
 
                 val collectionId = getData.getString(AppConstant.COLLECTION_ID)
 
-                var actualPath = ""+AppConstant.getPath(appContext, Uri.parse(imagePath))
-                var imageUploaded = uploadImage(actualPath!!, collectionId!!)
+                //var actualPath = ""+AppConstant.getPath(appContext, Uri.parse(imagePath))
+                var imageUploaded = uploadImage(imagePath!!, collectionId!!)
                 var outPutData = Data.Builder()
                     .putString(AppConstant.REQUEST_TYPE, imagePath)
-                    .putString(AppConstant.REQUEST_TYPE, actualPath)
+                    .putString(AppConstant.REQUEST_TYPE, imagePath)
                     .putBoolean(AppConstant.FILE_UPLOADED, imageUploaded)
                     .build()
                 Result.success(outPutData)

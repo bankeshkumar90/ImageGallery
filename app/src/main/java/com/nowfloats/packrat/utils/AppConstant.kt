@@ -229,4 +229,34 @@ class AppConstant {
         }
         return fileExists
     }
+
+    fun createTempImageFile(quality: Int): File? {
+        // Create an image file name
+        val timeStamp = ""+System.currentTimeMillis()
+        val imageFileName = "" + quality +"SmartCat_" + timeStamp + "_"
+        val storageDir = Environment.getExternalStoragePublicDirectory(
+            Environment.DIRECTORY_PICTURES +File.separator+"SmartCat"
+        )
+        if (!storageDir.exists()){
+            storageDir.mkdirs()
+        }
+        val image = File.createTempFile(
+            imageFileName,  // prefix
+            ".jpg",  // suffix
+            storageDir // directory
+        )
+
+        // Save a file: path for use with ACTION_VIEW intents
+        //mCurrentPhotoPath = "file:" + image.absolutePath
+        return image
+    }
+
+    fun clearLocalDir(){
+        val storageDir = Environment.getExternalStoragePublicDirectory(
+            Environment.DIRECTORY_PICTURES +File.separator+"SmartCat"
+        )
+        if (storageDir.exists()){
+            storageDir.deleteRecursively()
+        }
+    }
 }

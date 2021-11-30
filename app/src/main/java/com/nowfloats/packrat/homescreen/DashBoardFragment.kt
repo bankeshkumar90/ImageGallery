@@ -278,15 +278,18 @@ class DashBoardFragment:Fragment() {
    */
     private fun checkPermissions() {
         if (ContextCompat.checkSelfPermission(
-                context!!,
+                myApplication.applicationContext!!,
                 Manifest.permission.CAMERA
             ) == PackageManager.PERMISSION_GRANTED
             && ContextCompat.checkSelfPermission(
-                context!!,
+                myApplication.applicationContext!!,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
             ) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
-                context!!,
+                myApplication.applicationContext!!,
                 Manifest.permission.READ_EXTERNAL_STORAGE
+            ) == PackageManager.PERMISSION_GRANTED  && ContextCompat.checkSelfPermission(
+                myApplication.applicationContext!!,
+                Manifest.permission.MANAGE_EXTERNAL_STORAGE
             ) == PackageManager.PERMISSION_GRANTED
         ) {
 
@@ -295,8 +298,9 @@ class DashBoardFragment:Fragment() {
                  arrayOf(
                     Manifest.permission.CAMERA,
                     Manifest.permission.READ_EXTERNAL_STORAGE,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-                ),
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.MANAGE_EXTERNAL_STORAGE
+                 ),
                 AppConstant.CAMERA_PERMISSION_REQUIRED
             )
 
@@ -310,20 +314,20 @@ class DashBoardFragment:Fragment() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (ContextCompat.checkSelfPermission(
-                context!!,
+                myApplication.applicationContext!!,
                 Manifest.permission.CAMERA
             ) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
-                context!!,
+                myApplication.applicationContext!!,
                 Manifest.permission.READ_EXTERNAL_STORAGE
             ) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
-                context!!,
+                myApplication.applicationContext!!,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
             ) == PackageManager.PERMISSION_GRANTED
         ) {
 
         } else {
             Toast.makeText(
-                context!!,
+                myApplication.applicationContext!!,
                 AppConstant.PERMISSION_DENIED_MESSAGE,
                 Toast.LENGTH_SHORT
             ).show()

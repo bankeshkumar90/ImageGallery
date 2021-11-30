@@ -23,9 +23,8 @@ class AddProductViewModel(application: Application) : AndroidViewModel(applicati
     var getProductData: MutableLiveData<ProductFormData> = MutableLiveData()
     var saveMetaData: MutableLiveData<Boolean> = MutableLiveData()
     var fragmentMapObj:HashMap<Int, ArrayList<MetaDataBeanItem>> = HashMap<Int, ArrayList<MetaDataBeanItem>>()
-    init {
-        print("meesaage1212")
-    }
+    var imageProcessed: MutableLiveData<Int> = MutableLiveData()
+    var metaDataTobeProcessed = ""
 
     fun deleteViewOnClick(position: Int) {
         clickdeleteview.value = position
@@ -34,6 +33,10 @@ class AddProductViewModel(application: Application) : AndroidViewModel(applicati
 
     fun addViewOnClick() {
         clickadd.value = 1
+    }
+
+    fun imageProcessed(){
+        imageProcessed.postValue(1)
     }
 
     fun bottomDialogClick(item: MetaDataBeanItem, position: Int) {

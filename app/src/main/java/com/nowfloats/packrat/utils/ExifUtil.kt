@@ -44,7 +44,7 @@ object ExifUtil {
             return try {
                 val oriented =
                     Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
-                bitmap.recycle()
+                //bitmap.recycle()
                 oriented
             } catch (e: OutOfMemoryError) {
                 e.printStackTrace()

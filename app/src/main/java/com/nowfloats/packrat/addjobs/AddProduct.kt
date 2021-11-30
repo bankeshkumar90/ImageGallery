@@ -57,9 +57,14 @@ import kotlinx.android.synthetic.main.fragment_image_preview.*
 import java.util.*
 import kotlin.collections.ArrayList
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.os.Environment
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.nowfloats.packrat.utils.ExifUtil
 import kotlinx.android.synthetic.main.fragment_settings.*
+import java.io.FileOutputStream
 
 
 class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickListener {
@@ -69,9 +74,7 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
     lateinit var myApplication: MyApplication
     lateinit var myRepository: MyRepository
 
-    var tabLayout: TabLayout? = null
-    var viewPager: ViewPager? = null
-    var pagerAdapter: AddPagerAdapter? = null
+    //var tabLayout: TabLayout? = null
     private lateinit var imageAdapter: ImageAdapter
     private lateinit var bottomViewDialog: FullBottomSheetDialogFragment
     private var isclickBottomView = false
@@ -177,7 +180,8 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
             loading!!.show()
             generatedCollectionId = AppConstant().getRandomCollectionId(context!!)
             var processedMetaData = processMetaDataToSave()
-            saveProductDatainDb(processedMetaData)
+            addViewModel.metaDataTobeProcessed = processedMetaData
+            processImageCompression()
 
         }
     }
@@ -314,57 +318,69 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
                 }            }
         })
     }
-    /*override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.upload -> {
-                //Upload image file function goes here - startImageUploadService(getRandomCollectionId())
-                //    uploadAllImages(imageList)
-                prodAdapter.saveLatestItemData()
-                saveCurrentData(previousSelectedPosition)
-                try{
-                    var lastItem = prodAdapter.parentProductList[prodAdapter.parentProductList.size-1]
-                    if(prodAdapter.parentProductList[prodAdapter.parentProductList.size-1][0].productName.equals("",true) ||
-                        prodAdapter.parentProductList[prodAdapter.parentProductList.size-1][0].productValue.equals("",true)){
-                        Toast.makeText(myApplication, myApplication.resources.getString(R.string.blankProduct), Toast.LENGTH_SHORT).show()
-                        return false
-                    }
-                    if(lastItem[lastItem.size-1].productValue.isNullOrEmpty() || lastItem[lastItem.size-1].productName.isNullOrEmpty()){
-                        Toast.makeText(myApplication, myApplication.resources.getString(R.string.blankProduct), Toast.LENGTH_SHORT).show()
-                        return false
-                    }
-                }catch (e:Exception){
-                    e.printStackTrace()
+
+     private fun saveImage(finalBitmap: Bitmap, quality:Int, actualPath:String) {
+        val file = AppConstant().createTempImageFile(quality)// File(myDir, fname)
+          viewModel.imageListTobeProcessAndUpload.add(file?.absolutePath!!)
+
+        try {
+            val out = FileOutputStream(file)
+            var fixedRotationBitmap = ExifUtil.rotateBitmap( actualPath, finalBitmap)
+            fixedRotationBitmap.compress(Bitmap.CompressFormat.JPEG, quality, out)
+            out.flush()
+            out.close()
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    /*******
+     * This function will execute image compression
+     */
+    private fun executeImageCompression(){
+        try {
+                GlobalScope.launch {
+                                    for (image in viewModel.imageList){
+                                        var inStream = context!!.getContentResolver().openInputStream(Uri.parse(image))
+                                        val original = BitmapFactory.decodeStream(inStream)
+                                        //storeImage(original)
+                                        var actualPath = "" + AppConstant.getPath(context!!, Uri.parse(image))
+                                        saveImage(original,80, actualPath)
+                                    }
+                    addViewModel.imageProcessed()
                 }
-                loading = ProgressDialog(viewObj.context!!)
-                loading!!.setCancelable(true);
-                loading!!.setMessage(AppConstant.IN_PROGRESS);
-                loading!!.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                loading!!.show()
-                generatedCollectionId = AppConstant().getRandomCollectionId(context!!)
-                var processedMetaData = processMetaDataToSave()
-                saveProductDatainDb(processedMetaData)
-
-                *//*Handler().postDelayed({
-                    prodAdapter.saveLatestItemData()
-                    *//**//*uploadAllImages()
-                    val apiService = Network.instance.create(
-                    ApiService::class.java
-                     )
-                    //saveMetaDataToServer(apiService)*//**//*
-
-                },DELAY)*//*
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
+    }
+    private fun updateImageListToBeProcessed(): ArrayList<String>{
+        var imageList = ArrayList<String>()
+        for (image in viewModel.imageList){
+            imageList.add( ""+AppConstant.getPath(context!!, Uri.parse(image)))
+        }
+        return imageList
+    }
+    private fun processImageCompression(){
+        var compressionType = AppConstant().getValuesByTagFromLocalPrefs(context!!, AppConstant.COMPRESSION_TYPE, AppConstant.MEDIUM)
+        if(!compressionType.isNullOrEmpty()){
+            if(compressionType.equals(AppConstant.NONE)){
+                viewModel.imageListTobeProcessAndUpload = updateImageListToBeProcessed()
+                addViewModel.imageProcessed()
+                return
+            }else{
+                executeImageCompression()
             }
         }
-        return super.onOptionsItemSelected(item)
-    }*/
-
+    }
     /****
      * This function will save all information of metaData including image information
      */
     private fun saveProductDatainDb(processedMetaData:String) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                for (image in viewModel.imageList) {
+                for (image in viewModel.imageListTobeProcessAndUpload) {
                     val currentTime = Calendar.getInstance().time
                    /* val sdf = SimpleDateFormat("EEEE")
                     val day = Date()
@@ -389,7 +405,7 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
         }
         addViewModel.saveFormMetaData()
 
-        addViewModel.initiateBackGroundProcess(viewModel.imageList, generatedCollectionId, processedMetaData)
+        addViewModel.initiateBackGroundProcess(viewModel.imageListTobeProcessAndUpload, generatedCollectionId, processedMetaData)
         AppConstant().hideSoftKeyboard(requireActivity())
         Toast.makeText(context!!, context!!.resources.getString(R.string.jobSaved), Toast.LENGTH_SHORT).show()
         if(loading!=null)
@@ -620,6 +636,12 @@ class AddProduct : Fragment(), ClicTabItemListener, ClickListener, ProdClickList
             val items = viewModel.getMetaData()
 
         }
+        addViewModel.imageProcessed.observe(this, Observer {
+            if(it==1){
+                saveProductDatainDb(addViewModel.metaDataTobeProcessed)
+                addViewModel.imageProcessed.value =0
+            }
+        })
         //setRecyclerView(productList)
     }
     override fun onClickItemDelete(position: Int?) {
